@@ -18,7 +18,7 @@ app.use(urlencoded({ extended: true }));
 
 app.get('/api/health', (_req, res) => res.json({ status: 'ok', service: 'koodecode-backend' }));
 
-app.use('/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 
 app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
     console.error(err);

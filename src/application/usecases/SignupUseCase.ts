@@ -1,9 +1,5 @@
 import { IUserRepository } from '../../domain/repositories/IUserRepository';
-import { User } from '../../domain/entities/User';
 import { PasswordService } from '../../domain/services/PasswordService';
-// import { OtpService } from '../..***REMOVED***Service'; // service to generate/send OTP
-import { IOtpRepository } from '../interfaces/IOtpRepository';
-import { IEmailService } from '../interfaces/IEmailService';
 import { OtpUseCase } from './OtpUseCase';
 
 export class SignupUseCase {
@@ -16,6 +12,7 @@ export class SignupUseCase {
     async otpRequestExecute(fullName: string, userName: string, email: string) {
 
         if (!fullName || !userName || !email) {
+
             throw new Error("All fields are required");
         }
 
@@ -27,14 +24,7 @@ export class SignupUseCase {
 
         if (existingUsernameUser) throw new Error("Username already exists");
 
-
-        // const otp = this.otpService.sentOtp();
-
         await this.otpService.sendOtp(email, fullName, userName);
-
-        // const data = { otp, fullName, userName }
-
-        // await this.otpService.saveOtp(email, data, 600);
 
         return { success: true, message: "OTP sent to your email" };
 
@@ -43,10 +33,29 @@ export class SignupUseCase {
     async verifyOtpAndSignupExecute(email: string, otp: number, password: string) {
 
         if (!email || !otp || !password) {
+
             throw new Error("Email, OTP, and password are required")
         }
 
-        const otpRecord = await this.otpService.getOtpByEmail(email);
+        const otpRecord = await this.otpService.verifyOtp(email, otp);
 
+        if (!otpRecord) {
+            throw new Error("Invalid or Expired OTP")
+        }
+
+        const passwordHash = await PasswordService.hashPassword(password);
+
+        const user = await this.userRepository.saveUser({
+            fullName: otpRecord.fullName,
+            userName: otpRecord.userName,
+            email,
+            passwordHash,
+            isAdmin: false
+        });
+
+        console.log("user", otpRecord);
+
+
+        return user
     }
 }

@@ -20,7 +20,7 @@ const otpService = new OtpUseCase(redisOtpService, nodeMailerService);
 const signupUseCase = new SignupUseCase(userRepository, otpService);
 const loginUseCase = new LoginUseCase(userRepository, jwtService);
 
-const signupController = new SignupController(signupUseCase);
+const signupController = new SignupController(signupUseCase, jwtService);
 const loginController = new LoginController(loginUseCase);
 
 router.post('/signup/request-otp', (req, res) => signupController.requestOtp(req, res));
