@@ -1,13 +1,16 @@
 import { IUserRepository } from '../../domain/repositories/IUserRepository';
 import { PasswordService } from '../../domain/services/PasswordService';
-// import { JwtService } from '../../infrastructure/external/JwtService';
 import { JwtService } from '../../infrastructure/services/JwtService';
 
 export class LoginUseCase {
 
-    constructor(private userRepository: IUserRepository, private jwtService: JwtService) { }
+    constructor(
+        private userRepository: IUserRepository,
+        private jwtService: JwtService) { }
 
     async execute(email: string, password: string): Promise<{ token: string }> {
+
+
 
         const user = await this.userRepository.findByEmail(email);
 
@@ -21,8 +24,9 @@ export class LoginUseCase {
             throw new Error('Invalid credentials');
         }
 
-        const token = this.jwtService.generateToken({ userId: user.userName, email: user.email });
+        const token = this.jwtService.generateAccessToken({ userId: user.userName, email: user.email });
 
+        console.log("login 2", token);
         return { token };
     }
 }

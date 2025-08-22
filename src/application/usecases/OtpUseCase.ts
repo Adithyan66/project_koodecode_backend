@@ -8,14 +8,21 @@ export class OtpUseCase {
     ) { }
 
     generateOtp(): string {
-        return Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
+        return Math.floor(10000 + Math.random() * 90000).toString(); // 6-digit OTP
     }
 
     async sendOtp(email: string, fullName: string, userName: string): Promise<void> {
+
         const otp = this.generateOtp();
+
         const ttlSeconds = 600; // 10 minutes
 
+        console.log("otp is - ", otp)
+
         const data = { otp, fullName, userName }
+
+        console.log("data is ", data);
+
 
         await this.otpRepository.saveOtp(email, data, ttlSeconds);
 
@@ -25,12 +32,23 @@ export class OtpUseCase {
         await this.emailService.sendEmail(email, subject, text);
     }
 
-    async verifyOtp(email: string, otp: string): Promise<boolean> {
+    async verifyOtp(email: string, otp: number): Promise<{ userName: string; fullName: string; } | null> {
+
         const storedOtp = await this.otpRepository.getOtp(email);
-        if (storedOtp === otp) {
-            await this.otpRepository.deleteOtp(email);
-            return true;
+
+        console.log("otp us is ", storedOtp);
+
+        if (!storedOtp) return null
+
+        if (Number(storedOtp.otp) == otp) {
+            // await this.otpRepository.deleteOtp(email);
+            console.log("be happy")
+
+            return {
+                userName: storedOtp.username,
+                fullName: storedOtp.fullname
+            }
         }
-        return false;
+        return null;
     }
 }

@@ -4,12 +4,14 @@ import { Request, Response } from 'express';
 import { PasswordService } from '../../domain/services/PasswordService';
 import { SignupUseCase } from '../../application/usecases/SignupUseCase';
 import { IOtpRepository } from '../../application/interfaces/IOtpRepository';
+import { JwtService } from '../../infrastructure/services/JwtService';
+import { config } from '../../infrastructure/config/config';
 
 
 export class SignupController {
 
     constructor(private signupUseCase: SignupUseCase,
-        // private otpService: IOtpRepository
+        private tokenService: JwtService
     ) {
 
     }
@@ -36,38 +38,43 @@ export class SignupController {
 
 
     async verifyOtpAndSignup(req: Request, res: Response) {
+
         const { email, otp, password } = req.body;
 
         try {
-            // if (!email || !otp || !password) {
-            //     return res.status(400).json({ error: 'Email, OTP, and password are required' });
-            // }
 
-            // Verify OTP
-            const otpRecord = await this.otpService.getOtp(email);
+            console.log("bodyy", req.body)
 
-            if (!otpRecord || otpRecord.otp !== otp) {
-                return res.status(400).json({ error: 'Invalid or expired OTP' });
-            }
+            const user = await this.signupUseCase.verifyOtpAndSignupExecute(email, otp, password)
 
-            // Hash password
-            const passwordHash = await PasswordService.hashPassword(password);
+            const payload = { userEmail: user.email, role: user.isAdmin };
 
-            // Create user entity and save
-            const user = await this.userRepository.saveUser({
-                fullName: otpRecord.fullName,
-                userName: otpRecord.userName,
-                email,
-                passwordHash,
-                // Set other default fields if needed
+            const accessToken = this.tokenService.generateAccessToken(payload)
+
+            const refreshToken = this.tokenService.generateRefreshToken(payload)
+
+            res.cookie("refreshToken", refreshToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: "strict",
+                path: "/",
+                maxAge: config.cookieMaxAge
             });
 
-            // Optionally, delete used OTP
 
-            res.status(201).json({ message: 'User created successfully', userName: user.userName });
+            res.status(201).json({
+                user,
+                token: accessToken,
+                success: true,
+                message: "User created successfully",
+            });
 
         } catch (error: any) {
-            res.status(500).json({ error: error.message });
+
+            res.status(500).json({
+                success: false,
+                error: error.message
+            });
         }
     }
 }
