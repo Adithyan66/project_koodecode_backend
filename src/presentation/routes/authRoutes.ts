@@ -17,7 +17,7 @@ const redisOtpService = new RedisOtpRepository()
 const nodeMailerService = new NodemailerEmailService()
 const otpService = new OtpUseCase(redisOtpService, nodeMailerService);
 
-const signupUseCase = new SignupUseCase(userRepository, otpService);
+const signupUseCase = new SignupUseCase(userRepository, otpService, jwtService);
 const loginUseCase = new LoginUseCase(userRepository, jwtService);
 
 const signupController = new SignupController(signupUseCase, jwtService);

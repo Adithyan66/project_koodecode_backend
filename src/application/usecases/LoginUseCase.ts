@@ -1,5 +1,7 @@
 import { IUserRepository } from '../../domain/repositories/IUserRepository';
 import { PasswordService } from '../../domain/services/PasswordService';
+import { toLoginUserResponse } from '../../domain/services/userMapper';
+import { LoginUserResponse } from '../../dto/loginUserResponse';
 import { JwtService } from '../../infrastructure/services/JwtService';
 
 export class LoginUseCase {
@@ -8,9 +10,7 @@ export class LoginUseCase {
         private userRepository: IUserRepository,
         private jwtService: JwtService) { }
 
-    async execute(email: string, password: string): Promise<{ token: string }> {
-
-
+    async execute(email: string, password: string): Promise<LoginUserResponse> {
 
         const user = await this.userRepository.findByEmail(email);
 
@@ -18,15 +18,37 @@ export class LoginUseCase {
             throw new Error('Invalid credentials');
         }
 
-        const passwordValid = await PasswordService.verifyPassword(password, user.passwordHash);
+        let passwordValid
+
+        if (user.passwordHash) {
+
+            passwordValid = await PasswordService.verifyPassword(password, user.passwordHash);
+        }
 
         if (!passwordValid) {
             throw new Error('Invalid credentials');
         }
 
-        const token = this.jwtService.generateAccessToken({ userId: user.userName, email: user.email });
+        const accessToken = this.jwtService.generateAccessToken({ userId: user.userName, email: user.email });
 
-        console.log("login 2", token);
-        return { token };
+        const refreshToken = this.jwtService.generateRefreshToken({ userId: user.userName, email: user.email })
+
+        const safeUser = {
+            fullName: user.fullName,
+            userName: user.userName,
+            email: user.email,
+            isAdmin: user.isAdmin,
+            profilePicUrl: user.profilePicUrl,
+
+        };
+
+        const tokens = {
+            accessToken,
+            refreshToken
+        }
+
+        const response = toLoginUserResponse(safeUser, tokens)
+
+        return response
     }
 }
