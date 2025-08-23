@@ -7,5 +7,4 @@ export const HttpStatus = {
     NOT_FOUND: 404,
     CONFLICT: 409,
     INTERNAL_SERVER_ERROR: 500,
-    // Add more as needed
 } as const;

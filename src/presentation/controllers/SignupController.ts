@@ -21,10 +21,16 @@ export class SignupController {
         const { fullName, userName, email } = req.body;
 
         try {
+            console.log("helll");
+
 
             const result = await this.signupUseCase.otpRequestExecute(fullName, userName, email)
 
-            res.status(200).json(result);
+            res.status(200).json({
+                success: true,
+                message: "otp sent succesfully",
+                result
+            });
 
         } catch (error: any) {
 
@@ -45,15 +51,9 @@ export class SignupController {
 
             console.log("bodyy", req.body)
 
-            const user = await this.signupUseCase.verifyOtpAndSignupExecute(email, otp, password)
+            const { user } = await this.signupUseCase.verifyOtpAndSignupExecute(email, otp, password)
 
-            const payload = { userEmail: user.email, role: user.isAdmin };
-
-            const accessToken = this.tokenService.generateAccessToken(payload)
-
-            const refreshToken = this.tokenService.generateRefreshToken(payload)
-
-            res.cookie("refreshToken", refreshToken, {
+            res.cookie("refreshToken", user.refreshToken, {
                 httpOnly: true,
                 secure: false,
                 sameSite: "strict",
@@ -61,12 +61,16 @@ export class SignupController {
                 maxAge: config.cookieMaxAge
             });
 
-
-            res.status(201).json({
-                user,
-                token: accessToken,
+            res.status(200).json({
                 success: true,
-                message: "User created successfully",
+                message: "User signed successfully",
+                user: {
+                    fullName: user.fullName,
+                    userName: user.userName,
+                    email: user.email,
+                    isAdmin: user.isAdmin,
+                    token: user.accessToken,
+                }
             });
 
         } catch (error: any) {

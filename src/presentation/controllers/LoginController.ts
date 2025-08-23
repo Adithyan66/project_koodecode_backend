@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { LoginUseCase } from '../../application/usecases/LoginUseCase';
+import { config } from '../../infrastructure/config/config';
 
 export class LoginController {
 
@@ -11,20 +12,30 @@ export class LoginController {
 
         try {
 
-            const result = await this.loginUseCase.execute(email, password);
+            const { user } = await this.loginUseCase.execute(email, password);
 
-            console.log("hellooo login result.token", result);
+            console.log("hellooo login result.token", user);
+
+            res.cookie("refreshToken", user.refreshToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: "strict",
+                path: "/",
+                maxAge: config.cookieMaxAge
+            });
+
 
             res.status(200).json({
                 success: true,
-                message: "logged in succesfull",
+                message: "User loged successfully",
                 user: {
-                    id: "Adithya",
-                    name: "string",
-                    email: "string",
-                    role: "admin"
-                },
-                token: result.token
+                    fullName: user.fullName,
+                    userName: user.userName,
+                    email: user.email,
+                    profilePicUrl: user.profilePicUrl,
+                    isAdmin: user.isAdmin,
+                    token: user.accessToken,
+                }
             });
 
         } catch (error: any) {

@@ -1,5 +1,7 @@
 import { IUserRepository } from '../../domain/repositories/IUserRepository';
 import { PasswordService } from '../../domain/services/PasswordService';
+import { toSignupUserResponse } from '../../domain/services/userMapper';
+import { JwtService } from '../../infrastructure/services/JwtService';
 import { OtpUseCase } from './OtpUseCase';
 
 export class SignupUseCase {
@@ -7,6 +9,7 @@ export class SignupUseCase {
     constructor(
         private userRepository: IUserRepository,
         private otpService: OtpUseCase,
+        private tokenService: JwtService
     ) { }
 
     async otpRequestExecute(fullName: string, userName: string, email: string) {
@@ -26,7 +29,7 @@ export class SignupUseCase {
 
         await this.otpService.sendOtp(email, fullName, userName);
 
-        return { success: true, message: "OTP sent to your email" };
+        // return { success: true, message: "OTP sent to your email" };
 
     }
 
@@ -53,9 +56,19 @@ export class SignupUseCase {
             isAdmin: false
         });
 
-        console.log("user", otpRecord);
+        const payload = { userEmail: user.email, role: user.isAdmin };
 
+        const accessToken = this.tokenService.generateAccessToken(payload)
 
-        return user
+        const refreshToken = this.tokenService.generateRefreshToken(payload)
+
+        const tokens = {
+            accessToken,
+            refreshToken
+        }
+
+        const response = toSignupUserResponse(user, tokens)
+
+        return response
     }
 }
