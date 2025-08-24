@@ -1,5 +1,6 @@
 import { User } from '../../domain/entities/User';
 import { LoginUserResponse } from '../../dto/loginUserResponse';
+import { SafeUser } from '../../dto/safeUser';
 import { SignupUserResponse } from '../../dto/signupUserResponse';
 
 type Token = {
@@ -7,7 +8,7 @@ type Token = {
     refreshToken: string
 }
 
-export function toLoginUserResponse(user: User, token: Token): LoginUserResponse {
+export function toLoginUserResponse(user: SafeUser, token: Token): LoginUserResponse {
 
     return new LoginUserResponse(
 
@@ -15,7 +16,7 @@ export function toLoginUserResponse(user: User, token: Token): LoginUserResponse
             fullName: user.fullName,
             userName: user.userName,
             email: user.email,
-            isAdmin: user.isAdmin ?? false,
+            isAdmin: user.isAdmin,
             profilePicUrl: user.profilePicUrl,
             accessToken: token.accessToken,
             refreshToken: token.refreshToken
@@ -25,12 +26,13 @@ export function toLoginUserResponse(user: User, token: Token): LoginUserResponse
 
 
 export function toSignupUserResponse(user: User, token: Token): SignupUserResponse {
+
     return new SignupUserResponse(
         {
             fullName: user.fullName,
             userName: user.userName,
             email: user.email,
-            isAdmin: user.isAdmin ?? false,
+            isAdmin: user.role == "admin",
             // profilePicUrl: user.profilePicUrl,
             accessToken: token.accessToken,
             refreshToken: token.refreshToken

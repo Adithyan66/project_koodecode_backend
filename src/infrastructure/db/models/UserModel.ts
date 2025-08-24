@@ -34,6 +34,7 @@ export interface IStreak {
 }
 
 export interface IUser extends Document {
+    _id: Types.ObjectId;
     fullName: string;
     email: string;
     userName: string;
@@ -50,21 +51,11 @@ export interface IUser extends Document {
     ranking: number;
     profilePicUrl: string;
     isBlocked: boolean;
-    isAdmin: boolean;
-    totalProblems: number;
-    totalProblemsSolved: number;
-    totalEasyProblems: number;
-    easyProblemsSolved: number;
-    totalMediumProblems: number;
-    mediumProblemsSolved: number;
-    totalHardProblems: number;
-    hardProblemsSolved: number;
+    role: string;
     currentStreak: number;
     activeDays: number;
     maxStreak: number;
     acceptanceRate: number;
-    totalSubmissions: number;
-    contestsParticipated: number;
     contestRating: number;
     coinBalance: number;
     badges: IBadge[];
@@ -119,21 +110,11 @@ const UserSchema = new Schema<IUser>({
     ranking: { type: Number },
     profilePicUrl: { type: String },
     isBlocked: { type: Boolean, default: false },
-    isAdmin: { type: Boolean, default: false },
-    // totalProblems: { type: Number, default: 0 },
-    // totalProblemsSolved: { type: Number, default: 0 },
-    // totalEasyProblems: { type: Number, default: 0 },
-    // easyProblemsSolved: { type: Number, default: 0 },
-    // totalMediumProblems: { type: Number, default: 0 },
-    // mediumProblemsSolved: { type: Number, default: 0 },
-    // totalHardProblems: { type: Number, default: 0 },
-    // hardProblemsSolved: { type: Number, default: 0 },
+    role: { type: String, enum: ['user', 'admin'] ,default:"user" },
     currentStreak: { type: Number, default: 0 },
     activeDays: { type: Number, default: 0 },
     maxStreak: { type: Number, default: 0 },
     acceptanceRate: { type: Number, default: 0 },
-    // totalSubmissions: { type: Number, default: 0 },
-    // contestsParticipated: { type: Number, default: 0 },
     contestRating: { type: Number, default: 0 },
     coinBalance: { type: Number, default: 0 },
     badges: { type: [BadgeSchema], default: [] },

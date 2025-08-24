@@ -10,6 +10,9 @@ export class LoginController {
 
         const { email, password } = req.body;
 
+        console.log("reaches",req.body);
+        
+
         try {
 
             const { user } = await this.loginUseCase.execute(email, password);
