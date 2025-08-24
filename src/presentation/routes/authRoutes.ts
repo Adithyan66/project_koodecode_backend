@@ -8,6 +8,9 @@ import { SignupUseCase } from '../../application/usecases/SignupUseCase';
 import { OtpUseCase } from '../../application/usecases/OtpUseCase';
 import { RedisOtpRepository } from '../../infrastructure/persistence/RedisOtpRepository';
 import { NodemailerEmailService } from '../../infrastructure/services/NodemailerEmailService';
+import { ValidateUserUseCase } from '../../application/usecases/ValidateUserUseCase';
+import { UserController } from '../controllers/UserController';
+import { LogoutController } from '../controllers/LogoutController';
 
 const router = Router();
 
@@ -23,10 +26,20 @@ const loginUseCase = new LoginUseCase(userRepository, jwtService);
 const signupController = new SignupController(signupUseCase, jwtService);
 const loginController = new LoginController(loginUseCase);
 
+const validateUserUseCase = new ValidateUserUseCase(userRepository, jwtService)
+const userController = new UserController(validateUserUseCase)
+
+const logoutController = new LogoutController()
+
 router.post('/signup/request-otp', (req, res) => signupController.requestOtp(req, res));
 router.post('/signup/verify-otp', (req, res) => signupController.verifyOtpAndSignup(req, res));
 
 router.post('/login', (req, res) => loginController.login(req, res));
+
+router.get('/validate', (req, res) => userController.validateUser(req, res));
+
+router.post("/logout", (req, res) => logoutController.logoutUser(req, res))
+
 
 export default router;
 

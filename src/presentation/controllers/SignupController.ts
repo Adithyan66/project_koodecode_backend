@@ -21,8 +21,6 @@ export class SignupController {
         const { fullName, userName, email } = req.body;
 
         try {
-            console.log("helll");
-
 
             const result = await this.signupUseCase.otpRequestExecute(fullName, userName, email)
 

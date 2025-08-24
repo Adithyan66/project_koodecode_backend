@@ -53,14 +53,14 @@ export class SignupUseCase {
             userName: otpRecord.userName,
             email,
             passwordHash,
-            isAdmin: false
+            role: "user",
         });
 
-        const payload = { userEmail: user.email, role: user.isAdmin };
 
-        const accessToken = this.tokenService.generateAccessToken(payload)
+        const accessToken = this.tokenService.generateAccessToken({ userId: user.id, role: user.role });
 
-        const refreshToken = this.tokenService.generateRefreshToken(payload)
+        const refreshToken = this.tokenService.generateRefreshToken({ userId: user.id, role: user.role })
+
 
         const tokens = {
             accessToken,
