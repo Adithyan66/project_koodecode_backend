@@ -1,11 +1,11 @@
 
 
 import { Request, Response } from 'express';
-import { PasswordService } from '../../domain/services/PasswordService';
-import { SignupUseCase } from '../../application/usecases/SignupUseCase';
-import { IOtpRepository } from '../../application/interfaces/IOtpRepository';
-import { JwtService } from '../../infrastructure/services/JwtService';
-import { config } from '../../infrastructure/config/config';
+import { PasswordService } from '../../../application/services/PasswordService';
+import { SignupUseCase } from '../../../application/usecases/users/SignupUseCase';
+import { IOtpRepository } from '../../../application/interfaces/IOtpRepository';
+import { JwtService } from '../../../infrastructure/services/JwtService';
+import { config } from '../../../infrastructure/config/config';
 
 
 export class SignupController {
@@ -46,8 +46,6 @@ export class SignupController {
         const { email, otp, password } = req.body;
 
         try {
-
-            console.log("bodyy", req.body)
 
             const { user } = await this.signupUseCase.verifyOtpAndSignupExecute(email, otp, password)
 

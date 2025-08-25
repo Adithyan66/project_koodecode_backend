@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { LoginUseCase } from '../../application/usecases/LoginUseCase';
-import { config } from '../../infrastructure/config/config';
+import { LoginUseCase } from '../../../application/usecases/users/LoginUseCase';
+import { config } from '../../../infrastructure/config/config';
 
 export class LoginController {
 
@@ -9,15 +9,11 @@ export class LoginController {
     async login(req: Request, res: Response) {
 
         const { email, password } = req.body;
-
-        console.log("reaches",req.body);
         
 
         try {
 
             const { user } = await this.loginUseCase.execute(email, password);
-
-            console.log("hellooo login result.token", user);
 
             res.cookie("refreshToken", user.refreshToken, {
                 httpOnly: true,

@@ -1,7 +1,7 @@
 import { User } from '../../domain/entities/User';
-import { LoginUserResponse } from '../../dto/loginUserResponse';
-import { SafeUser } from '../../dto/safeUser';
-import { SignupUserResponse } from '../../dto/signupUserResponse';
+import { LoginUserResponse } from '../dto/users/loginUserResponse';
+import { SafeUser } from '../dto/users/safeUser';
+import { SignupUserResponse } from '../dto/users/signupUserResponse';
 
 type Token = {
     accessToken: string,

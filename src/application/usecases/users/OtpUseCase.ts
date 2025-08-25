@@ -1,5 +1,5 @@
-import { IOtpRepository } from '../interfaces/IOtpRepository';
-import { IEmailService } from '../interfaces/IEmailService';
+import { IOtpRepository } from '../../interfaces/IOtpRepository';
+import { IEmailService } from '../../interfaces/IEmailService';
 
 export class OtpUseCase {
     constructor(
@@ -21,8 +21,6 @@ export class OtpUseCase {
 
         const data = { otp, fullName, userName }
 
-        console.log("data is ", data);
-
 
         await this.otpRepository.saveOtp(email, data, ttlSeconds);
 
@@ -36,14 +34,10 @@ export class OtpUseCase {
 
         const storedOtp = await this.otpRepository.getOtp(email);
 
-        console.log("otp us is ", storedOtp);
-
         if (!storedOtp) return null
 
         if (Number(storedOtp.otp) == otp) {
-            // await this.otpRepository.deleteOtp(email);
-            console.log("be happy")
-
+        
             return {
                 userName: storedOtp.username,
                 fullName: storedOtp.fullname

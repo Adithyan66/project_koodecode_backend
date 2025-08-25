@@ -1,7 +1,7 @@
 // src/usecases/ValidateUserUseCase.ts
-import { IUserRepository } from '../../domain/repositories/IUserRepository';
-import { JwtService } from '../../infrastructure/services/JwtService';
-import { User } from '../../domain/entities/User';
+import { IUserRepository } from '../../interfaces/IUserRepository';
+import { JwtService } from '../../../infrastructure/services/JwtService';
+import { User } from '../../../domain/entities/User';
 import { log } from 'console';
 
 export interface ValidateUserResponse {
@@ -69,7 +69,6 @@ export class ValidateUserUseCase {
                     message: 'User not found'
                 };
             }
-            console.log("in validate token ",user);
 
             return {
                 success: true,
