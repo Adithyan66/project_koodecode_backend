@@ -4,6 +4,8 @@ import { json, urlencoded } from 'express';
 import cors from "cors"
 
 import authRoutes from './presentation/routes/authRoutes';
+import problemRoutes from './presentation/routes/problemRoutes';
+
 
 dotenv.config();
 
@@ -18,6 +20,7 @@ app.use(urlencoded({ extended: true }));
 
 app.get('/api/health', (_req, res) => res.json({ status: 'ok', service: 'koodecode-backend' }));
 
+app.use('/api', problemRoutes);
 app.use('/api/auth', authRoutes);
 
 app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

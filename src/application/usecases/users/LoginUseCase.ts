@@ -1,9 +1,9 @@
-import { IUserRepository } from '../../domain/repositories/IUserRepository';
-import { PasswordService } from '../../domain/services/PasswordService';
-import { toLoginUserResponse } from '../../domain/services/userMapper';
-import { LoginUserResponse } from '../../dto/loginUserResponse';
-import { SafeUser } from '../../dto/safeUser';
-import { JwtService } from '../../infrastructure/services/JwtService';
+import { IUserRepository } from '../../interfaces/IUserRepository';
+import { PasswordService } from '../../services/PasswordService';
+import { toLoginUserResponse } from '../../services/userMapper';
+import { LoginUserResponse } from '../../dto/users/loginUserResponse';
+import { SafeUser } from '../../dto/users/safeUser';
+import { JwtService } from '../../../infrastructure/services/JwtService';
 
 export class LoginUseCase {
 
@@ -14,8 +14,6 @@ export class LoginUseCase {
     async execute(email: string, password: string): Promise<LoginUserResponse> {
 
         const user = await this.userRepository.findByEmail(email);
-
-        console.log("usrr in logincasse", user);
 
 
         if (!user) {
@@ -36,8 +34,6 @@ export class LoginUseCase {
         const accessToken = this.jwtService.generateAccessToken({ userId: user.id, role: user.role });
 
         const refreshToken = this.jwtService.generateRefreshToken({ userId: user.id, role: user.role })
-
-        console.log("checkinggggg", user.role === "admin")
 
         const safeUser: SafeUser = {
 

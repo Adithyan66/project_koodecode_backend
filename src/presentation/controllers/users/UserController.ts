@@ -1,6 +1,6 @@
 // src/controllers/UserController.ts
 import { Request, Response } from 'express';
-import { ValidateUserUseCase } from '../..***REMOVED***e';
+import { ValidateUserUseCase } from '../../..***REMOVED***UseCase';
 
 export class UserController {
     constructor(
@@ -24,7 +24,6 @@ export class UserController {
                 return;
             }
             
-            // Extract token from "Bearer <token>" format
             const token = authHeader.startsWith('Bearer ')
             ? authHeader.substring(7)
             : authHeader;
@@ -48,8 +47,6 @@ export class UserController {
                 return;
             }
             
-            console.log("in token", result);
-            // Return user data in the format expected by frontend
             res.status(200).json({
                 success: true,
                 message: result.message,

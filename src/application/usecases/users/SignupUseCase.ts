@@ -1,7 +1,7 @@
-import { IUserRepository } from '../../domain/repositories/IUserRepository';
-import { PasswordService } from '../../domain/services/PasswordService';
-import { toSignupUserResponse } from '../../domain/services/userMapper';
-import { JwtService } from '../../infrastructure/services/JwtService';
+import { IUserRepository } from '../../interfaces/IUserRepository';
+import { PasswordService } from '../../services/PasswordService';
+import { toSignupUserResponse } from '../../services/userMapper';
+import { JwtService } from '../../../infrastructure/services/JwtService';
 import { OtpUseCase } from './OtpUseCase';
 
 export class SignupUseCase {

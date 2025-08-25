@@ -1,16 +1,16 @@
 import { Router } from 'express';
-import { SignupController } from '../controllers/SignupController';
-import { LoginController } from '../controllers/LoginController';
+import { SignupController } from '../controllers/users/SignupController';
+import { LoginController } from '../controllers/users/LoginController';
 import { JwtService } from '../../infrastructure/services/JwtService';
-import { LoginUseCase } from '../../application/usecases/LoginUseCase';
+import { LoginUseCase } from '../..***REMOVED***';
 import { MongoUserRepository } from '../../infrastructure/db/MongoUserRepository';
-import { SignupUseCase } from '../../application/usecases/SignupUseCase';
-import { OtpUseCase } from '../../application/usecases/OtpUseCase';
+import { SignupUseCase } from '../..***REMOVED***e';
+import { OtpUseCase } from '../../application/usecases/users/OtpUseCase';
 import { RedisOtpRepository } from '../..***REMOVED***sitory';
 import { NodemailerEmailService } from '../..***REMOVED***Service';
-import { ValidateUserUseCase } from '../..***REMOVED***e';
-import { UserController } from '../controllers/UserController';
-import { LogoutController } from '../controllers/LogoutController';
+import { ValidateUserUseCase } from '../..***REMOVED***UseCase';
+import { UserController } from '../controllers/users/UserController';
+import { LogoutController } from '../controllers/users/LogoutController';
 
 const router = Router();
 
