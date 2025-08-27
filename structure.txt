@@ -1,36 +1,55 @@
-.
+
+tree  -I 'node_modules' > structure.txt
+
+
+
 ├── package.json
 ├── package-lock.json
 ├── src
 │   ├── application
 │   │   ├── dto
-│   │   │   ├── loginUserResponse.ts
-│   │   │   ├── safeUser.ts
-│   │   │   └── signupUserResponse.ts
+│   │   │   ├── problems
+│   │   │   │   ├── CreateProblemDto.ts
+│   │   │   │   ├── ProblemListDto.ts
+│   │   │   │   ├── ProblemResponseDto.ts
+│   │   │   │   └── UpdateProblemDto.ts
+│   │   │   └── users
+│   │   │       ├── loginUserResponse.ts
+│   │   │       ├── safeUser.ts
+│   │   │       └── signupUserResponse.ts
 │   │   ├── interfaces
 │   │   │   ├── IEmailService.ts
 │   │   │   ├── IOtpRepository.ts
+│   │   │   ├── IProblemRepository.ts
 │   │   │   └── IUserRepository.ts
 │   │   ├── services
 │   │   │   ├── PasswordService.ts
 │   │   │   └── userMapper.ts
 │   │   └── usecases
-│   │       ├── LoginUseCase.ts
-│   │       ├── LogoutUseCase.ts
-│   │       ├── OtpUseCase.ts
-│   │       ├── SignupUseCase.ts
-│   │       └── ValidateUserUseCase.ts
+│   │       ├── problems
+│   │       │   ├── CreateProblemUseCase.ts
+│   │       │   ├── GetProblemByIdUseCase.ts
+│   │       │   └── GetProblemsListUseCase.ts
+│   │       └── users
+│   │           ├── LoginUseCase.ts
+│   │           ├── LogoutUseCase.ts
+│   │           ├── OtpUseCase.ts
+│   │           ├── SignupUseCase.ts
+│   │           └── ValidateUserUseCase.ts
 │   ├── app.ts
 │   ├── domain
 │   │   └── entities
+│   │       ├── Problem.ts
 │   │       └── User.ts
 │   ├── infrastructure
 │   │   ├── config
 │   │   │   └── config.ts
 │   │   ├── db
 │   │   │   ├── models
+│   │   │   │   ├── ProblemModel.ts
 │   │   │   │   └── UserModel.ts
 │   │   │   ├── mongoConnection.ts
+│   │   │   ├── MongoProblemRepository.ts
 │   │   │   └── MongoUserRepository.ts
 │   │   ├── persistence
 │   │   │   └── RedisOtpRepository.ts
@@ -41,14 +60,20 @@
 │   │       └── NodemailerEmailService.ts
 │   ├── presentation
 │   │   ├── controllers
-│   │   │   ├── LoginController.ts
-│   │   │   ├── LogoutController.ts
-│   │   │   ├── SignupController.ts
-│   │   │   └── UserController.ts
+│   │   │   ├── problems
+│   │   │   │   ├── AdminProblemController.ts
+│   │   │   │   └── UserProblemController.ts
+│   │   │   └── users
+│   │   │       ├── LoginController.ts
+│   │   │       ├── LogoutController.ts
+│   │   │       ├── RefreshTokenController.ts
+│   │   │       ├── SignupController.ts
+│   │   │       └── UserController.ts
 │   │   ├── middleware
 │   │   │   └── authMiddleware.ts
 │   │   └── routes
-│   │       └── authRoutes.ts
+│   │       ├── authRoutes.ts
+│   │       └── problemRoutes.ts
 │   ├── server.ts
 │   └── shared
 │       ├── constants
@@ -60,4 +85,4 @@
 ├── structure.txt
 └── tsconfig.json
 
-25 directories, 36 files
+31 directories, 51 files
