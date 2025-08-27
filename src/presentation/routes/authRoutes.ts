@@ -11,6 +11,7 @@ import { NodemailerEmailService } from '../../infrastructure/services/Nodemailer
 import { ValidateUserUseCase } from '../../application/usecases/users/ValidateUserUseCase';
 import { UserController } from '../controllers/users/UserController';
 import { LogoutController } from '../controllers/users/LogoutController';
+import { RefreshTokenController } from '../controllers/users/RefreshTokenController';
 
 const router = Router();
 
@@ -31,6 +32,8 @@ const userController = new UserController(validateUserUseCase)
 
 const logoutController = new LogoutController()
 
+const refreshTokenController = new RefreshTokenController(jwtService)
+
 router.post('/signup/request-otp', (req, res) => signupController.requestOtp(req, res));
 router.post('/signup/verify-otp', (req, res) => signupController.verifyOtpAndSignup(req, res));
 
@@ -38,7 +41,10 @@ router.post('/login', (req, res) => loginController.login(req, res));
 
 router.get('/validate', (req, res) => userController.validateUser(req, res));
 
+router.get('/refresh-token', (req, res) => refreshTokenController.verifyToken(req, res));
+
 router.post("/logout", (req, res) => logoutController.logoutUser(req, res))
+
 
 
 export default router;
