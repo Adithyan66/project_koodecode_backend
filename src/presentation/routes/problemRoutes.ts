@@ -13,7 +13,7 @@ const router = Router();
 
 const problemRepository = new MongoProblemRepository();
 
-// Initialize use cases
+
 const getProblemsListUseCase = new GetProblemsListUseCase(problemRepository);
 const getProblemByIdUseCase = new GetProblemByIdUseCase(problemRepository);
 const createProblemUseCase = new CreateProblemUseCase(problemRepository);
@@ -30,6 +30,6 @@ router.get('/problems/:id', userProblemController.getProblemById.bind(userProble
 
 
 router.post('/admin/problems', authMiddleware("admin"), adminProblemController.createProblem.bind(adminProblemController));
-// router.post('/admin/problems',  adminProblemController.createProblem.bind(adminProblemController));
+
 
 export default router;

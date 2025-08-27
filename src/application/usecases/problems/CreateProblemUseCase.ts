@@ -6,21 +6,23 @@ export class CreateProblemUseCase {
     constructor(private problemRepository: IProblemRepository) {}
 
     async execute(data: CreateProblemDto, adminId: string): Promise<Problem> {
-        // Generate slug from title
+      
         const slug = this.generateSlug(data.title);
 
-        // Check if slug already exists
         const existingProblem = await this.problemRepository.findBySlug(slug);
         if (existingProblem) {
             throw new Error(`Problem with title "${data.title}" already exists`);
         }
 
-        // Validate test cases
+        console.log(data.testCases);
+        
+
         if (!data.testCases || data.testCases.length === 0) {
             throw new Error('At least one test case is required');
         }
 
         const sampleTestCases = data.testCases.filter(tc => tc.isSample);
+        
         if (sampleTestCases.length === 0) {
             throw new Error('At least one sample test case is required');
         }

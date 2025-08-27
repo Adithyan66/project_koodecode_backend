@@ -3,6 +3,7 @@ import { Problem } from '../../domain/entities/Problem';
 import ProblemModel from './models/ProblemModel';
 
 export class MongoProblemRepository implements IProblemRepository {
+    
     async create(problem: Problem): Promise<Problem> {
         const problemDoc = new ProblemModel({
             title: problem.title,
