@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { CreateProblemUseCase } from '../../../application/usecases/problems/CreateProblemUseCase';
 import { HTTP_STATUS } from '../../../shared/constants/httpStatus';
+import { diff } from 'util';
 // import { MESSAGES } from '../../../shared/constants/messages';
 
 interface AuthenticatedRequest extends Request {
@@ -15,6 +16,7 @@ export class AdminProblemController {
 
     async createProblem(req: AuthenticatedRequest, res: Response): Promise<void> {
         try {
+
           
             if (!req.user || req.user.role !== 'admin') {
                 res.status(HTTP_STATUS.FORBIDDEN).json({
@@ -23,8 +25,6 @@ export class AdminProblemController {
                 });
                 return;
             }
-
-            console.log("is admin",req.user)
 
             const {
                 title,
@@ -40,6 +40,8 @@ export class AdminProblemController {
 
            
             if (!title || !difficulty || !description || !testCases) {
+                console.log(title,difficulty,description,testCases);
+                
                 res.status(HTTP_STATUS.BAD_REQUEST).json({
                     success: false,
                     message: 'Missing required fields: title, difficulty, description, testCases'
@@ -58,6 +60,7 @@ export class AdminProblemController {
                 hints: hints || [],
                 companies: companies || []
             };
+            
 
             const problem = await this.createProblemUseCase.execute(
                 createProblemDto,
