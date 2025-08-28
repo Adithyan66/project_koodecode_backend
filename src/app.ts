@@ -4,7 +4,7 @@ import { json, urlencoded } from 'express';
 import cors from "cors"
 
 import authRoutes from './presentation/routes/authRoutes';
-import problemRoutes from './presentation/routes/problemRoutes';
+import problemRoutes from './presentation/routes/admin/problemRoutes';
 
 
 import cookieParser from "cookie-parser";

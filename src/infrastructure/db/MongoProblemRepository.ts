@@ -1,9 +1,10 @@
-import { IProblemRepository } from '../../application/interfaces/IProblemRepository';
+import { SortOrder } from 'mongoose';
+import { IProblemRepository, PaginationOptions, ProblemFilters } from '../../application/interfaces/IProblemRepository';
 import { Problem } from '../../domain/entities/Problem';
 import ProblemModel from './models/ProblemModel';
 
 export class MongoProblemRepository implements IProblemRepository {
-    
+
     async create(problem: Problem): Promise<Problem> {
         const problemDoc = new ProblemModel({
             title: problem.title,
@@ -125,4 +126,85 @@ export class MongoProblemRepository implements IProblemRepository {
             doc.updatedAt
         );
     }
+
+
+    async getFilteredProblems(
+        filters: ProblemFilters,
+        pagination: PaginationOptions
+    ): Promise<{
+        problems: Problem[];
+        total: number;
+        currentPage: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    }> {
+        try {
+            // Build MongoDB query
+            const query: any = {};
+
+            // Search functionality - searches in title and description
+            if (filters.search) {
+                query.$or = [
+                    { title: { $regex: filters.search, $options: 'i' } },
+                    { description: { $regex: filters.search, $options: 'i' } }
+                ];
+            }
+
+            // Filter by difficulty
+            if (filters.difficulty) {
+                query.difficulty = filters.difficulty;
+            }
+
+            // Filter by category
+            // if (filters.category) {
+            //     query.category = filters.category;
+            // }
+
+            // Filter by tags
+            // if (filters.tags && filters.tags.length > 0) {
+            //     query.tags = { $in: filters.tags };
+            // }
+
+            // Filter by status (for published problems only for users)
+            // if (filters.status) {
+            //     query.status = filters.status;
+            // } else {
+            //     // Default to published problems for user requests
+            //     query.status = 'Published';
+            // }
+
+            // Pagination
+            const skip = (pagination.page - 1) * pagination.limit;
+
+            // Sorting
+            const sortField = pagination.sortBy || 'createdAt';
+            const sortDirection = pagination.sortOrder === 'asc' ? 1 : -1;
+            const sort = { [sortField]: sortDirection as SortOrder} ;
+
+            // Execute queries in parallel
+            const [problems, total] = await Promise.all([
+                ProblemModel.find(query)
+                    .sort(sort)
+                    .skip(skip)
+                    .limit(pagination.limit)
+                    .lean(),
+                ProblemModel.countDocuments(query)
+            ]);
+
+            const totalPages = Math.ceil(total / pagination.limit);
+
+            return {
+                problems: problems.map(p => p as unknown as Problem),
+                total,
+                currentPage: pagination.page,
+                totalPages,
+                hasNext: pagination.page < totalPages,
+                hasPrev: pagination.page > 1
+            };
+        } catch (error) {
+            throw new Error(`Failed to fetch filtered problems: `);
+        }
+    }
+
 }
