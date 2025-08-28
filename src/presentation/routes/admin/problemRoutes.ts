@@ -1,13 +1,13 @@
 import { Router } from 'express';
-import { UserProblemController } from '..***REMOVED***ler';
-import { AdminProblemController } from '..***REMOVED***ller';
-import { authMiddleware } from '../middleware/authMiddleware';
+import { UserProblemController } from '../..***REMOVED***ler';
+import { AdminProblemController } from '../..***REMOVED***ller';
+import { authMiddleware } from '../../middleware/authMiddleware';
 
-import { GetProblemsListUseCase } from '../..***REMOVED***msListUseCase';
-import { GetProblemByIdUseCase } from '../..***REMOVED***mByIdUseCase';
-import { CreateProblemUseCase } from '../..***REMOVED***blemUseCase';
+import { GetProblemsListUseCase } from '../../..***REMOVED***msListUseCase';
+import { GetProblemByIdUseCase } from '../../..***REMOVED***mByIdUseCase';
+import { CreateProblemUseCase } from '../../..***REMOVED***blemUseCase';
 
-import { MongoProblemRepository } from '../..***REMOVED***y';
+import { MongoProblemRepository } from '../../..***REMOVED***y';
 
 const router = Router();
 

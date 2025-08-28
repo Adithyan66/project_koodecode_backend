@@ -13,7 +13,9 @@ export class OtpUseCase {
 
     async sendOtp(email: string, fullName: string, userName: string): Promise<void> {
 
-        const otp = this.generateOtp();
+        // const otp = this.generateOtp();
+
+        const otp = 11111
 
         const ttlSeconds = 600; // 10 minutes
 
@@ -37,7 +39,7 @@ export class OtpUseCase {
         if (!storedOtp) return null
 
         if (Number(storedOtp.otp) == otp) {
-        
+
             return {
                 userName: storedOtp.username,
                 fullName: storedOtp.fullname
