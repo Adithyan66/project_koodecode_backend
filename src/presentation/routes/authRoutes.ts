@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { SignupController } from '../controllers/users/SignupController';
-import { LoginController } from '../controllers/users/LoginController';
+import { SignupController } from '../controllers/auth/SignupController';
+import { LoginController } from '../controllers/auth/LoginController';
 import { JwtService } from '../../infrastructure/services/JwtService';
 import { LoginUseCase } from '../../application/usecases/users/LoginUseCase';
 import { MongoUserRepository } from '../../infrastructure/db/MongoUserRepository';
@@ -9,9 +9,9 @@ import { OtpUseCase } from '../../application/usecases/users/OtpUseCase';
 import { RedisOtpRepository } from '../../infrastructure/persistence/RedisOtpRepository';
 import { NodemailerEmailService } from '../../infrastructure/services/NodemailerEmailService';
 import { ValidateUserUseCase } from '../../application/usecases/users/ValidateUserUseCase';
-import { UserController } from '../controllers/users/UserController';
-import { LogoutController } from '../controllers/users/LogoutController';
-import { RefreshTokenController } from '../controllers/users/RefreshTokenController';
+import { UserController } from '../controllers/auth/UserController';
+import { LogoutController } from '../controllers/auth/LogoutController';
+import { RefreshTokenController } from '../controllers/auth/RefreshTokenController';
 
 const router = Router();
 
