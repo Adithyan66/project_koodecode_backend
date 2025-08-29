@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { CreateProblemUseCase } from '../../..***REMOVED***blemUseCase';
-import { HTTP_STATUS } from '../../../shared/constants/httpStatus';
+import { CreateProblemUseCase } from '../../../..***REMOVED***blemUseCase';
+import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 import { diff } from 'util';
 // import { MESSAGES } from '../../../shared/constants/messages';
 

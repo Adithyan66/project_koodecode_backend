@@ -1,19 +1,68 @@
-export interface ProblemListDto {
-    id: string;
-    title: string;
-    slug: string;
-    difficulty: 'easy' | 'medium' | 'hard';
-    tags: string[];
-    likes: number;
-    acceptanceRate: number;
-    totalSubmissions: number;
-    isActive: boolean;
+// export interface ProblemListDto {
+//     id: string;
+//     title: string;
+//     slug: string;
+//     difficulty: 'easy' | 'medium' | 'hard';
+//     tags: string[];
+//     likes: number;
+//     acceptanceRate: number;
+//     totalSubmissions: number;
+//     isActive: boolean;
+// }
+
+
+export interface ProblemDto {
+  id: string;
+  title: string;
+  slug: string;
+  difficulty: 'easy' | 'medium' | 'hard';
+  tags: string[];
+  likes: number;
+  acceptanceRate: number;
+  totalSubmissions: number;
+  isActive: boolean;
 }
 
 export interface ProblemListResponseDto {
-    problems: ProblemListDto[];
+  problems: ProblemDto[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+
+// export interface ProblemListResponseDto {
+//         problems: ProblemListDto[];
+//         total: number;
+//         page: number;
+//         limit: number;
+//         totalPages: number;
+//     }
+    
+    import { Problem } from "../../../domain/entities/Problem";
+
+
+
+export interface ProblemListDto {
+  problems: Problem[];
+  pagination: {
     total: number;
-    page: number;
-    limit: number;
+    currentPage: number;
     totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+    limit: number;
+  };
+  filters?: {
+    search?: string;
+    difficulty?: string;
+    category?: string;
+    tags?: string[];
+  };
+  availableFilters?: {
+    difficulties: string[];
+    categories: string[];
+    tags: string[];
+  };
 }

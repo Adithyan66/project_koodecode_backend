@@ -42,7 +42,7 @@ export class MongoProblemRepository implements IProblemRepository {
         difficulty?: 'easy' | 'medium' | 'hard';
         tags?: string[];
         isActive?: boolean;
-        name?: string;  // NEW: Search parameter
+        name?: string;  
         page?: number;
         limit?: number;
     } = {}): Promise<{
@@ -69,7 +69,7 @@ export class MongoProblemRepository implements IProblemRepository {
             query.isActive = filters.isActive;
         }
 
-        // NEW: Name search using MongoDB text search
+   
         if (filters.name && filters.name.trim()) {
             query.$text = { $search: filters.name.trim() };
         }

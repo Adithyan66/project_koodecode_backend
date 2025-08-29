@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { SignupController } from '../controllers/users/SignupController';
-import { LoginController } from '../controllers/users/LoginController';
+import { SignupController } from '../controllers/auth/SignupController';
+import { LoginController } from '../controllers/auth/LoginController';
 import { JwtService } from '../../infrastructure/services/JwtService';
 import { LoginUseCase } from '../..***REMOVED***';
 import { MongoUserRepository } from '../../infrastructure/db/MongoUserRepository';
@@ -9,9 +9,9 @@ import { OtpUseCase } from '../../application/usecases/users/OtpUseCase';
 import { RedisOtpRepository } from '../..***REMOVED***sitory';
 import { NodemailerEmailService } from '../..***REMOVED***Service';
 import { ValidateUserUseCase } from '../..***REMOVED***UseCase';
-import { UserController } from '../controllers/users/UserController';
-import { LogoutController } from '../controllers/users/LogoutController';
-import { RefreshTokenController } from '..***REMOVED***r';
+import { UserController } from '../controllers/auth/UserController';
+import { LogoutController } from '../controllers/auth/LogoutController';
+import { RefreshTokenController } from '..***REMOVED***';
 
 const router = Router();
 

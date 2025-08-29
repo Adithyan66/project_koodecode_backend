@@ -52,20 +52,18 @@ const ProblemSchema: Schema = new Schema({
     timestamps: true
 });
 
-// Indexes for better performance
 ProblemSchema.index({ slug: 1 });
 ProblemSchema.index({ difficulty: 1 });
 ProblemSchema.index({ tags: 1 });
 ProblemSchema.index({ isActive: 1 });
 
-// NEW: Text index for search functionality
 ProblemSchema.index({ 
     title: "text", 
     description: "text" 
 }, {
     weights: {
-        title: 10,      // Higher weight for title matches
-        description: 1  // Lower weight for description matches
+        title: 10,
+        description: 1  
     }
 });
 
