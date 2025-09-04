@@ -7,6 +7,7 @@ export class MongoProblemRepository implements IProblemRepository {
 
     async create(problem: Problem): Promise<Problem> {
         const problemDoc = new ProblemModel({
+            problemNumber: problem.problemNumber,
             title: problem.title,
             slug: problem.slug,
             difficulty: problem.difficulty,
@@ -38,11 +39,16 @@ export class MongoProblemRepository implements IProblemRepository {
         return problem ? this.mapToDomain(problem) : null;
     }
 
+    async findByProblemNumber(problemNumber: number): Promise<Problem | null> {
+         const problem = await ProblemModel.findOne({ problemNumber });
+        return problem ? this.mapToDomain(problem) : null;
+    }
+
     async findAll(filters: {
         difficulty?: 'easy' | 'medium' | 'hard';
         tags?: string[];
         isActive?: boolean;
-        name?: string;  
+        name?: string;
         page?: number;
         limit?: number;
     } = {}): Promise<{
@@ -69,7 +75,7 @@ export class MongoProblemRepository implements IProblemRepository {
             query.isActive = filters.isActive;
         }
 
-   
+
         if (filters.name && filters.name.trim()) {
             query.$text = { $search: filters.name.trim() };
         }
@@ -106,6 +112,7 @@ export class MongoProblemRepository implements IProblemRepository {
 
     private mapToDomain(doc: any): Problem {
         return new Problem(
+            doc.problemNumber,
             doc.title,
             doc.slug,
             doc.difficulty,
@@ -180,7 +187,7 @@ export class MongoProblemRepository implements IProblemRepository {
             // Sorting
             const sortField = pagination.sortBy || 'createdAt';
             const sortDirection = pagination.sortOrder === 'asc' ? 1 : -1;
-            const sort = { [sortField]: sortDirection as SortOrder} ;
+            const sort = { [sortField]: sortDirection as SortOrder };
 
             // Execute queries in parallel
             const [problems, total] = await Promise.all([

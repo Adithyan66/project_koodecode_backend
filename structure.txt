@@ -1,7 +1,4 @@
-
 tree  -I 'node_modules' > structure.txt
-
-
 
 ├── package.json
 ├── package-lock.json
@@ -13,14 +10,27 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   │   ├── ProblemListDto.ts
 │   │   │   │   ├── ProblemResponseDto.ts
 │   │   │   │   └── UpdateProblemDto.ts
+│   │   │   ├── submissions
+│   │   │   │   ├── CreateSubmissionDto.ts
+│   │   │   │   ├── ExecuteCodeDto.ts
+│   │   │   │   ├── Judge0SubmissionDto.ts
+│   │   │   │   ├── ProblemDetailDto.ts
+│   │   │   │   ├── RunCodeDto.ts
+│   │   │   │   └── SubmissionResponseDto.ts
 │   │   │   └── users
 │   │   │       ├── loginUserResponse.ts
 │   │   │       ├── safeUser.ts
 │   │   │       └── signupUserResponse.ts
 │   │   ├── interfaces
+│   │   │   ├── ICodeExecutionService.ts
+│   │   │   ├── ICounterRepository.ts
 │   │   │   ├── IEmailService.ts
+│   │   │   ├── IJudge0Repository.ts
+│   │   │   ├── IJudge0Service.ts
 │   │   │   ├── IOtpRepository.ts
 │   │   │   ├── IProblemRepository.ts
+│   │   │   ├── ISubmissionRepository.ts
+│   │   │   ├── ITokenService.ts
 │   │   │   └── IUserRepository.ts
 │   │   ├── services
 │   │   │   ├── PasswordService.ts
@@ -29,7 +39,15 @@ tree  -I 'node_modules' > structure.txt
 │   │       ├── problems
 │   │       │   ├── CreateProblemUseCase.ts
 │   │       │   ├── GetProblemByIdUseCase.ts
+│   │       │   ├── GetProblemByNumberUseCase.ts
 │   │       │   └── GetProblemsListUseCase.ts
+│   │       ├── submissions
+│   │       │   ├── CreateSubmissionUseCase.ts
+│   │       │   ├── ExecuteCodeUseCase.ts
+│   │       │   ├── GetLanguagesUseCase.ts
+│   │       │   ├── GetProblemDetailUseCase.ts
+│   │       │   ├── GetSubmissionResultUseCase.ts
+│   │       │   └── RunCodeUseCase.ts
 │   │       └── users
 │   │           ├── LoginUseCase.ts
 │   │           ├── LogoutUseCase.ts
@@ -39,41 +57,70 @@ tree  -I 'node_modules' > structure.txt
 │   ├── app.ts
 │   ├── domain
 │   │   └── entities
+│   │       ├── ContestParticipant.ts
+│   │       ├── Contest.ts
+│   │       ├── Counter.ts
+│   │       ├── Judge0Submission.ts
 │   │       ├── Problem.ts
+│   │       ├── Submission.ts
 │   │       └── User.ts
 │   ├── infrastructure
 │   │   ├── config
 │   │   │   └── config.ts
 │   │   ├── db
 │   │   │   ├── models
+│   │   │   │   ├── ContestModel.ts
+│   │   │   │   ├── ContestParticipantModel.ts
+│   │   │   │   ├── CounterModel.ts
+│   │   │   │   ├── Judge0SubmissionModel.ts
 │   │   │   │   ├── ProblemModel.ts
+│   │   │   │   ├── SubmissionModel.ts
 │   │   │   │   └── UserModel.ts
 │   │   │   ├── mongoConnection.ts
+│   │   │   ├── MongoCounterRepository.ts
+│   │   │   ├── MongoJudge0Repository.ts
 │   │   │   ├── MongoProblemRepository.ts
+│   │   │   ├── MongoSubmissionRepository.ts
 │   │   │   └── MongoUserRepository.ts
 │   │   ├── persistence
 │   │   │   └── RedisOtpRepository.ts
 │   │   ├── redis
 │   │   │   └── redisClient.ts
+│   │   ├── scripts.ts
+│   │   │   └── initializeCounters.ts
 │   │   └── services
+│   │       ├── CodeExecutionService.ts
+│   │       ├── Judge0HealthService.ts
+│   │       ├── Judge0Service.ts
 │   │       ├── JwtService.ts
 │   │       └── NodemailerEmailService.ts
 │   ├── presentation
 │   │   ├── controllers
-│   │   │   ├── problems
-│   │   │   │   ├── AdminProblemController.ts
-│   │   │   │   └── UserProblemController.ts
+│   │   │   ├── admin
+│   │   │   │   ├── contests
+│   │   │   │   └── problems
+│   │   │   │       └── AdminProblemController.ts
+│   │   │   ├── auth
+│   │   │   │   ├── LoginController.ts
+│   │   │   │   ├── LogoutController.ts
+│   │   │   │   ├── RefreshTokenController.ts
+│   │   │   │   ├── SignupController.ts
+│   │   │   │   └── UserController.ts
+│   │   │   ├── HealthController.ts
 │   │   │   └── users
-│   │   │       ├── LoginController.ts
-│   │   │       ├── LogoutController.ts
-│   │   │       ├── RefreshTokenController.ts
-│   │   │       ├── SignupController.ts
-│   │   │       └── UserController.ts
+│   │   │       ├── contests
+│   │   │       └── problems
+│   │   │           ├── ProblemSolvingController.ts
+│   │   │           └── UserProblemController.ts
 │   │   ├── middleware
 │   │   │   └── authMiddleware.ts
 │   │   └── routes
+│   │       ├── admin
+│   │       │   └── problemRoutes.ts
 │   │       ├── authRoutes.ts
-│   │       └── problemRoutes.ts
+│   │       ├── healthRoutes.ts
+│   │       └── user
+│   │           └── problemRoutes.ts
 │   ├── server.ts
 │   └── shared
 │       ├── constants
@@ -81,8 +128,9 @@ tree  -I 'node_modules' > structure.txt
 │       │   └── messages.ts
 │       ├── exceptions
 │       ├── types
+│       │   └── TokenPayload.ts
 │       └── utils
 ├── structure.txt
 └── tsconfig.json
 
-31 directories, 51 files
+41 directories, 92 files

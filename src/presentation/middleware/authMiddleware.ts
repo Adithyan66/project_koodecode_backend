@@ -18,8 +18,12 @@ interface AuthenticatedRequest extends Request {
 }
 
 export function authMiddleware(requiredRole?: string) {
+
     return async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+
         try {
+
+            
             const authHeader = req.headers.authorization;
             if (!authHeader || !authHeader.startsWith('Bearer ')) {
                 return res.status(HTTP_STATUS.UNAUTHORIZED).json({
@@ -27,7 +31,7 @@ export function authMiddleware(requiredRole?: string) {
                     message: 'Authorization header missing or malformed',
                 });
             }
-
+            
             const token = authHeader.split(' ')[1];
             
             // Check if token is blacklisted
@@ -37,9 +41,11 @@ export function authMiddleware(requiredRole?: string) {
                     message: 'Token has been revoked',
                 });
             }
-
+            
             // Verify token
             const payload = jwtService.verifyAccessToken(token) as JwtPayload | null;
+            
+            console.log("hiii",req.headers.authorization,"payload",payload);
             if (!payload) {
                 return res.status(HTTP_STATUS.UNAUTHORIZED).json({
                     success: false,

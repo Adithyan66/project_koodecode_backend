@@ -8,19 +8,21 @@ import { GetProblemByIdUseCase } from '../../..***REMOVED***mByIdUseCase';
 import { CreateProblemUseCase } from '../../..***REMOVED***blemUseCase';
 
 import { MongoProblemRepository } from '../../..***REMOVED***y';
+import { MongoCounterRepository } from '../../..***REMOVED***y';
 
 const router = Router();
 
 const problemRepository = new MongoProblemRepository();
+const counterRepository = new MongoCounterRepository()
 
 
 const getProblemsListUseCase = new GetProblemsListUseCase(problemRepository);
 const getProblemByIdUseCase = new GetProblemByIdUseCase(problemRepository);
-const createProblemUseCase = new CreateProblemUseCase(problemRepository);
+const createProblemUseCase = new CreateProblemUseCase(problemRepository, counterRepository);
 
 // const userProblemController = new UserProblemController(
-    // getProblemsListUseCase,
-    // getProblemByIdUseCase
+// getProblemsListUseCase,
+// getProblemByIdUseCase
 // );
 
 const adminProblemController = new AdminProblemController(createProblemUseCase);

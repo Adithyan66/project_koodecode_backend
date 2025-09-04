@@ -25,6 +25,7 @@ export interface PaginationOptions {
 export interface IProblemRepository {
     create(problem: Problem): Promise<Problem>;
     findById(id: string): Promise<Problem | null>;
+    findByProblemNumber(problemNumber: number): Promise<Problem | null>;
     findAll(filters?: {
         difficulty?: 'easy' | 'medium' | 'hard';
         tags?: string[];

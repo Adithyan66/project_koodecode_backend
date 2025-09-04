@@ -4,7 +4,8 @@ import { ProblemResponseDto } from '../../dto/problems/ProblemResponseDto';
 export class GetProblemByIdUseCase {
     constructor(private problemRepository: IProblemRepository) {}
 
-    async execute(id: string): Promise<ProblemResponseDto> {
+    async execute(id: string): Promise<ProblemResponseDto> {        
+        
         const problem = await this.problemRepository.findById(id);
         
         if (!problem || !problem.isActive) {
@@ -13,6 +14,7 @@ export class GetProblemByIdUseCase {
 
         return {
             id: problem.id!,
+            problemNumber:problem.problemNumber,
             title: problem.title,
             slug: problem.slug,
             difficulty: problem.difficulty,

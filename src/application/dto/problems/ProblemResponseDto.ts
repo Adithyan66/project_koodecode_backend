@@ -1,5 +1,6 @@
 export interface ProblemResponseDto {
     id: string;
+    problemNumber: number
     title: string;
     slug: string;
     difficulty: 'easy' | 'medium' | 'hard';

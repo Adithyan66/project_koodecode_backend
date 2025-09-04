@@ -1,12 +1,16 @@
 import { Problem } from '../../../domain/entities/Problem';
 import { IProblemRepository } from '../../interfaces/IProblemRepository';
 import { CreateProblemDto } from '../../dto/problems/CreateProblemDto';
+import { ICounterRepository } from '../../interfaces/ICounterRepository';
 
 export class CreateProblemUseCase {
-    constructor(private problemRepository: IProblemRepository) {}
+    constructor(
+        private problemRepository: IProblemRepository,
+        private counterRepository: ICounterRepository
+    ) { }
 
     async execute(data: CreateProblemDto, adminId: string): Promise<Problem> {
-      
+
         const slug = this.generateSlug(data.title);
 
         const existingProblem = await this.problemRepository.findBySlug(slug);
@@ -15,20 +19,23 @@ export class CreateProblemUseCase {
         }
 
         console.log(data.testCases);
-        
+
 
         if (!data.testCases || data.testCases.length === 0) {
             throw new Error('At least one test case is required');
         }
 
         const sampleTestCases = data.testCases.filter(tc => tc.isSample);
-        
+
         if (sampleTestCases.length === 0) {
             throw new Error('At least one sample test case is required');
         }
 
-        // Create problem entity
+        const problemNumber = await this.counterRepository.getNextSequenceValue('problemNumber');
+
+
         const problem = new Problem(
+            problemNumber,
             data.title,
             slug,
             data.difficulty,
@@ -49,7 +56,7 @@ export class CreateProblemUseCase {
             adminId
         );
 
-        console.log("problem is ",problem)
+        console.log("problem is ", problem)
 
         return await this.problemRepository.create(problem);
     }
