@@ -1,18 +1,9 @@
-// export interface ProblemListDto {
-//     id: string;
-//     title: string;
-//     slug: string;
-//     difficulty: 'easy' | 'medium' | 'hard';
-//     tags: string[];
-//     likes: number;
-//     acceptanceRate: number;
-//     totalSubmissions: number;
-//     isActive: boolean;
-// }
 
+import { Problem } from "../../../domain/entities/Problem";
 
 export interface ProblemDto {
   id: string;
+  problemNumber: number;
   title: string;
   slug: string;
   difficulty: 'easy' | 'medium' | 'hard';
@@ -30,18 +21,6 @@ export interface ProblemListResponseDto {
   limit: number;
   totalPages: number;
 }
-
-
-// export interface ProblemListResponseDto {
-//         problems: ProblemListDto[];
-//         total: number;
-//         page: number;
-//         limit: number;
-//         totalPages: number;
-//     }
-    
-    import { Problem } from "../../../domain/entities/Problem";
-
 
 
 export interface ProblemListDto {

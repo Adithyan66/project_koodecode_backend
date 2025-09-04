@@ -42,7 +42,7 @@
 
 //     async saveOtpForEmail(
 //         email: string,
-//         otp: string,
+//         o3tp: string,
 //         data: { fullName: string; userName: string }
 //     ) {
 //         const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // Expires in 10 minutes

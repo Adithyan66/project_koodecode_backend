@@ -28,9 +28,10 @@ export class LoginUseCase {
         }
 
         if (!passwordValid) {
+            
             throw new Error('Invalid credentials');
         }
-
+        
         const accessToken = this.jwtService.generateAccessToken({ userId: user.id, role: user.role });
 
         const refreshToken = this.jwtService.generateRefreshToken({ userId: user.id, role: user.role })

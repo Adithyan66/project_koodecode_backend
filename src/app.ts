@@ -30,7 +30,6 @@ app.use(json());
 app.use(urlencoded({ extended: true }));
 
 
-
 app.get('/api/health', (_req, res) => res.json({ status: 'ok', service: 'koodecode-backend' }));
 
 

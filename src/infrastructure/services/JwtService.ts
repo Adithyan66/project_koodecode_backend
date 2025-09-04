@@ -14,7 +14,7 @@ export class JwtService implements ITokenService {
 
     generateAccessToken(payload: object): string {
 
-        return jwt.sign(payload, config.jwtAccessSecret, { expiresIn: '10s' });
+        return jwt.sign(payload, config.jwtAccessSecret, { expiresIn: '50m' });
     }
 
     generateRefreshToken(payload: object): string {

@@ -1,13 +1,19 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IProblemModel extends Document {
+    problemNumber: number;
     title: string;
     slug: string;
     difficulty: 'easy' | 'medium' | 'hard';
     tags: string[];
     description: string;
     constraints: string[];
-    examples: any;
+    examples: {
+        input: string;
+        output: string;
+        explanation: string;
+        isSample?: boolean;
+    }[];
     testCases: {
         input: any;
         expectedOutput: any;
@@ -24,9 +30,36 @@ export interface IProblemModel extends Document {
     createdBy: string;
     createdAt: Date;
     updatedAt: Date;
+
+    starterCode: {
+        [language: string]: string; 
+    };
+    functionName: string; 
+    returnType: string; 
+    parameters: {
+        name: string;
+        type: string;
+        description?: string;
+    }[];
+    solutionTemplate: {
+        [language: string]: string; 
+    };
+    editorial?: {
+        approach: string;
+        complexity: {
+            time: string;
+            space: string;
+        };
+        code: {
+            [language: string]: string;
+        };
+    };
+    relatedTopics: string[]; 
+    followUp?: string[]; 
 }
 
 const ProblemSchema: Schema = new Schema({
+    problemNumber: { type: Number, unique: true ,required:true},
     title: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
     difficulty: { type: String, enum: ['easy', 'medium', 'hard'], required: true },
@@ -57,13 +90,13 @@ ProblemSchema.index({ difficulty: 1 });
 ProblemSchema.index({ tags: 1 });
 ProblemSchema.index({ isActive: 1 });
 
-ProblemSchema.index({ 
-    title: "text", 
-    description: "text" 
+ProblemSchema.index({
+    title: "text",
+    description: "text"
 }, {
     weights: {
         title: 10,
-        description: 1  
+        description: 1
     }
 });
 
