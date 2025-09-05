@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { CreateProblemUseCase } from '../../../..***REMOVED***blemUseCase';
 import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 import { diff } from 'util';
+import { CreateProblemDto } from '../../../..***REMOVED***to';
 // import { MESSAGES } from '../../../shared/constants/messages';
 
 interface AuthenticatedRequest extends Request {
@@ -12,12 +13,12 @@ interface AuthenticatedRequest extends Request {
 }
 
 export class AdminProblemController {
-    constructor(private createProblemUseCase: CreateProblemUseCase) {}
+    constructor(private createProblemUseCase: CreateProblemUseCase) { }
 
     async createProblem(req: AuthenticatedRequest, res: Response): Promise<void> {
         try {
 
-          
+
             if (!req.user || req.user.role !== 'admin') {
                 res.status(HTTP_STATUS.FORBIDDEN).json({
                     success: false,
@@ -33,15 +34,20 @@ export class AdminProblemController {
                 description,
                 constraints,
                 examples,
+                isActive,
+                functionName,
+                returnType,
+                parameters,
+                // parameterConstraints,
                 testCases,
                 hints,
                 companies
             } = req.body;
 
-           
+
             if (!title || !difficulty || !description || !testCases) {
-                console.log(title,difficulty,description,testCases);
-                
+                console.log(title, difficulty, description, testCases);
+
                 res.status(HTTP_STATUS.BAD_REQUEST).json({
                     success: false,
                     message: 'Missing required fields: title, difficulty, description, testCases'
@@ -49,7 +55,7 @@ export class AdminProblemController {
                 return;
             }
 
-            const createProblemDto = {
+            const createProblemDto: CreateProblemDto = {
                 title,
                 difficulty,
                 tags: tags || [],
@@ -58,9 +64,14 @@ export class AdminProblemController {
                 examples,
                 testCases,
                 hints: hints || [],
-                companies: companies || []
+                companies: companies || [],
+                isActive,
+                functionName,
+                returnType,
+                parameters,
+                // parameterConstraints
             };
-            
+
 
             const problem = await this.createProblemUseCase.execute(
                 createProblemDto,

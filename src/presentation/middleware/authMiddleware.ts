@@ -45,7 +45,6 @@ export function authMiddleware(requiredRole?: string) {
             // Verify token
             const payload = jwtService.verifyAccessToken(token) as JwtPayload | null;
             
-            console.log("hiii",req.headers.authorization,"payload",payload);
             if (!payload) {
                 return res.status(HTTP_STATUS.UNAUTHORIZED).json({
                     success: false,

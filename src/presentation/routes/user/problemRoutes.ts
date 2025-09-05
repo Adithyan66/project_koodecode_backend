@@ -12,9 +12,8 @@ import { ExecuteCodeUseCase } from "../../..***REMOVED***eCodeUseCase";
 import { GetSubmissionResultUseCase } from "../../..***REMOVED***missionResultUseCase";
 import { RunCodeUseCase } from "../../..***REMOVED***eUseCase";
 import { GetLanguagesUseCase } from "../../..***REMOVED***guagesUseCase";
-
+import { MongoTestCaseRepository } from "../../..***REMOVED***ry";
 import { authMiddleware } from "../../middleware/authMiddleware";
-import { app } from "../../../app";
 
 
 const router = Router()
@@ -23,7 +22,9 @@ const router = Router()
 
 const mongoProblemRepository = new MongoProblemRepository()
 
-const getProblemByIdUseCase = new GetProblemByIdUseCase(mongoProblemRepository)
+const mongoTestCaseRepository = new MongoTestCaseRepository()
+
+const getProblemByIdUseCase = new GetProblemByIdUseCase(mongoProblemRepository, mongoTestCaseRepository)
 
 const getProblemsListUseCase = new GetProblemsListUseCase(mongoProblemRepository)
 
@@ -39,7 +40,7 @@ const judge0Service = new Judge0Service();
 const submissionRepository = new MongoSubmissionRepository();
 const problemRepository = new MongoProblemRepository();
 
-const executeCodeUseCase = new ExecuteCodeUseCase(judge0Service, submissionRepository, problemRepository);
+const executeCodeUseCase = new ExecuteCodeUseCase(judge0Service, submissionRepository, problemRepository, mongoTestCaseRepository);
 const getSubmissionResultUseCase = new GetSubmissionResultUseCase(judge0Service, submissionRepository);
 const runCodeUseCase = new RunCodeUseCase(judge0Service);
 const getLanguagesUseCase = new GetLanguagesUseCase(judge0Service);
@@ -57,12 +58,12 @@ const problemSolvingController = new ProblemSolvingController(
 
 router.get("/get-problems", authMiddleware(), (req, res) => userProblemController.getProblemsWithFilters(req, res))
 
-router.get('/:problemId/detail', authMiddleware(),(req, res) => userProblemController.getProblemDetail(req, res));
+router.get('/:problemId/detail', authMiddleware(), (req, res) => userProblemController.getProblemDetail(req, res));
 
 
 // router.post('/submit', problemSolvingController.submitSolution.bind(problemSolvingController));
 
-router.post('/submit',authMiddleware(), (req, res) => problemSolvingController.submitSolution(req, res));
+router.post('/submit', authMiddleware(), (req, res) => problemSolvingController.submitSolution(req, res));
 
 
 

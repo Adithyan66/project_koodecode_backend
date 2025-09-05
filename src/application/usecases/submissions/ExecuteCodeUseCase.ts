@@ -6,6 +6,7 @@ import { ISubmissionRepository } from '../../interfaces/ISubmissionRepository';
 import { IProblemRepository } from '../../interfaces/IProblemRepository';
 import { ExecuteCodeDto, ExecuteCodeResponseDto } from '../../dto/submissions/ExecuteCodeDto';
 import { TestCaseResult } from '../../../domain/entities/Submission';
+import { ITestCaseRepository } from '../../interfaces/ITestCaseRepository';
 
 type SubmissionStatus =
   | "pending"
@@ -23,7 +24,9 @@ export class ExecuteCodeUseCase {
   constructor(
     private judge0Service: IJudge0Service,
     private submissionRepository: ISubmissionRepository,
-    private problemRepository: IProblemRepository
+    private problemRepository: IProblemRepository,
+    private testCaseRepository: ITestCaseRepository,
+
   ) { }
 
   async execute(params: ExecuteCodeDto): Promise<ExecuteCodeResponseDto> {
@@ -34,10 +37,12 @@ export class ExecuteCodeUseCase {
     if (!problem) {
       throw new Error('Problem not found');
     }
-
-    if (!problem.testCases || problem.testCases.length === 0) {
-      throw new Error('Problem has no test cases');
-    }
+    
+    const allTestCases = await this.testCaseRepository.findByProblemId(params.problemId);
+    
+        if (!allTestCases || allTestCases.length === 0) {
+          throw new Error('Problem has no test cases');
+        }
 
     const submission = await this.submissionRepository.create({
       userId: params.userId,
@@ -48,7 +53,7 @@ export class ExecuteCodeUseCase {
       overallVerdict: 'Processing',
       testCaseResults: [],
       testCasesPassed: 0,
-      totalTestCases: problem.testCases.length,
+      totalTestCases: allTestCases.length,
       score: 0,
       totalExecutionTime: 0,
       maxMemoryUsage: 0
@@ -62,7 +67,7 @@ export class ExecuteCodeUseCase {
       const testCaseResults = await this.executeAllTestCases(
         params.sourceCode,
         params.languageId,
-        problem.testCases,
+        allTestCases,
         // problem.timeLimit,
         // problem.memoryLimit
       );
@@ -88,11 +93,14 @@ export class ExecuteCodeUseCase {
         token: '',
         status: verdict
       };
+
     } catch (error) {
+
       await this.submissionRepository.update(submission.id, {
         status: 'error',
         overallVerdict: 'System Error'
       });
+      
       throw new Error(`Code execution failed: ${error.message}`);
     }
   }

@@ -14,13 +14,13 @@ export interface IProblemModel extends Document {
         explanation: string;
         isSample?: boolean;
     }[];
-    testCases: {
-        input: any;
-        expectedOutput: any;
-        isSample: boolean;
-        explanation?: string;
-        createdAt: Date;
-    }[];
+    // testCases: {
+    //     input: any;
+    //     expectedOutput: any;
+    //     isSample: boolean;
+    //     explanation?: string;
+    //     createdAt: Date;
+    // }[];
     likes: string[];
     totalSubmissions: number;
     acceptedSubmissions: number;
@@ -30,19 +30,29 @@ export interface IProblemModel extends Document {
     createdBy: string;
     createdAt: Date;
     updatedAt: Date;
-
     starterCode: {
-        [language: string]: string; 
+        [language: string]: string;
     };
-    functionName: string; 
-    returnType: string; 
+    functionName: string;
+    returnType: string;
     parameters: {
         name: string;
         type: string;
         description?: string;
     }[];
+    parameterConstraints: {
+        parameterName: string;
+        type: string;
+        minValue?: number;
+        maxValue?: number;
+        minLength?: number;
+        maxLength?: number;
+        arrayMinLength?: number;
+        arrayMaxLength?: number;
+        elementConstraints?: any;
+    }[],
     solutionTemplate: {
-        [language: string]: string; 
+        [language: string]: string;
     };
     editorial?: {
         approach: string;
@@ -54,33 +64,42 @@ export interface IProblemModel extends Document {
             [language: string]: string;
         };
     };
-    relatedTopics: string[]; 
-    followUp?: string[]; 
+    relatedTopics: string[];
+    followUp?: string[];
 }
 
 const ProblemSchema: Schema = new Schema({
-    problemNumber: { type: Number, unique: true ,required:true},
+    problemNumber: { type: Number, unique: true, required: true },
     title: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
     difficulty: { type: String, enum: ['easy', 'medium', 'hard'], required: true },
     tags: [{ type: String }],
     description: { type: String, required: true },
-    constraints: [{ type: String }],
+    constraints: [
+        {
+            parameterName: { type: String, required: true },
+            type: { type: String, required: true },
+            minLength: { type: Number },
+            maxLength: { type: Number },
+            minValue: { type: Number },
+            maxValue: { type: Number }
+        }
+    ],
     examples: { type: Schema.Types.Mixed, required: true },
-    testCases: [{
-        input: { type: Schema.Types.Mixed, required: true },
-        expectedOutput: { type: Schema.Types.Mixed, required: true },
-        isSample: { type: Boolean, required: true },
-        explanation: { type: String },
-        createdAt: { type: Date, default: Date.now }
-    }],
     likes: [{ type: String }],
     totalSubmissions: { type: Number, default: 0 },
     acceptedSubmissions: { type: Number, default: 0 },
     hints: [{ type: String }],
     companies: [{ type: String }],
     isActive: { type: Boolean, default: true },
-    createdBy: { type: String, required: true }
+    createdBy: { type: String, required: true },
+    functionName: { type: String, required: true },
+    returnType: { type: String, required: true },
+    parameters: [{
+        name: { type: String },
+        type: { type: String },
+        description: { type: String }
+    }],
 }, {
     timestamps: true
 });
