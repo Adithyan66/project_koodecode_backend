@@ -1,5 +1,7 @@
 tree  -I 'node_modules' > structure.txt
 
+
+
 ├── package.json
 ├── package-lock.json
 ├── src
@@ -7,8 +9,10 @@ tree  -I 'node_modules' > structure.txt
 │   │   ├── dto
 │   │   │   ├── problems
 │   │   │   │   ├── CreateProblemDto.ts
+│   │   │   │   ├── CreateTestCaseDto.ts
 │   │   │   │   ├── ProblemListDto.ts
 │   │   │   │   ├── ProblemResponseDto.ts
+│   │   │   │   ├── TestCaseResponseDto.ts
 │   │   │   │   └── UpdateProblemDto.ts
 │   │   │   ├── submissions
 │   │   │   │   ├── CreateSubmissionDto.ts
@@ -30,6 +34,7 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   ├── IOtpRepository.ts
 │   │   │   ├── IProblemRepository.ts
 │   │   │   ├── ISubmissionRepository.ts
+│   │   │   ├── ITestCaseRepository.ts
 │   │   │   ├── ITokenService.ts
 │   │   │   └── IUserRepository.ts
 │   │   ├── services
@@ -40,7 +45,9 @@ tree  -I 'node_modules' > structure.txt
 │   │       │   ├── CreateProblemUseCase.ts
 │   │       │   ├── GetProblemByIdUseCase.ts
 │   │       │   ├── GetProblemByNumberUseCase.ts
-│   │       │   └── GetProblemsListUseCase.ts
+│   │       │   ├── GetProblemsListUseCase.ts
+│   │       │   ├── GetProblemTestCasesUseCase.ts
+│   │       │   └── GetSubmissionTestCasesUseCase.ts
 │   │       ├── submissions
 │   │       │   ├── CreateSubmissionUseCase.ts
 │   │       │   ├── ExecuteCodeUseCase.ts
@@ -63,6 +70,7 @@ tree  -I 'node_modules' > structure.txt
 │   │       ├── Judge0Submission.ts
 │   │       ├── Problem.ts
 │   │       ├── Submission.ts
+│   │       ├── TestCase.ts
 │   │       └── User.ts
 │   ├── infrastructure
 │   │   ├── config
@@ -75,12 +83,14 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   │   ├── Judge0SubmissionModel.ts
 │   │   │   │   ├── ProblemModel.ts
 │   │   │   │   ├── SubmissionModel.ts
+│   │   │   │   ├── TestCaseModel.ts
 │   │   │   │   └── UserModel.ts
 │   │   │   ├── mongoConnection.ts
 │   │   │   ├── MongoCounterRepository.ts
 │   │   │   ├── MongoJudge0Repository.ts
 │   │   │   ├── MongoProblemRepository.ts
 │   │   │   ├── MongoSubmissionRepository.ts
+│   │   │   ├── MongoTestCaseRepository.ts
 │   │   │   └── MongoUserRepository.ts
 │   │   ├── persistence
 │   │   │   └── RedisOtpRepository.ts
@@ -133,4 +143,4 @@ tree  -I 'node_modules' > structure.txt
 ├── structure.txt
 └── tsconfig.json
 
-41 directories, 92 files
+41 directories, 100 files

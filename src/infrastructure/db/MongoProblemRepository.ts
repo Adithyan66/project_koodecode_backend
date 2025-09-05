@@ -3,9 +3,14 @@ import { IProblemRepository, PaginationOptions, ProblemFilters } from '../../app
 import { Problem } from '../../domain/entities/Problem';
 import ProblemModel from './models/ProblemModel';
 
+
+
 export class MongoProblemRepository implements IProblemRepository {
 
+
     async create(problem: Problem): Promise<Problem> {
+
+
         const problemDoc = new ProblemModel({
             problemNumber: problem.problemNumber,
             title: problem.title,
@@ -15,17 +20,20 @@ export class MongoProblemRepository implements IProblemRepository {
             description: problem.description,
             constraints: problem.constraints,
             examples: problem.examples,
-            testCases: problem.testCases,
             likes: problem.likes,
             totalSubmissions: problem.totalSubmissions,
             acceptedSubmissions: problem.acceptedSubmissions,
             hints: problem.hints,
             companies: problem.companies,
             isActive: problem.isActive,
-            createdBy: problem.createdBy
+            createdBy: problem.createdBy,
+            functionName: problem.functionName,
+            returnType: problem.returnType,
+            parameters: problem.parameters
         });
 
         const saved = await problemDoc.save();
+
         return this.mapToDomain(saved);
     }
 
@@ -40,7 +48,7 @@ export class MongoProblemRepository implements IProblemRepository {
     }
 
     async findByProblemNumber(problemNumber: number): Promise<Problem | null> {
-         const problem = await ProblemModel.findOne({ problemNumber });
+        const problem = await ProblemModel.findOne({ problemNumber });
         return problem ? this.mapToDomain(problem) : null;
     }
 
@@ -82,7 +90,7 @@ export class MongoProblemRepository implements IProblemRepository {
 
         const [problems, total] = await Promise.all([
             ProblemModel.find(query)
-                .sort(filters.name ? { score: { $meta: "textScore" } } : { createdAt: -1 })  // Sort by relevance if searching
+                // .sort(filters.name ? { score: { $meta: "textScore" } } : { createdAt: -1 })  // Sort by relevance if searching
                 .skip(skip)
                 .limit(limit),
             ProblemModel.countDocuments(query)
@@ -120,7 +128,6 @@ export class MongoProblemRepository implements IProblemRepository {
             doc.description,
             doc.constraints,
             doc.examples,
-            doc.testCases,
             doc.likes,
             doc.totalSubmissions,
             doc.acceptedSubmissions,
@@ -128,11 +135,16 @@ export class MongoProblemRepository implements IProblemRepository {
             doc.companies,
             doc.isActive,
             doc.createdBy,
+            doc.functionName,
+            doc.returnType,
+            doc.parameters,
             doc._id.toString(),
             doc.createdAt,
             doc.updatedAt
         );
     }
+
+
 
 
     async getFilteredProblems(

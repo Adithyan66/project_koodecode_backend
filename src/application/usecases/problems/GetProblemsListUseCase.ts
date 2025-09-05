@@ -15,7 +15,7 @@ export class GetProblemsListUseCase {
         name?: string; 
         category?: string;
         search?: string;
-        status?: 'Published';
+        // status?: 'Published';
         page?: number;
         limit?: number;
         sortBy?: string;
@@ -34,6 +34,9 @@ export class GetProblemsListUseCase {
             page,
             limit
         });
+
+        console.log("problem res",result);
+        
 
         const problems = result.problems.map(problem => ({
             id: problem.id!,

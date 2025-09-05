@@ -1,3 +1,5 @@
+import { Constraint } from "../../../domain/entities/Problem";
+
 export interface ProblemResponseDto {
     id: string;
     problemNumber: number
@@ -6,8 +8,13 @@ export interface ProblemResponseDto {
     difficulty: 'easy' | 'medium' | 'hard';
     tags: string[];
     description: string;
-    constraints: string[];
-    examples: any;
+    constraints: Constraint[];
+    examples: {
+        input: string;
+        output: string;
+        explanation: string;
+        isSample?: boolean;
+    }[];
     likes: number;
     totalSubmissions: number;
     acceptedSubmissions: number;
@@ -15,6 +22,14 @@ export interface ProblemResponseDto {
     hints: string[];
     companies: string[];
     isActive: boolean;
+    functionName: string,
+    returnType: string,
+    parameters: {
+        name: string;
+        type: string;
+        description?: string;
+    }[],
     createdAt: Date;
     updatedAt: Date;
 }
+

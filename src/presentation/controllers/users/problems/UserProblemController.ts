@@ -24,12 +24,12 @@ export class UserProblemController {
                 category,
                 tags,
                 sortBy = 'createdAt',
-                sortOrder = 'asc'
+                sortOrder = "desc"
             } = req.query;
 
 
             const filters = {
-                status: 'Published' as const,
+                isActive: true as const,
                 search: search as string,
                 difficulty: difficulty as 'easy' | 'medium' | 'hard',
                 category: category as string,
