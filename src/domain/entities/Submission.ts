@@ -55,6 +55,7 @@
 
 
 export interface TestCaseResult {
+  errorMessage: any;
   testCaseId: string;
   input: string;
   expectedOutput: string;
