@@ -16,8 +16,6 @@ export class GetProblemByIdUseCase {
         }
 
         const sampleTestCases = await this.testCaseRepository.findSampleByProblemId(problemId);
-
-        console.log("sexy problem",sampleTestCases);
         
 
         return {

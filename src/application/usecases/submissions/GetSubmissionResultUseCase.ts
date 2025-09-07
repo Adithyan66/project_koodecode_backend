@@ -137,26 +137,30 @@ export class GetSubmissionResultUseCase {
 
     
     const submission = await this.submissionRepository.findById(submissionId);
+
     if (!submission) {
       throw new Error('Submission not found');
     }
 
     if (submission.judge0Token && submission.status === 'processing') {
+
       try {
-        // Get result from Judge0
+
         const judge0Result = await this.judge0Service.getSubmissionResult(submission.judge0Token);
         
-        // Update submission based on Judge0 result
         const updatedSubmission = await this.updateSubmissionFromJudge0Result(
           submission.id, 
           judge0Result
         );
         
         return this.mapToResponseDto(updatedSubmission);
+
       } catch (error) {
+
         await this.submissionRepository.update(submission.id, {
           status: 'error'
         });
+        
         throw new Error(`Failed to get submission result: ${error.message}`);
       }
     }

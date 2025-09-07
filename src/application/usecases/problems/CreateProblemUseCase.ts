@@ -19,8 +19,6 @@ export class CreateProblemUseCase {
 
 
   async execute(data: CreateProblemDto, adminId: string): Promise<Problem> {
-
-    // console.log("this is data",data);
     
 
     const slug = this.generateSlug(data.title);

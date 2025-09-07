@@ -22,7 +22,6 @@ export class GetProblemsListUseCase {
         sortOrder?: 'asc' | 'desc';
     } = {}): Promise<ProblemListResponseDto> {
 
-        console.log(filters);
         
 
         const page = filters.page || 1;
@@ -34,8 +33,6 @@ export class GetProblemsListUseCase {
             page,
             limit
         });
-
-        console.log("problem res",result);
         
 
         const problems = result.problems.map(problem => ({

@@ -15,6 +15,7 @@ export interface Judge0SubmissionRequest {
 }
 
 export interface Judge0SubmissionResponse {
+  status_id: number;
   token: string;
   status: {
     id: number;
