@@ -1,35 +1,3 @@
-// export class RunCodeUseCase {
-//     constructor(
-//         private problemRepository: IProblemRepository,
-//         private codeExecutionService: ICodeExecutionService
-//     ) {}
-
-//     async execute(dto: RunCodeDto): Promise<TestResultDto[]> {
-//         const problem = await this.problemRepository.findById(dto.problemId);
-//         if (!problem) {
-//             throw new Error('Problem not found');
-//         }
-
-//         // Filter test cases if specific ones are requested
-//         let testCases = problem.testCases;
-//         if (dto.testCaseIds && dto.testCaseIds.length > 0) {
-//             testCases = problem.testCases.filter(tc => 
-//                 dto.testCaseIds!.includes(tc._id.toString())
-//             );
-//         } else {
-//             // For "Run Code", only use sample test cases
-//             testCases = problem.testCases.filter(tc => tc.isSample);
-//         }
-
-//         const results = await this.codeExecutionService.executeCode(
-//             dto.code,
-//             dto.language,
-//             testCases
-//         );
-
-//         return results;
-//     }
-// }
 
 
 
@@ -37,9 +5,11 @@ import { IJudge0Service } from '../../interfaces/IJudge0Service';
 import { RunCodeDto, RunCodeResponseDto } from '../../dto/submissions/RunCodeDto';
 
 export class RunCodeUseCase {
+
   constructor(private judge0Service: IJudge0Service) {}
 
   async execute(runCodeDto: RunCodeDto): Promise<RunCodeResponseDto> {
+    
     try {
       // Submit code for execution
       const judge0Response = await this.judge0Service.submitCode({

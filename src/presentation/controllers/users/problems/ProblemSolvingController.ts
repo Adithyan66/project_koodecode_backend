@@ -3,7 +3,7 @@
 
 
 import { Request, Response } from 'express';
-import { ExecuteCodeUseCase } from '../../../../application/usecases/submissions/ExecuteCodeUseCase';
+import { CreateSubmissionUseCase } from '../../../../application/usecases/submissions/CreateSubmissionUseCase';
 import { GetSubmissionResultUseCase } from '../../../../application/usecases/submissions/GetSubmissionResultUseCase';
 import { RunCodeUseCase } from '../../../../application/usecases/submissions/RunCodeUseCase';
 import { GetLanguagesUseCase } from '../../../../application/usecases/submissions/GetLanguagesUseCase';
@@ -21,18 +21,21 @@ interface AuthenticatedRequest extends Request {
 
 export class ProblemSolvingController {
     constructor(
-        private executeCodeUseCase: ExecuteCodeUseCase,
+        private executeCodeUseCase: CreateSubmissionUseCase,
         private getSubmissionResultUseCase: GetSubmissionResultUseCase,
         private runCodeUseCase: RunCodeUseCase,
         private getLanguagesUseCase: GetLanguagesUseCase
     ) { }
 
+
+
+
     async submitSolution(req: AuthenticatedRequest, res: Response): Promise<void> {
+
         try {
 
-
             const { problemId, sourceCode, languageId } = req.body;
-            const  userId  = req.user?.userId;
+            const userId = req.user?.userId;
 
             if (!userId) {
                 res.status(HTTP_STATUS.UNAUTHORIZED).json({
@@ -62,6 +65,7 @@ export class ProblemSolvingController {
                 data: result,
                 message: 'Solution submitted successfully'
             });
+
         } catch (error: any) {
             res.status(HTTP_STATUS.BAD_REQUEST).json({
                 success: false,
@@ -71,6 +75,7 @@ export class ProblemSolvingController {
     }
 
     async getSubmissionResult(req: Request, res: Response): Promise<void> {
+
         try {
             const { submissionId } = req.params;
 
@@ -88,17 +93,31 @@ export class ProblemSolvingController {
         }
     }
 
-    async runCode(req: Request, res: Response): Promise<void> {
-        try {
-            const { sourceCode, languageId, stdin, timeLimit, memoryLimit } = req.body;
 
-            if (!sourceCode || !languageId) {
-                res.status(HTTP_STATUS.BAD_REQUEST).json({
+    async runTestCase(req: AuthenticatedRequest, res: Response): Promise<void> {
+
+        try {
+
+            const { problemId, sourceCode, languageId, testCases } = req.body;
+
+            const userId = req.user?.userId;
+
+            if (!userId) {
+                res.status(HTTP_STATUS.UNAUTHORIZED).json({
                     success: false,
-                    message: 'Source code and language ID are required'
+                    message: Messages.UNAUTHORIZED_ACCESS
                 });
                 return;
             }
+
+            if (!problemId || !sourceCode || !languageId) {
+                res.status(HTTP_STATUS.BAD_REQUEST).json({
+                    success: false,
+                    message: 'Problem ID, source code, and language ID are required'
+                });
+                return;
+            }
+
 
             const result = await this.runCodeUseCase.execute({
                 sourceCode,

@@ -1,86 +1,293 @@
+
+
+
+import { IJudge0Service } from '../../interfaces/IJudge0Service';
 import { ISubmissionRepository } from '../../interfaces/ISubmissionRepository';
 import { IProblemRepository } from '../../interfaces/IProblemRepository';
-import { ICodeExecutionService } from '../../interfaces/ICodeExecutionService';
-import { CreateSubmissionDto } from '../../dto/submissions/CreateSubmissionDto';
+import { ExecuteCodeDto } from '../../dto/submissions/ExecuteCodeDto';
+import { TestCaseResult } from '../../../domain/entities/Submission';
+import { ITestCaseRepository } from '../../interfaces/ITestCaseRepository';
+import { CodeExecutionHelperService } from '../../services/CodeExecutionHelperService';
 import { SubmissionResponseDto } from '../../dto/submissions/SubmissionResponseDto';
-import { Submission } from '../../../domain/entities/Submission';
+
+
 
 export class CreateSubmissionUseCase {
-    constructor(
-        private submissionRepository: ISubmissionRepository,
-        private problemRepository: IProblemRepository,
-        private codeExecutionService: ICodeExecutionService
-    ) {}
 
-    async execute(dto: CreateSubmissionDto, userId: string): Promise<SubmissionResponseDto> {
-        // Validate problem exists
-        const problem = await this.problemRepository.findById(dto.problemId);
-        if (!problem) {
-            throw new Error('Problem not found');
-        }
+  timeLimit = 10;
+  memoryLimit = 262144;
 
-        // Create initial submission
-        const submission = new Submission(
-            '', // Will be set by repository
-            dto.problemId,
-            userId,
-            dto.code,
-            dto.language,
-            'pending',
-            []
-        );
+  constructor(
+    private judge0Service: IJudge0Service,
+    private submissionRepository: ISubmissionRepository,
+    private problemRepository: IProblemRepository,
+    private testCaseRepository: ITestCaseRepository,
+    private codeExecutionHelperService: CodeExecutionHelperService
+  ) { }
 
-        // Save submission
-        const savedSubmission = await this.submissionRepository.create(submission);
 
-        // Execute code asynchronously
-        this.executeCodeAsync(savedSubmission.id, problem, dto.code, dto.language);
 
-        return this.mapToDto(savedSubmission, problem);
+  async execute(params: ExecuteCodeDto): Promise<SubmissionResponseDto> {
+
+
+    const templates = {
+      c: {
+        templateCode: `#include <stdio.h>
+#include <stdlib.h>
+
+USER_FUNCTION_PLACEHOLDER
+
+int main() {
+    int nums[1000];
+    int count = 0;
+    int num;
+    char ch;
+
+    // Read numbers until newline
+    while (scanf("%d", &num) == 1) {
+        nums[count++] = num;
+        ch = getchar();
+        if (ch == '\\n') break;
     }
 
-    private async executeCodeAsync(
-        submissionId: string, 
-        problem: any, 
-        code: string, 
-        language: string
-    ): Promise<void> {
+    // Read target value
+    int target;
+    scanf("%d", &target);
+
+    // Call twoSum function
+    int returnSize;
+    int* result = twoSum(nums, count, target, &returnSize);
+
+    if (result != NULL) {
+        printf("[%d,%d]", result[0], result[1]);
+        free(result);
+    } else {
+        printf("[]");
+    }
+
+    return 0;
+}`,
+        userFunctionSignature: "int* twoSum(int* nums, int numsSize, int target, int* returnSize)",
+        placeholder: "USER_FUNCTION_PLACEHOLDER"
+      },
+      python: {
+        templateCode: `import sys
+
+USER_FUNCTION_PLACEHOLDER
+
+if __name__ == "__main__":
+    # Read input from stdin
+    lines = sys.stdin.read().strip().split('\\n')
+    
+    # Parse the array
+    nums = list(map(int, lines[0].split()))
+    
+    # Parse the target
+    target = int(lines[1])
+    
+    # Create solution instance and call twoSum
+    solution = Solution()
+    result = solution.twoSum(nums, target)
+    
+    # Print result
+    print(f"[{result[0]},{result[1]}]")`,
+        userFunctionSignature: "def twoSum(self, nums: List[int], target: int) -> List[int]:",
+        placeholder: "USER_FUNCTION_PLACEHOLDER"
+      }
+    };
+
+    const problem = await this.problemRepository.findById(params.problemId);
+
+    if (!problem) {
+      throw new Error('Problem not found');
+    }
+
+    const allTestCases = await this.testCaseRepository.findByProblemId(params.problemId);
+
+    if (!allTestCases || allTestCases.length === 0) {
+      throw new Error('Problem has no test cases');
+    }
+
+    const languageMap: { [key: number]: keyof typeof templates } = {
+      50: "c",
+      71: "python"
+    };
+
+    const languageKey = languageMap[params.languageId];
+
+    if (!languageKey) {
+      throw new Error(`Unsupported language ID: ${params.languageId}`);
+    }
+
+    const template = templates[languageKey];
+
+    if (!template) {
+      throw new Error(`Template not found for language: ${languageKey}`);
+    }
+
+    const code = this.codeExecutionHelperService.CombineCodeUseCase(template, params.sourceCode);
+
+    const submission = await this.submissionRepository.create({
+      userId: params.userId,
+      problemId: params.problemId,
+      sourceCode: code,
+      languageId: params.languageId,
+      status: 'pending',
+      overallVerdict: 'Processing',
+      testCaseResults: [],
+      testCasesPassed: 0,
+      totalTestCases: allTestCases.length,
+      score: 0,
+      totalExecutionTime: 0,
+      maxMemoryUsage: 0
+    });
+
+    try {
+      await this.submissionRepository.update(submission.id, {
+        status: 'processing'
+      });
+
+      const testCaseResults = await this.executeAllTestCases(
+        code,
+        params.languageId,
+        allTestCases,
+        this.timeLimit,
+        this.memoryLimit
+      );
+
+      const { verdict, status, score, totalTime, maxMemory } = this.codeExecutionHelperService.calculateResults(
+        testCaseResults,
+        100
+        // problem.totalPoints || 100 // Use actual problem points with fallback
+      );
+
+      const updatedSubmission = await this.submissionRepository.update(submission.id, {
+        status,
+        overallVerdict: verdict,
+        testCaseResults,
+        testCasesPassed: testCaseResults.filter(tc => tc.status === 'passed').length,
+        score,
+        totalExecutionTime: totalTime,
+        maxMemoryUsage: maxMemory
+      });
+
+
+      return {
+        id: submission.id,
+        language:{
+          id: params.languageId,
+          name:"c"
+        },
+        maxMemoryUsage:updatedSubmission.maxMemoryUsage,
+        overallVerdict:verdict,
+        problemId:params.problemId,
+        score:score,
+        status:verdict,
+        submittedAt:updatedSubmission.createdAt,
+        testCaseResults:testCaseResults,
+        testCasesPassed : testCaseResults.filter(tc => tc.status === 'passed').length,
+        totalExecutionTime: totalTime,
+        totalTestCases : testCaseResults.length,
+        userId:params.userId
+      }
+
+    } catch (error) {
+      await this.submissionRepository.update(submission.id, {
+        status: 'error',
+        overallVerdict: 'System Error'
+      });
+
+      throw new Error(`Code execution failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  private async executeAllTestCases(
+    sourceCode: string,
+    languageId: number,
+    testCases: any[],
+    timeLimit: number,
+    memoryLimit: number
+  ): Promise<TestCaseResult[]> {
+
+    const submissions = await Promise.all(
+
+      testCases.map(testCase => {
+
+        const formattedInput = this.codeExecutionHelperService.formatTestCaseInput(testCase.inputs);
+
+        console.log("formattedInput", formattedInput);
+
+
+        return this.judge0Service.submitCode({
+          source_code: sourceCode,
+          language_id: languageId,
+          stdin: formattedInput,
+          expected_output: this.codeExecutionHelperService.formatExpectedOutput(testCase.expectedOutput),
+          cpu_time_limit: timeLimit,
+          memory_limit: memoryLimit,
+          wall_time_limit: timeLimit + 1
+        });
+      })
+    );
+
+    const results = await Promise.all(
+      submissions.map(async (submission, index) => {
         try {
-            const results = await this.codeExecutionService.executeCode(
-                code,
-                language,
-                problem.testCases
-            );
+          const result = await this.codeExecutionHelperService.waitForResult(submission.token);
 
-            const allPassed = results.every(result => result.passed);
-            const status = allPassed ? 'accepted' : 'rejected';
 
-            await this.submissionRepository.updateStatus(submissionId, status, results);
 
-            // Update problem statistics
-            await this.problemRepository.updateSubmissionStats(
-                problem.id,
-                allPassed
-            );
+          return {
+            testCaseId: testCases[index].id,
+            input: this.codeExecutionHelperService.formatTestCaseInput(testCases[index].inputs),
+            expectedOutput: this.codeExecutionHelperService.formatExpectedOutput(testCases[index].expectedOutput),
+            actualOutput: result.stdout?.trim(),
+            status: this.codeExecutionHelperService.determineTestCaseStatus(result, this.codeExecutionHelperService.formatExpectedOutput(testCases[index].expectedOutput)),
+            executionTime: result.time ? parseFloat(result.time) : 0,
+            memoryUsage: result.memory || 0,
+            judge0Token: submission.token,
+            errorMessage: result.stderr || result.compile_output || null
+          };
+
         } catch (error) {
-            await this.submissionRepository.updateStatus(submissionId, 'error', []);
+          console.log("what error?", error);
+
+          return {
+            testCaseId: testCases[index].id,
+            input: this.codeExecutionHelperService.formatTestCaseInput(testCases[index].inputs),
+            expectedOutput: this.codeExecutionHelperService.formatExpectedOutput(testCases[index].expectedOutput),
+            actualOutput: 'error catched',
+            status: 'error' as const,
+            executionTime: 0,
+            memoryUsage: 0,
+            judge0Token: submission.token,
+            errorMessage: error instanceof Error ? error.message : 'Unknown error'
+          };
         }
-    }
+      })
+    );
 
-    private mapToDto(submission: Submission, problem: any): SubmissionResponseDto {
-        return {
-            id: submission.id,
-            problemId: submission.problemId,
-            problemTitle: problem.title,
-            code: submission.code,
-            language: submission.language,
-            status: submission.status,
-            testResults: submission.testResults,
-            executionTime: submission.executionTime,
-            memoryUsage: submission.memoryUsage,
-            createdAt: submission.createdAt.toISOString(),
-            submittedAt: submission.submittedAt?.toISOString()
-        };
-    }
+    console.log("results", results);
+    return results;
+  }
+
+
 }
-

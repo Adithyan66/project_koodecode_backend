@@ -1,14 +1,3 @@
-// import { Submission, TestResult } from '../../domain/entities/Submission';
-
-// export interface ISubmissionRepository {
-//     create(submission: Submission): Promise<Submission>;
-//     findById(id: string): Promise<Submission | null>;
-//     findByUserId(userId: string, limit?: number): Promise<Submission[]>;
-//     findByProblemAndUser(problemId: string, userId: string): Promise<Submission[]>;
-//     updateStatus(id: string, status: string, testResults: TestResult[]): Promise<void>;
-//     updateExecutionMetrics(id: string, executionTime: number, memoryUsage: number): Promise<void>;
-// }
-
 
 import { Submission } from '../../domain/entities/Submission';
 

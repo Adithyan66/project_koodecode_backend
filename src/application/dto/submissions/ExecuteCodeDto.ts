@@ -9,6 +9,6 @@ export interface ExecuteCodeDto {
 
 export interface ExecuteCodeResponseDto {
   submissionId: string;
-  token: string;
+  data: any;
   status: string;
 }

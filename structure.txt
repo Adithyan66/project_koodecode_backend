@@ -2,6 +2,10 @@ tree  -I 'node_modules' > structure.txt
 
 
 
+
+
+
+
 ├── package.json
 ├── package-lock.json
 ├── src
