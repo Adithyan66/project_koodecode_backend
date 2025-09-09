@@ -171,24 +171,41 @@ if __name__ == "__main__":
         maxMemoryUsage: maxMemory
       });
 
+      // if (updatedSubmission.isAccepted) {
+      //   await this.userStatsService.updateProblemStats(
+      //     submission.userId,
+      //     submission.problem.difficulty
+      //   );
+      // }
+
+      // // Update acceptance rate
+      // const userSubmissions = await this.submissionRepository.findByUserId(submission.userId);
+      // const acceptedSubmissions = userSubmissions.filter(s => s.isAccepted).length;
+
+      // await this.userStatsService.calculateAcceptanceRate(
+      //   submission.userId,
+      //   userSubmissions.length,
+      //   acceptedSubmissions
+      // );
+
 
       return {
         id: submission.id,
-        language:{
+        language: {
           id: params.languageId,
-          name:"c"
+          name: "c"
         },
-        maxMemoryUsage:updatedSubmission.maxMemoryUsage,
-        overallVerdict:verdict,
-        problemId:params.problemId,
-        score:score,
-        status:verdict,
-        submittedAt:updatedSubmission.createdAt,
-        testCaseResults:testCaseResults,
-        testCasesPassed : testCaseResults.filter(tc => tc.status === 'passed').length,
+        maxMemoryUsage: updatedSubmission.maxMemoryUsage,
+        overallVerdict: verdict,
+        problemId: params.problemId,
+        score: score,
+        status: verdict,
+        submittedAt: updatedSubmission.createdAt,
+        testCaseResults: testCaseResults,
+        testCasesPassed: testCaseResults.filter(tc => tc.status === 'passed').length,
         totalExecutionTime: totalTime,
-        totalTestCases : testCaseResults.length,
-        userId:params.userId
+        totalTestCases: testCaseResults.length,
+        userId: params.userId
       }
 
     } catch (error) {

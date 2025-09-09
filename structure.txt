@@ -3,9 +3,6 @@ tree  -I 'node_modules' > structure.txt
 
 
 
-
-
-
 ├── package.json
 ├── package-lock.json
 ├── src
@@ -42,6 +39,7 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   ├── ITokenService.ts
 │   │   │   └── IUserRepository.ts
 │   │   ├── services
+│   │   │   ├── CodeExecutionHelperService.ts
 │   │   │   ├── PasswordService.ts
 │   │   │   └── userMapper.ts
 │   │   └── usecases
@@ -54,9 +52,7 @@ tree  -I 'node_modules' > structure.txt
 │   │       │   └── GetSubmissionTestCasesUseCase.ts
 │   │       ├── submissions
 │   │       │   ├── CreateSubmissionUseCase.ts
-│   │       │   ├── ExecuteCodeUseCase.ts
 │   │       │   ├── GetLanguagesUseCase.ts
-│   │       │   ├── GetProblemDetailUseCase.ts
 │   │       │   ├── GetSubmissionResultUseCase.ts
 │   │       │   └── RunCodeUseCase.ts
 │   │       └── users
@@ -147,4 +143,4 @@ tree  -I 'node_modules' > structure.txt
 ├── structure.txt
 └── tsconfig.json
 
-41 directories, 100 files
+41 directories, 99 files

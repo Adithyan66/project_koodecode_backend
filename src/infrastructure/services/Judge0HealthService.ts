@@ -1,13 +1,13 @@
 
 
 import axios from 'axios';
-import config from '../config/config';
+import { config } from '../config/config';
 
 export class Judge0HealthService {
   async checkHealth(): Promise<{ status: string; version?: string; languages?: number }> {
     try {
       const headers: any = {};
-      
+
       if (!config.judge0.useSelfHosted) {
         headers['X-RapidAPI-Host'] = config.judge0.rapidApiHost;
         headers['X-RapidAPI-Key'] = config.judge0.rapidApiKey;

@@ -109,28 +109,31 @@ export class ProblemSolvingController {
                 });
                 return;
             }
+            console.log(problemId, sourceCode, languageId, testCases);
+            
 
-            if (!problemId || !sourceCode || !languageId) {
+            if (!problemId || !sourceCode || !languageId || !testCases) {
                 res.status(HTTP_STATUS.BAD_REQUEST).json({
                     success: false,
-                    message: 'Problem ID, source code, and language ID are required'
+                    message: 'Problem ID, source code,testCases and language ID are required'
                 });
                 return;
             }
 
 
             const result = await this.runCodeUseCase.execute({
+                problemId,
                 sourceCode,
                 languageId,
-                stdin,
-                timeLimit,
-                memoryLimit
+                testCases,
+                userId
             });
 
             res.status(HTTP_STATUS.OK).json({
                 success: true,
                 data: result
             });
+
         } catch (error: any) {
             res.status(HTTP_STATUS.BAD_REQUEST).json({
                 success: false,
