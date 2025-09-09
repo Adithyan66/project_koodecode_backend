@@ -2,7 +2,7 @@
 
 import { Request, Response } from 'express';
 import { Judge0HealthService } from '../../infrastructure/services/Judge0HealthService';
-import { httpStatus } from '../../shared/constants/httpStatus';
+import { HTTP_STATUS } from '../../shared/constants/httpStatus';
 
 export class HealthController {
   constructor(private judge0HealthService: Judge0HealthService) {}
@@ -11,7 +11,7 @@ export class HealthController {
     try {
       const health = await this.judge0HealthService.checkHealth();
       
-      const statusCode = health.status === 'healthy' ? httpStatus.OK : httpStatus.SERVICE_UNAVAILABLE;
+      const statusCode = health.status === 'healthy' ? HTTP_STATUS.OK : HTTP_STATUS.SERVICE_UNAVAILABLE;
       
       res.status(statusCode).json({
         success: true,
@@ -21,7 +21,7 @@ export class HealthController {
         }
       });
     } catch (error: any) {
-      res.status(httpStatus.SERVICE_UNAVAILABLE).json({
+      res.status(HTTP_STATUS.SERVICE_UNAVAILABLE).json({
         success: false,
         message: 'Health check failed',
         error: error.message
@@ -33,7 +33,7 @@ export class HealthController {
     try {
       const judge0Health = await this.judge0HealthService.checkHealth();
       
-      res.status(httpStatus.OK).json({
+      res.status(HTTP_STATUS.OK).json({
         success: true,
         data: {
           system: 'operational',
@@ -42,7 +42,7 @@ export class HealthController {
         }
       });
     } catch (error: any) {
-      res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: 'System health check failed',
         error: error.message

@@ -17,7 +17,7 @@ const TestCaseSchema = new Schema<ITestCaseDocument>({
         type: Schema.Types.ObjectId,
         ref: 'Problem',
         required: true,
-        index: true
+        // index: true
     },
     inputs: {
         type: Schema.Types.Mixed,
@@ -31,7 +31,7 @@ const TestCaseSchema = new Schema<ITestCaseDocument>({
         type: Boolean,
         required: true,
         default: false,
-        index: true
+        // index: true
     },
 }, {
     timestamps: true,

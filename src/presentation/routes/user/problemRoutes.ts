@@ -24,7 +24,6 @@ const mongoProblemRepository = new MongoProblemRepository()
 
 const mongoTestCaseRepository = new MongoTestCaseRepository()
 
-
 const getProblemByIdUseCase = new GetProblemByIdUseCase(mongoProblemRepository, mongoTestCaseRepository)
 
 const getProblemsListUseCase = new GetProblemsListUseCase(mongoProblemRepository)
@@ -33,10 +32,6 @@ const userProblemController = new UserProblemController(getProblemsListUseCase, 
 
 
 
-
-
-
-// Initialize dependencies (in production, use a DI container)
 const judge0Service = new Judge0Service();
 const submissionRepository = new MongoSubmissionRepository();
 const problemRepository = new MongoProblemRepository();
@@ -44,16 +39,9 @@ const codeExecutionHelperService = new CodeExecutionHelperService(judge0Service)
 
 const createSubmissionUseCase = new CreateSubmissionUseCase(judge0Service, submissionRepository, problemRepository, mongoTestCaseRepository, codeExecutionHelperService);
 const getSubmissionResultUseCase = new GetSubmissionResultUseCase(judge0Service, submissionRepository);
-const runCodeUseCase = new RunCodeUseCase(judge0Service);
+const runCodeUseCase = new RunCodeUseCase(judge0Service, problemRepository, mongoTestCaseRepository, codeExecutionHelperService,);
 const getLanguagesUseCase = new GetLanguagesUseCase(judge0Service);
-
-
-const problemSolvingController = new ProblemSolvingController(
-    createSubmissionUseCase,
-    getSubmissionResultUseCase,
-    runCodeUseCase,
-    getLanguagesUseCase
-);
+const problemSolvingController = new ProblemSolvingController(createSubmissionUseCase, getSubmissionResultUseCase, runCodeUseCase, getLanguagesUseCase);
 
 
 // app.use(authMiddleware())

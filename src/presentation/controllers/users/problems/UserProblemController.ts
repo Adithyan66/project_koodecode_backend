@@ -60,7 +60,6 @@ export class UserProblemController {
     async getProblemDetail(req: Request, res: Response): Promise<void> {
         try {
             const { problemId } = req.params;
-            console.log("params id",problemId);
             
             const problemDetail = await this.getProblemDetailUseCase.execute(problemId);
 

@@ -46,7 +46,6 @@ export class MongoTestCaseRepository implements ITestCaseRepository {
             problemId,
             isSample: true
         }).sort({ createdAt: 1 });
-        console.log("sexy tc",testCases);
         
         return testCases.map(tc => this.mapToEntity(tc));
     }
