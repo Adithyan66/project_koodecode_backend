@@ -6,7 +6,7 @@ import cors from "cors"
 
 
 import authRoutes from './presentation/routes/authRoutes';
-import adminProblemRoutes from '.***REMOVED***';
+import adminProblemRoutes from './presentation/routes/admin/problemRoutes'
 import userProblemRoutes from './presentation/routes/user/problemRoutes';
 import healthRoutes from "./presentation/routes/healthRoutes";
 import profileRoutes from "./presentation/routes/user/profileRoutes"

@@ -18,7 +18,7 @@ import { ProfileImageController } from '../..***REMOVED***r';
 import { GenerateProfileImageUploadUrlUseCase } from '../../..***REMOVED***ileImageUploadUrlUseCase';
 import { ImageUploadService } from '../../..***REMOVED***';
 import { S3Service } from '../../../infrastructure/services/S3Service';
-import { UpdateProfileImageUseCase } from '../../..***REMOVED***eImageUseCase';
+import { UpdateProfileImageUseCase } from '../../../application/usecases/users/UpdateProfileImageUseCase'; 
 
 
 
