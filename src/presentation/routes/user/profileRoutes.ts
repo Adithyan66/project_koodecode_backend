@@ -13,6 +13,7 @@ import { FollowUserUseCase } from '../../../application/usecases/users/FollowUse
 import { UnfollowUserUseCase } from '../../../application/usecases/users/UnfollowUserUseCase';
 import { GetUserFollowersUseCase } from '../../../application/usecases/users/GetUserFollowersUseCase';
 import { GetUserFollowingUseCase } from '../../../application/usecases/users/GetUserFollowingUseCase';
+import { GetUserEditableProfile } from '../../../application/usecases/users/GetUserEditableProfile';
 
 
 
@@ -23,11 +24,13 @@ const userProfileRepository = new MongoUserProfileRepository()
 
 const userConnectionRepository = new MongoUserConnectionRepository()
 
+const getUserEditableProfile = new GetUserEditableProfile(userRepository, userProfileRepository)
+
 const getUserProfileUseCase = new GetUserProfileUseCase(userRepository, userProfileRepository, userConnectionRepository)
 
 const updateUserProfileUseCase = new UpdateUserProfileUseCase(userProfileRepository, getUserProfileUseCase)
 
-const userProfileController = new UserProfileController(getUserProfileUseCase, updateUserProfileUseCase, userRepository)
+const userProfileController = new UserProfileController(getUserProfileUseCase, updateUserProfileUseCase, getUserEditableProfile, userRepository)
 
 
 
@@ -57,10 +60,10 @@ router.get('/profile/:userId', userProfileController.getProfile.bind(userProfile
 
 router.get('/u/:username', userProfileController.getPublicProfile.bind(userProfileController));
 
-router.put('/', authMiddleware(), (req, res) => userProfileController.updateProfile(req, res));
+router.get('/profile', authMiddleware(), (req, res) => userProfileController.getEditProfile(req, res));
 
+router.put('/profile', authMiddleware(), (req, res) => userProfileController.updateProfile(req, res));
 
-                              
 
 
 router.post('/follow', authMiddleware, userSocialController.followUser.bind(userSocialController));
