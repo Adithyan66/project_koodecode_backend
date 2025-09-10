@@ -1,4 +1,5 @@
-// dto/safeUser.ts
+
+
 export interface SafeUser {
   fullName: string;
   userName: string;

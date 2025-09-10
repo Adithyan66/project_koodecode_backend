@@ -3,6 +3,11 @@ tree  -I 'node_modules' > structure.txt
 
 
 
+
+
+
+
+
 ├── package.json
 ├── package-lock.json
 ├── src
@@ -23,10 +28,13 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   │   ├── RunCodeDto.ts
 │   │   │   │   └── SubmissionResponseDto.ts
 │   │   │   └── users
+│   │   │       ├── FollowUserDto.ts
 │   │   │       ├── loginUserResponse.ts
 │   │   │       ├── safeUser.ts
-│   │   │       └── signupUserResponse.ts
+│   │   │       ├── signupUserResponse.ts
+│   │   │       └── UserProfileDto.ts
 │   │   ├── interfaces
+│   │   │   ├── IBadgeRepository.ts
 │   │   │   ├── ICodeExecutionService.ts
 │   │   │   ├── ICounterRepository.ts
 │   │   │   ├── IEmailService.ts
@@ -37,7 +45,10 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   ├── ISubmissionRepository.ts
 │   │   │   ├── ITestCaseRepository.ts
 │   │   │   ├── ITokenService.ts
-│   │   │   └── IUserRepository.ts
+│   │   │   ├── IUserConnectionRepository.ts
+│   │   │   ├── IUserProfileRepository.ts
+│   │   │   ├── IUserRepository.ts
+│   │   │   └── IUserStatsService.ts
 │   │   ├── services
 │   │   │   ├── CodeExecutionHelperService.ts
 │   │   │   ├── PasswordService.ts
@@ -56,14 +67,22 @@ tree  -I 'node_modules' > structure.txt
 │   │       │   ├── GetSubmissionResultUseCase.ts
 │   │       │   └── RunCodeUseCase.ts
 │   │       └── users
+│   │           ├── FollowUserUseCase.ts
+│   │           ├── GetUserEditableProfile.ts
+│   │           ├── GetUserFollowersUseCase.ts
+│   │           ├── GetUserFollowingUseCase.ts
+│   │           ├── GetUserProfileUseCase.ts
 │   │           ├── LoginUseCase.ts
 │   │           ├── LogoutUseCase.ts
 │   │           ├── OtpUseCase.ts
 │   │           ├── SignupUseCase.ts
+│   │           ├── UnfollowUserUseCase.ts
+│   │           ├── UpdateUserProfileUseCase.ts
 │   │           └── ValidateUserUseCase.ts
 │   ├── app.ts
 │   ├── domain
 │   │   └── entities
+│   │       ├── Badge.ts
 │   │       ├── ContestParticipant.ts
 │   │       ├── Contest.ts
 │   │       ├── Counter.ts
@@ -71,12 +90,15 @@ tree  -I 'node_modules' > structure.txt
 │   │       ├── Problem.ts
 │   │       ├── Submission.ts
 │   │       ├── TestCase.ts
+│   │       ├── UserConnection.ts
+│   │       ├── UserProfile.ts
 │   │       └── User.ts
 │   ├── infrastructure
 │   │   ├── config
 │   │   │   └── config.ts
 │   │   ├── db
 │   │   │   ├── models
+│   │   │   │   ├── BadgeModel.ts
 │   │   │   │   ├── ContestModel.ts
 │   │   │   │   ├── ContestParticipantModel.ts
 │   │   │   │   ├── CounterModel.ts
@@ -84,26 +106,33 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   │   ├── ProblemModel.ts
 │   │   │   │   ├── SubmissionModel.ts
 │   │   │   │   ├── TestCaseModel.ts
-│   │   │   │   └── UserModel.ts
+│   │   │   │   ├── UserConnectionModel.ts
+│   │   │   │   ├── UserModel.ts
+│   │   │   │   └── UserProfileModel.ts
+│   │   │   ├── MongoBadgeRepository.ts
 │   │   │   ├── mongoConnection.ts
 │   │   │   ├── MongoCounterRepository.ts
 │   │   │   ├── MongoJudge0Repository.ts
 │   │   │   ├── MongoProblemRepository.ts
 │   │   │   ├── MongoSubmissionRepository.ts
 │   │   │   ├── MongoTestCaseRepository.ts
+│   │   │   ├── MongoUserConnectionRepository.ts
+│   │   │   ├── MongoUserProfileRepository.ts
 │   │   │   └── MongoUserRepository.ts
 │   │   ├── persistence
 │   │   │   └── RedisOtpRepository.ts
 │   │   ├── redis
 │   │   │   └── redisClient.ts
-│   │   ├── scripts.ts
-│   │   │   └── initializeCounters.ts
+│   │   ├── scripts
+│   │   │   ├── initializeCounters.ts
+│   │   │   └── seedBadges.ts
 │   │   └── services
 │   │       ├── CodeExecutionService.ts
 │   │       ├── Judge0HealthService.ts
 │   │       ├── Judge0Service.ts
 │   │       ├── JwtService.ts
-│   │       └── NodemailerEmailService.ts
+│   │       ├── NodemailerEmailService.ts
+│   │       └── UserStatsService.ts
 │   ├── presentation
 │   │   ├── controllers
 │   │   │   ├── admin
@@ -119,9 +148,11 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   ├── HealthController.ts
 │   │   │   └── users
 │   │   │       ├── contests
-│   │   │       └── problems
-│   │   │           ├── ProblemSolvingController.ts
-│   │   │           └── UserProblemController.ts
+│   │   │       ├── problems
+│   │   │       │   ├── ProblemSolvingController.ts
+│   │   │       │   └── UserProblemController.ts
+│   │   │       ├── UserProfileController.ts
+│   │   │       └── UserSocialController.ts
 │   │   ├── middleware
 │   │   │   └── authMiddleware.ts
 │   │   └── routes
@@ -130,7 +161,8 @@ tree  -I 'node_modules' > structure.txt
 │   │       ├── authRoutes.ts
 │   │       ├── healthRoutes.ts
 │   │       └── user
-│   │           └── problemRoutes.ts
+│   │           ├── problemRoutes.ts
+│   │           └── profileRoutes.ts
 │   ├── server.ts
 │   └── shared
 │       ├── constants
@@ -143,4 +175,4 @@ tree  -I 'node_modules' > structure.txt
 ├── structure.txt
 └── tsconfig.json
 
-41 directories, 99 files
+41 directories, 126 files

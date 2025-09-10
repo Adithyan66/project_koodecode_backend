@@ -6,6 +6,7 @@ import { UpdateUserProfileUseCase } from '../../..***REMOVED***ofileUseCase';
 import { UpdateProfileDto } from '../../../application/dto/users/UserProfileDto';
 import { HTTP_STATUS } from '../../../shared/constants/httpStatus';
 import { IUserRepository } from '../../../application/interfaces/IUserRepository';
+import { GetUserEditableProfile } from '../../..***REMOVED***bleProfile';
 
 
 interface AuthenticatedRequest extends Request {
@@ -21,6 +22,7 @@ export class UserProfileController {
     constructor(
         private getUserProfileUseCase: GetUserProfileUseCase,
         private updateUserProfileUseCase: UpdateUserProfileUseCase,
+        private getUserEditableProfile: GetUserEditableProfile,
         private userRepository: IUserRepository
     ) { }
 
@@ -57,8 +59,8 @@ export class UserProfileController {
         try {
             const userId = req.user?.userId;
 
-            console.log("hiiii",userId);
-            
+            console.log("hiiii", userId);
+
 
             if (!userId) {
                 res.status(HTTP_STATUS.UNAUTHORIZED).json({
@@ -103,13 +105,39 @@ export class UserProfileController {
 
             res.status(HTTP_STATUS.OK).json({
                 success: true,
-                data : profile
+                data: profile
             });
         } catch (error: any) {
             res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
                 success: false,
                 message: error.message || 'Failed to get public profile'
             });
+        }
+    }
+
+    async getEditProfile(req: AuthenticatedRequest, res: Response) {
+
+        try {
+
+            let userId = req.user?.userId
+
+            if (!userId) {
+                res.status(HTTP_STATUS.BAD_REQUEST).json({
+                    success: false,
+                    message: 'User ID is required'
+                });
+                return;
+            }
+
+            let result = await this.getUserEditableProfile.execute(userId)
+
+            res.status(HTTP_STATUS.OK).json({
+                success: true,
+                data: result
+            })
+
+        } catch (error) {
+
         }
     }
 }

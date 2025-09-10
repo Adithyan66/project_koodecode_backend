@@ -1,4 +1,5 @@
 export class SignupUserResponse {
+  
   constructor(
      public user: {
             fullName: string;
