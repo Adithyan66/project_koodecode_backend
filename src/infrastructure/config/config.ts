@@ -39,9 +39,13 @@ export const config = {
     pollInterval: parseInt(process.env.JUDGE0_POLL_INTERVAL || '1000')
   },
   aws: {
-    accessKeyId: "***REMOVED***",
-    secretAccessKey: "***REMOVED***",
-    region: "ap-south-1",
-    s3BucketName: "koode-code-user-images"
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    region: process.env.AWS_REGION,
+    s3BucketName: process.env.S3_BUCKET_NAME
   }
 };
+
+
+// AWS_ACCESS_KEY_ID=***REMOVED***
+// AWS_SECRET_ACCESS_***REMOVED***MBbA
