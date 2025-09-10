@@ -10,7 +10,8 @@ export class User {
         public profilePicUrl?: string,
         public id?: string,
         public passwordHash?: string,
+        public profilePicKey?: string,
         public createdAt?: Date,
         public updatedAt?: Date,
-    ) {}
+    ) { }
 }

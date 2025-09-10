@@ -14,6 +14,11 @@ import { UnfollowUserUseCase } from '../../..***REMOVED***UseCase';
 import { GetUserFollowersUseCase } from '../../..***REMOVED***wersUseCase';
 import { GetUserFollowingUseCase } from '../../..***REMOVED***wingUseCase';
 import { GetUserEditableProfile } from '../../..***REMOVED***bleProfile';
+import { ProfileImageController } from '../..***REMOVED***r';
+import { GenerateProfileImageUploadUrlUseCase } from '../../..***REMOVED***ileImageUploadUrlUseCase';
+import { ImageUploadService } from '../../..***REMOVED***';
+import { S3Service } from '../../../infrastructure/services/S3Service';
+import { UpdateProfileImageUseCase } from '../../..***REMOVED***eImageUseCase';
 
 
 
@@ -33,6 +38,16 @@ const updateUserProfileUseCase = new UpdateUserProfileUseCase(userProfileReposit
 const userProfileController = new UserProfileController(getUserProfileUseCase, updateUserProfileUseCase, getUserEditableProfile, userRepository)
 
 
+const s3Service = new S3Service()
+
+const imageUploadService = new ImageUploadService(s3Service)
+
+const generateProfileImageUploadUrlUseCase = new GenerateProfileImageUploadUrlUseCase(imageUploadService)
+
+
+const updateProfileImageUseCase = new UpdateProfileImageUseCase(userRepository, imageUploadService)
+
+const profileImageController = new ProfileImageController(generateProfileImageUploadUrlUseCase, updateProfileImageUseCase)
 
 
 
@@ -74,6 +89,11 @@ router.get('/followers/:userId', userSocialController.getFollowers.bind(userSoci
 
 router.get('/following/:userId', userSocialController.getFollowing.bind(userSocialController));
 
+
+
+router.post('/upload-url', authMiddleware(), (req, res) => profileImageController.generateUploadUrl(req, res));
+
+router.post('/confirm-upload', authMiddleware(), (req, res) => profileImageController.confirmUpload(req, res));
 
 
 
