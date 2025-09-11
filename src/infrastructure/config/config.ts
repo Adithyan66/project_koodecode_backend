@@ -2,14 +2,14 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const config = {
-    jwtSecret: process.env.JWT_SECRET || " ",
-    mongoUri: process.env.MONGO_URI || " ",
-    jwtAccessSecret: process.env.JWT_SECRET || " ",
-    jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || " ",
-    cookieMaxAge: parseInt(process.env.COOKIE_MAX_AGE ?? "3600000", 10),
+  jwtSecret: process.env.JWT_SECRET || " ",
+  mongoUri: process.env.MONGO_URI || " ",
+  jwtAccessSecret: process.env.JWT_SECRET || " ",
+  jwtRefreshSecret: process.env.JWT_REFRESH_SECRET || " ",
+  cookieMaxAge: parseInt(process.env.COOKIE_MAX_AGE ?? "3600000", 10),
 
 
-    port: process.env.PORT || 3000,
+  port: process.env.PORT || 3000,
   mongodb: {
     uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/koodecode'
   },
@@ -37,5 +37,15 @@ export const config = {
     defaultMemoryLimit: parseInt(process.env.JUDGE0_DEFAULT_MEMORY_LIMIT || '128000'),
     maxPollAttempts: parseInt(process.env.JUDGE0_MAX_POLL_ATTEMPTS || '10'),
     pollInterval: parseInt(process.env.JUDGE0_POLL_INTERVAL || '1000')
+  },
+  aws: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
+    region: process.env.AWS_REGION || "",
+    s3BucketName: process.env.S3_BUCKET_NAME || ""
   }
 };
+
+
+// AWS_ACCESS_KEY_ID=***REMOVED***
+// AWS_SECRET_ACCESS_***REMOVED***MBbA

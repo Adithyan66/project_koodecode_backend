@@ -1,4 +1,5 @@
 import { Router } from 'express';
+<<<<<<< HEAD
 // import { UserProblemController } from '../../controllers/users/problems/UserProblemController';
 import { AdminProblemController } from '../../controllers/admin/problems/AdminProblemController';
 import { authMiddleware } from '../../middleware/authMiddleware';
@@ -10,6 +11,19 @@ import { CreateProblemUseCase } from '../../../application/usecases/problems/Cre
 import { MongoProblemRepository } from '../../../infrastructure/db/MongoProblemRepository';
 import { MongoCounterRepository } from '../../../infrastructure/db/MongoCounterRepository';
 import { MongoTestCaseRepository } from '../../../infrastructure/db/MongoTestCaseRepository';
+=======
+// import { UserProblemController } from '../..***REMOVED***ontroller';
+import { AdminProblemController } from '../../controllers/admin/problems/AdminProblemController'; 
+import { authMiddleware } from '../../middleware/authMiddleware';
+
+import { GetProblemsListUseCase } from '../../../application/usecases/problems/GetProblemsListUseCase'; 
+import { GetProblemByIdUseCase } from '../../../application/usecases/problems/GetProblemByIdUseCase'; 
+import { CreateProblemUseCase } from '../../../application/usecases/problems/CreateProblemUseCase'; 
+
+import { MongoProblemRepository } from '../../../infrastructure/db/MongoProblemRepository'; 
+import { MongoCounterRepository } from '../../../infrastructure/db/MongoCounterRepository'; 
+import { MongoTestCaseRepository } from '../../../infrastructure/db/MongoTestCaseRepository'; 
+>>>>>>> feature/s3-bucket
 
 const router = Router();
 

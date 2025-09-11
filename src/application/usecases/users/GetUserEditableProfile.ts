@@ -20,7 +20,9 @@ export class GetUserEditableProfile {
 
         return {
             username: primaryData?.userName,
+            fullname:primaryData?.fullName,
             email: primaryData?.email,
+            profileImageKey:primaryData.profilePicKey,
             bio: secondaryData?.bio,
             location: secondaryData?.location,
             birthdate: secondaryData?.birthdate  ,

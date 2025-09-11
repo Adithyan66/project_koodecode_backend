@@ -6,7 +6,11 @@ import cors from "cors"
 
 
 import authRoutes from './presentation/routes/authRoutes';
+<<<<<<< HEAD
 import adminProblemRoutes from './presentation/routes/admin/problemRoutes';
+=======
+import adminProblemRoutes from './presentation/routes/admin/problemRoutes'
+>>>>>>> feature/s3-bucket
 import userProblemRoutes from './presentation/routes/user/problemRoutes';
 import healthRoutes from "./presentation/routes/healthRoutes";
 import profileRoutes from "./presentation/routes/user/profileRoutes"

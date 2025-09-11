@@ -16,7 +16,7 @@ export interface UserProfileResponseDto {
         fullName: string;
         userName: string;
         email: string;
-        profilePicUrl?: string;
+        profilePicKey?: string;
     };
     profile: {
         bio?: string;
@@ -61,6 +61,7 @@ export interface UserProfileResponseDto {
 }
 
 export interface UpdateProfileDto {
+    fullname?:string;
     bio?: string;
     location?: string;
     birthdate?: string;

@@ -2,18 +2,37 @@
 
 import { Router } from 'express';
 import { UserProfileController } from '../../controllers/users/UserProfileController'; 
+<<<<<<< HEAD
 import { UserSocialController } from '../../controllers/users/UserSocialController';
 import { authMiddleware } from '../../middleware/authMiddleware';
 import { GetUserProfileUseCase } from '../../../application/usecases/users/GetUserProfileUseCase';
+=======
+import { UserSocialController } from '../../controllers/users/UserSocialController'; 
+import { authMiddleware } from '../../middleware/authMiddleware';
+import { GetUserProfileUseCase } from '../../../application/usecases/users/GetUserProfileUseCase'; 
+>>>>>>> feature/s3-bucket
 import { UpdateUserProfileUseCase } from '../../../application/usecases/users/UpdateUserProfileUseCase'; 
 import { MongoUserRepository } from '../../../infrastructure/db/MongoUserRepository';
 import { MongoUserProfileRepository } from '../../../infrastructure/db/MongoUserProfileRepository'; 
 import { MongoUserConnectionRepository } from '../../../infrastructure/db/MongoUserConnectionRepository'; 
+<<<<<<< HEAD
 import { FollowUserUseCase } from '../../../application/usecases/users/FollowUserUseCase'; 
 import { UnfollowUserUseCase } from '../../../application/usecases/users/UnfollowUserUseCase'; 
 import { GetUserFollowersUseCase } from '../../../application/usecases/users/GetUserFollowersUseCase'; 
 import { GetUserFollowingUseCase } from '../../../application/usecases/users/GetUserFollowingUseCase'; 
 import { GetUserEditableProfile } from '../../../application/usecases/users/GetUserEditableProfile'; 
+=======
+import { FollowUserUseCase } from '../../../application/usecases/users/FollowUserUseCase';
+import { UnfollowUserUseCase } from '../../../application/usecases/users/UnfollowUserUseCase'; 
+import { GetUserFollowersUseCase } from '../../../application/usecases/users/GetUserFollowersUseCase'; 
+import { GetUserFollowingUseCase } from '../../../application/usecases/users/GetUserFollowingUseCase';
+import { GetUserEditableProfile } from '../../../application/usecases/users/GetUserEditableProfile'; 
+import { GenerateProfileImageUploadUrlUseCase } from '../../../application/usecases/users/GenerateProfileImageUploadUrlUseCase'; 
+import { ImageUploadService } from '../../../application/services/ImageUploadService'; 
+import { S3Service } from '../../../infrastructure/services/S3Service';
+import { UpdateProfileImageUseCase } from '../../../application/usecases/users/UpdateProfileImageUseCase'; 
+import { ProfileImageController } from '../../controllers/users/ProfileImageController';
+>>>>>>> feature/s3-bucket
 
 
 
@@ -28,11 +47,21 @@ const getUserEditableProfile = new GetUserEditableProfile(userRepository, userPr
 
 const getUserProfileUseCase = new GetUserProfileUseCase(userRepository, userProfileRepository, userConnectionRepository)
 
-const updateUserProfileUseCase = new UpdateUserProfileUseCase(userProfileRepository, getUserProfileUseCase)
+const updateUserProfileUseCase = new UpdateUserProfileUseCase(userProfileRepository, getUserProfileUseCase,userRepository)
 
 const userProfileController = new UserProfileController(getUserProfileUseCase, updateUserProfileUseCase, getUserEditableProfile, userRepository)
 
 
+const s3Service = new S3Service()
+
+const imageUploadService = new ImageUploadService(s3Service)
+
+const generateProfileImageUploadUrlUseCase = new GenerateProfileImageUploadUrlUseCase(imageUploadService)
+
+
+const updateProfileImageUseCase = new UpdateProfileImageUseCase(userRepository, imageUploadService)
+
+const profileImageController = new ProfileImageController(generateProfileImageUploadUrlUseCase, updateProfileImageUseCase)
 
 
 
@@ -74,6 +103,11 @@ router.get('/followers/:userId', userSocialController.getFollowers.bind(userSoci
 
 router.get('/following/:userId', userSocialController.getFollowing.bind(userSocialController));
 
+
+
+router.post('/upload-url', authMiddleware(), (req, res) => profileImageController.generateUploadUrl(req, res));
+
+router.post('/confirm-upload', authMiddleware(), (req, res) => profileImageController.confirmUpload(req, res));
 
 
 

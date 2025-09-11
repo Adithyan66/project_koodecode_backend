@@ -1,15 +1,19 @@
-// src/controllers/UserController.ts
+
 import { Request, Response } from 'express';
+<<<<<<< HEAD
 import { ValidateUserUseCase } from '../../../application/usecases/users/ValidateUserUseCase'; 
+=======
+import { ValidateUserUseCase } from '../../../application/usecases/users/ValidateUserUseCase';
+>>>>>>> feature/s3-bucket
 
 export class UserController {
+
     constructor(
         private readonly validateUserUseCase: ValidateUserUseCase
     ) { }
 
+
     async validateUser(req: Request, res: Response): Promise<void> {
-
-
 
         try {
 
