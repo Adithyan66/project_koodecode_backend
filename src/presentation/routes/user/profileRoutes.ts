@@ -33,7 +33,7 @@ const getUserEditableProfile = new GetUserEditableProfile(userRepository, userPr
 
 const getUserProfileUseCase = new GetUserProfileUseCase(userRepository, userProfileRepository, userConnectionRepository)
 
-const updateUserProfileUseCase = new UpdateUserProfileUseCase(userProfileRepository, getUserProfileUseCase)
+const updateUserProfileUseCase = new UpdateUserProfileUseCase(userProfileRepository, getUserProfileUseCase,userRepository)
 
 const userProfileController = new UserProfileController(getUserProfileUseCase, updateUserProfileUseCase, getUserEditableProfile, userRepository)
 

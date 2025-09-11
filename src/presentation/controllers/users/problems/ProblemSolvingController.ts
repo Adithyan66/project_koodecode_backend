@@ -3,10 +3,10 @@
 
 
 import { Request, Response } from 'express';
-import { CreateSubmissionUseCase } from '../../../..***REMOVED***SubmissionUseCase';
-import { GetSubmissionResultUseCase } from '../../../..***REMOVED***missionResultUseCase';
-import { RunCodeUseCase } from '../../../..***REMOVED***eUseCase';
-import { GetLanguagesUseCase } from '../../../..***REMOVED***guagesUseCase';
+import { CreateSubmissionUseCase } from '../../../../application/usecases/submissions/CreateSubmissionUseCase';
+import { GetSubmissionResultUseCase } from '../../../../application/usecases/submissions/GetSubmissionResultUseCase';
+import { RunCodeUseCase } from '../../../../application/usecases/submissions/RunCodeUseCase';
+import { GetLanguagesUseCase } from '../../../../application/usecases/submissions/GetLanguagesUseCase';
 import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 import { Messages } from '../../../../shared/constants/messages';
 

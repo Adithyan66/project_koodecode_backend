@@ -1,8 +1,8 @@
 
 
 import { Request, Response } from 'express';
-import { GenerateProfileImageUploadUrlUseCase } from '../../..***REMOVED***ileImageUploadUrlUseCase';
-import { UpdateProfileImageUseCase } from '../../..***REMOVED***eImageUseCase';
+import { GenerateProfileImageUploadUrlUseCase } from '../../../application/usecases/users/GenerateProfileImageUploadUrlUseCase';
+import { UpdateProfileImageUseCase } from '../../../application/usecases/users/UpdateProfileImageUseCase';
 import { HTTP_STATUS } from '../../../shared/constants/httpStatus';
 
 interface AuthenticatedRequest extends Request {
@@ -88,6 +88,7 @@ export class ProfileImageController {
                 success: true,
                 message: 'Profile image updated successfully'
             });
+            
         } catch (error) {
             res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
                 success: false,

@@ -1,15 +1,15 @@
-// src/controllers/UserController.ts
+
 import { Request, Response } from 'express';
-import { ValidateUserUseCase } from '../../..***REMOVED***UseCase';
+import { ValidateUserUseCase } from '../../../application/usecases/users/ValidateUserUseCase';
 
 export class UserController {
+
     constructor(
         private readonly validateUserUseCase: ValidateUserUseCase
     ) { }
 
+
     async validateUser(req: Request, res: Response): Promise<void> {
-
-
 
         try {
 

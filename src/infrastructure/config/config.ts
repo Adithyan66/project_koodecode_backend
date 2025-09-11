@@ -39,10 +39,10 @@ export const config = {
     pollInterval: parseInt(process.env.JUDGE0_POLL_INTERVAL || '1000')
   },
   aws: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    region: process.env.AWS_REGION,
-    s3BucketName: process.env.S3_BUCKET_NAME
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
+    region: process.env.AWS_REGION || "",
+    s3BucketName: process.env.S3_BUCKET_NAME || ""
   }
 };
 

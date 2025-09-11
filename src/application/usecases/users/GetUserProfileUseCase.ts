@@ -4,6 +4,7 @@ import { IUserConnectionRepository } from '../../interfaces/IUserConnectionRepos
 import { User } from '../../../domain/entities/User';
 import { UserProfile } from '../../../domain/entities/UserProfile';
 import { UserProfileResponseDto } from '../../dto/users/UserProfileDto';
+import { log } from 'node:console';
 
 
 export class GetUserProfileUseCase {
@@ -20,6 +21,7 @@ export class GetUserProfileUseCase {
         if (!user) {
             throw new Error('User not found');
         }
+        
 
         let profile = await this.profileRepository.findByUserId(userId);
 
@@ -62,7 +64,7 @@ export class GetUserProfileUseCase {
                 fullName: user.fullName,
                 userName: user.userName,
                 email: user.email,
-                profilePicUrl: user.profilePicUrl
+                profilePicKey: user.profilePicKey
             },
             profile: {
                 bio: profile.bio,

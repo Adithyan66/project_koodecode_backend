@@ -10,12 +10,12 @@ export class UpdateProfileImageUseCase {
     ) { }
 
     async execute(userId: string, imageKey: string, publicUrl: string): Promise<void> {
+
         const user = await this.userRepository.findById(userId);
         if (!user) {
             throw new Error('User not found');
         }
 
-        // Delete old profile image if exists
         if (user.profilePicKey) {
             try {
                 await this.imageUploadService.deleteProfileImage(user.profilePicKey);

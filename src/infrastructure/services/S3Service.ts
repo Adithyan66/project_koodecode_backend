@@ -22,7 +22,7 @@ export class S3Service {
       Key: key,
       Expires: 300, // 5 minutes
       ContentType: contentType,
-    //   ACL: 'public-read'
+      // ACL: 'public-read'
     };
 
     return this.s3.getSignedUrlPromise('putObject', params);
