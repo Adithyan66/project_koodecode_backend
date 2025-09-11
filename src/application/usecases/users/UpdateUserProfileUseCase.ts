@@ -14,55 +14,53 @@ export class UpdateUserProfileUseCase {
     ) { }
 
 
-    async execute(userId: string, updateData: UpdateProfileDto): Promise<UserProfileResponseDto> {
+    async execute(userId: string, updateData: UpdateProfileDto): Promise<any> {
 
         const primaryUpdates: any = {}
 
         const updates: any = {};
 
-<<<<<<< HEAD
-        console.log("updated data ",updateData);
-        
-        
-        if (updateData.bio !== undefined) {
-            updates.bio = updateData.bio.trim().substring(0, 500); 
-=======
-        if (updateData.fullname) {
-            primaryUpdates.fullName = updateData.fullname
->>>>>>> feature/s3-bucket
-        }
-
         if (updateData.bio !== undefined) {
             updates.bio = updateData.bio.trim().substring(0, 500);
+
+            if (updateData.fullname !== undefined) {
+                primaryUpdates.fullName = updateData.fullname
+
+            }
+
+            if (updateData.bio !== undefined) {
+                updates.bio = updateData.bio.trim().substring(0, 500);
+            }
+
+            if (updateData.location !== undefined) {
+                updates.location = updateData.location.trim();
+            }
+
+            if (updateData.birthdate !== undefined) {
+                updates.birthdate = new Date(updateData.birthdate);
+            }
+
+            if (updateData.gender !== undefined) {
+                updates.gender = updateData.gender;
+            }
+
+            if (updateData.githubUrl !== undefined) {
+                updates.githubUrl = this.validateUrl(updateData.githubUrl, 'github.com');
+            }
+
+            if (updateData.linkedinUrl !== undefined) {
+                updates.linkedinUrl = this.validateUrl(updateData.linkedinUrl, 'linkedin.com');
+            }
+
+            await this.profileRepository.update(userId, updates);
+
+            if (Object.keys(primaryUpdates).length) {
+
+                this.userRepository.updateUser(userId, primaryUpdates)
+            }
+
+            return await this.getUserProfileUseCase.execute(userId);
         }
-
-        if (updateData.location !== undefined) {
-            updates.location = updateData.location.trim();
-        }
-
-        if (updateData.birthdate !== undefined) {
-            updates.birthdate = new Date(updateData.birthdate);
-        }
-
-        if (updateData.gender !== undefined) {
-            updates.gender = updateData.gender;
-        }
-
-        if (updateData.githubUrl !== undefined) {
-            updates.githubUrl = this.validateUrl(updateData.githubUrl, 'github.com');
-        }
-
-        if (updateData.linkedinUrl !== undefined) {
-            updates.linkedinUrl = this.validateUrl(updateData.linkedinUrl, 'linkedin.com');
-        }
-
-        await this.profileRepository.update(userId, updates);
-
-        if (Object.keys(primaryUpdates).length) {
-            this.userRepository.updateUser(userId, primaryUpdates)
-        }
-
-        return await this.getUserProfileUseCase.execute(userId);
     }
 
     private validateUrl(url: string, domain: string): string {

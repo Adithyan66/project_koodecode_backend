@@ -2,19 +2,13 @@ import { Router } from 'express';
 import { SignupController } from '../controllers/auth/SignupController';
 import { LoginController } from '../controllers/auth/LoginController';
 import { JwtService } from '../../infrastructure/services/JwtService';
-<<<<<<< HEAD
-import { LoginUseCase } from '../../application/usecases/users/LoginUseCase'; 
-import { MongoUserRepository } from '../../infrastructure/db/MongoUserRepository';
-import { SignupUseCase } from '../../application/usecases/users/SignupUseCase';
-import { OtpUseCase } from '../../application/usecases/users/OtpUseCase';
-import { RedisOtpRepository } from '../../infrastructure/persistence/RedisOtpRepository'; 
-=======
+
 import { LoginUseCase } from '../../application/usecases/users/LoginUseCase';
 import { MongoUserRepository } from '../../infrastructure/db/MongoUserRepository';
 import { SignupUseCase } from '../../application/usecases/users/SignupUseCase';
 import { OtpUseCase } from '../../application/usecases/users/OtpUseCase';
 import { RedisOtpRepository } from '../../infrastructure/persistence/RedisOtpRepository';
->>>>>>> feature/s3-bucket
+
 import { NodemailerEmailService } from '../../infrastructure/services/NodemailerEmailService';
 import { ValidateUserUseCase } from '../../application/usecases/users/ValidateUserUseCase';
 import { UserController } from '../controllers/auth/UserController';

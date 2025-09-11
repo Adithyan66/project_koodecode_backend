@@ -2,11 +2,8 @@
 
 import { Router } from 'express';
 import { HealthController } from '../controllers/HealthController';
-<<<<<<< HEAD
+
 import { Judge0HealthService } from '../../infrastructure/services/Judge0HealthService'; 
-=======
-import { Judge0HealthService } from '../../infrastructure/services/Judge0HealthService';
->>>>>>> feature/s3-bucket
 
 const router = Router();
 

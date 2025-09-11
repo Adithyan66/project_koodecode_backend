@@ -1,10 +1,7 @@
 
 import { Request, Response } from 'express';
-<<<<<<< HEAD
 import { ValidateUserUseCase } from '../../../application/usecases/users/ValidateUserUseCase'; 
-=======
-import { ValidateUserUseCase } from '../../../application/usecases/users/ValidateUserUseCase';
->>>>>>> feature/s3-bucket
+
 
 export class UserController {
 

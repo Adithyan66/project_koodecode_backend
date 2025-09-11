@@ -2,11 +2,8 @@
 
 import { Request, Response } from 'express';
 import { PasswordService } from '../../../application/services/PasswordService';
-<<<<<<< HEAD
 import { SignupUseCase } from '../../../application/usecases/users/SignupUseCase'; 
-=======
-import { SignupUseCase } from '../../../application/usecases/users/SignupUseCase';
->>>>>>> feature/s3-bucket
+
 import { IOtpRepository } from '../../../application/interfaces/IOtpRepository';
 import { JwtService } from '../../../infrastructure/services/JwtService';
 import { config } from '../../../infrastructure/config/config';

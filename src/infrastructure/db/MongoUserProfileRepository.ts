@@ -259,11 +259,9 @@
 
 
 import { UserProfile, UserStreak } from '../../domain/entities/UserProfile';
-<<<<<<< HEAD
+
 import { IUserProfileRepository } from '../../application/interfaces/IUserProfileRepository'; 
-=======
-import { IUserProfileRepository } from '../../application/interfaces/IUserProfileRepository';
->>>>>>> feature/s3-bucket
+
 import { UserProfileModel } from './models/UserProfileModel';
 import { Types } from 'mongoose';
 
