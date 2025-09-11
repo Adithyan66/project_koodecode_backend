@@ -16,9 +16,12 @@ export class UpdateUserProfileUseCase {
 
 
         const updates: any = {};
+
+        console.log("updated data ",updateData);
+        
         
         if (updateData.bio !== undefined) {
-            updates.bio = updateData.bio.trim().substring(0, 500); // Limit bio length
+            updates.bio = updateData.bio.trim().substring(0, 500); 
         }
         
         if (updateData.location !== undefined) {

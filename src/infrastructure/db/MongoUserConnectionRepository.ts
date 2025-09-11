@@ -1,7 +1,7 @@
 
 
 import { UserConnection, ConnectionStatus } from '../../domain/entities/UserConnection';
-import { IUserConnectionRepository } from '../..***REMOVED***epository';
+import { IUserConnectionRepository } from '../../application/interfaces/IUserConnectionRepository'; 
 import { UserConnectionModel } from './models/UserConnectionModel';
 import { Types } from 'mongoose';
 

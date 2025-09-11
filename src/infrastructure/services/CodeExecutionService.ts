@@ -1,4 +1,4 @@
-import { ICodeExecutionService } from '../..***REMOVED***rvice';
+import { ICodeExecutionService } from '../../application/interfaces/ICodeExecutionService'; 
 import { TestResult } from '../../domain/entities/Submission';
 
 export class CodeExecutionService implements ICodeExecutionService {

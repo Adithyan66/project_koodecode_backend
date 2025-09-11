@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { CreateProblemUseCase } from '../../../..***REMOVED***blemUseCase';
+import { CreateProblemUseCase } from '../../../../application/usecases/problems/CreateProblemUseCase'; 
 import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 import { diff } from 'util';
-import { CreateProblemDto } from '../../../..***REMOVED***to';
+import { CreateProblemDto } from '../../../../application/dto/problems/CreateProblemDto'; 
 // import { MESSAGES } from '../../../shared/constants/messages';
 
 interface AuthenticatedRequest extends Request {

@@ -1,15 +1,15 @@
 import { Router } from 'express';
-// import { UserProblemController } from '../..***REMOVED***ontroller';
-import { AdminProblemController } from '../..***REMOVED***Controller';
+// import { UserProblemController } from '../../controllers/users/problems/UserProblemController';
+import { AdminProblemController } from '../../controllers/admin/problems/AdminProblemController';
 import { authMiddleware } from '../../middleware/authMiddleware';
 
-import { GetProblemsListUseCase } from '../../..***REMOVED***msListUseCase';
-import { GetProblemByIdUseCase } from '../../..***REMOVED***mByIdUseCase';
-import { CreateProblemUseCase } from '../../..***REMOVED***blemUseCase';
+import { GetProblemsListUseCase } from '../../../application/usecases/problems/GetProblemsListUseCase';
+import { GetProblemByIdUseCase } from '../../../application/usecases/problems/GetProblemByIdUseCase';
+import { CreateProblemUseCase } from '../../../application/usecases/problems/CreateProblemUseCase';
 
-import { MongoProblemRepository } from '../../..***REMOVED***y';
-import { MongoCounterRepository } from '../../..***REMOVED***y';
-import { MongoTestCaseRepository } from '../../..***REMOVED***ry';
+import { MongoProblemRepository } from '../../../infrastructure/db/MongoProblemRepository';
+import { MongoCounterRepository } from '../../../infrastructure/db/MongoCounterRepository';
+import { MongoTestCaseRepository } from '../../../infrastructure/db/MongoTestCaseRepository';
 
 const router = Router();
 

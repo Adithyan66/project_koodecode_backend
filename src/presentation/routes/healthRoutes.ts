@@ -2,7 +2,7 @@
 
 import { Router } from 'express';
 import { HealthController } from '../controllers/HealthController';
-import { Judge0HealthService } from '../..***REMOVED***vice';
+import { Judge0HealthService } from '../../infrastructure/services/Judge0HealthService'; 
 
 const router = Router();
 

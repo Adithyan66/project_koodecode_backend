@@ -1,19 +1,19 @@
 
 
 import { Router } from 'express';
-import { UserProfileController } from '../..***REMOVED***';
+import { UserProfileController } from '../../controllers/users/UserProfileController'; 
 import { UserSocialController } from '../../controllers/users/UserSocialController';
 import { authMiddleware } from '../../middleware/authMiddleware';
-import { GetUserProfileUseCase } from '../../..***REMOVED***leUseCase';
-import { UpdateUserProfileUseCase } from '../../..***REMOVED***ofileUseCase';
+import { GetUserProfileUseCase } from '../../../application/usecases/users/GetUserProfileUseCase';
+import { UpdateUserProfileUseCase } from '../../../application/usecases/users/UpdateUserProfileUseCase'; 
 import { MongoUserRepository } from '../../../infrastructure/db/MongoUserRepository';
-import { MongoUserProfileRepository } from '../../..***REMOVED***itory';
-import { MongoUserConnectionRepository } from '../../..***REMOVED***pository';
-import { FollowUserUseCase } from '../../..***REMOVED***eCase';
-import { UnfollowUserUseCase } from '../../..***REMOVED***UseCase';
-import { GetUserFollowersUseCase } from '../../..***REMOVED***wersUseCase';
-import { GetUserFollowingUseCase } from '../../..***REMOVED***wingUseCase';
-import { GetUserEditableProfile } from '../../..***REMOVED***bleProfile';
+import { MongoUserProfileRepository } from '../../../infrastructure/db/MongoUserProfileRepository'; 
+import { MongoUserConnectionRepository } from '../../../infrastructure/db/MongoUserConnectionRepository'; 
+import { FollowUserUseCase } from '../../../application/usecases/users/FollowUserUseCase'; 
+import { UnfollowUserUseCase } from '../../../application/usecases/users/UnfollowUserUseCase'; 
+import { GetUserFollowersUseCase } from '../../../application/usecases/users/GetUserFollowersUseCase'; 
+import { GetUserFollowingUseCase } from '../../../application/usecases/users/GetUserFollowingUseCase'; 
+import { GetUserEditableProfile } from '../../../application/usecases/users/GetUserEditableProfile'; 
 
 
 

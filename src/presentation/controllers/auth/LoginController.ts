@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { LoginUseCase } from '../../..***REMOVED***';
+import { LoginUseCase } from '../../../application/usecases/users/LoginUseCase'; 
 import { config } from '../../../infrastructure/config/config';
 
 export class LoginController {

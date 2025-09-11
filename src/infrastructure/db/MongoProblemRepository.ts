@@ -1,7 +1,7 @@
 import { SortOrder } from 'mongoose';
-import { IProblemRepository, PaginationOptions, ProblemFilters } from '../..***REMOVED***ry';
 import { Problem } from '../../domain/entities/Problem';
 import ProblemModel from './models/ProblemModel';
+import { IProblemRepository, PaginationOptions, ProblemFilters } from '../../application/interfaces/IProblemRepository';
 
 
 

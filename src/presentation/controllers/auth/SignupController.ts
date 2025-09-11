@@ -2,7 +2,7 @@
 
 import { Request, Response } from 'express';
 import { PasswordService } from '../../../application/services/PasswordService';
-import { SignupUseCase } from '../../..***REMOVED***e';
+import { SignupUseCase } from '../../../application/usecases/users/SignupUseCase'; 
 import { IOtpRepository } from '../../../application/interfaces/IOtpRepository';
 import { JwtService } from '../../../infrastructure/services/JwtService';
 import { config } from '../../../infrastructure/config/config';

@@ -1,7 +1,7 @@
 
 
 import { Badge, BadgeType, BadgeCategory, BADGE_DEFINITIONS } from '../../domain/entities/Badge';
-import { IBadgeRepository } from '../..***REMOVED***';
+import { IBadgeRepository } from '../../application/interfaces/IBadgeRepository';
 import { BadgeModel } from './models/BadgeModel';
 
 export class MongoBadgeRepository implements IBadgeRepository {

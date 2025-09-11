@@ -1,6 +1,6 @@
 
 
-import { IJudge0Repository } from '../..***REMOVED***y';
+import { IJudge0Repository } from '../../application/interfaces/IJudge0Repository'; 
 import { Judge0Submission } from '../../domain/entities/Judge0Submission';
 import { Judge0SubmissionModel } from './models/Judge0SubmissionModel';
 

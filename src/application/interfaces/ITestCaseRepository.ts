@@ -1,6 +1,5 @@
 
 
-// ***REMOVED***sitory.ts
 import { TestCase } from '../../domain/entities/TestCase';
 
 export interface ITestCaseRepository {

@@ -4,8 +4,8 @@
 
 
 import { Request, Response } from 'express';
-import { GetProblemsListUseCase } from '../../../..***REMOVED***msListUseCase';
-import { GetProblemByIdUseCase } from '../../../..***REMOVED***mByIdUseCase';
+import { GetProblemsListUseCase } from '../../../../application/usecases/problems/GetProblemsListUseCase'; 
+import { GetProblemByIdUseCase } from '../../../../application/usecases/problems/GetProblemByIdUseCase';
 import { profileEnd } from 'console';
 
 export class UserProblemController {

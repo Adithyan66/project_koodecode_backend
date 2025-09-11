@@ -1,7 +1,7 @@
 
 
 import { Request, Response } from 'express';
-import { Judge0HealthService } from '../..***REMOVED***vice';
+import { Judge0HealthService } from '../../infrastructure/services/Judge0HealthService'; 
 import { HTTP_STATUS } from '../../shared/constants/httpStatus';
 
 export class HealthController {

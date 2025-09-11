@@ -1,6 +1,5 @@
 
 
-// ***REMOVED***ponseDto.ts
 export interface TestCaseResponseDto {
     id: string;
     problemId: string;

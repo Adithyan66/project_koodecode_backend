@@ -1,9 +1,9 @@
 
 
-import { IUserStatsService } from '../..***REMOVED***e';
+import { IUserStatsService } from '../../application/interfaces/IUserStatsService';
 import { IUserRepository } from '../../application/interfaces/IUserRepository';
-import { IUserProfileRepository } from '../..***REMOVED***sitory';
-import { IBadgeRepository } from '../..***REMOVED***';
+import { IUserProfileRepository } from '../../application/interfaces/IUserProfileRepository';
+import { IBadgeRepository } from '../../application/interfaces/IBadgeRepository'; 
 import { ActivityType, BadgeType, UserProfile } from '../../domain/entities/UserProfile';
 import { Badge } from '../../domain/entities/Badge';
 

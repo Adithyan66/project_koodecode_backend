@@ -1,12 +1,12 @@
 
 
 import { Request, Response } from 'express';
-import { GetUserProfileUseCase } from '../../..***REMOVED***leUseCase';
-import { UpdateUserProfileUseCase } from '../../..***REMOVED***ofileUseCase';
+import { GetUserProfileUseCase } from '../../../application/usecases/users/GetUserProfileUseCase'; 
+import { UpdateUserProfileUseCase } from '../../../application/usecases/users/UpdateUserProfileUseCase'; 
 import { UpdateProfileDto } from '../../../application/dto/users/UserProfileDto';
 import { HTTP_STATUS } from '../../../shared/constants/httpStatus';
 import { IUserRepository } from '../../../application/interfaces/IUserRepository';
-import { GetUserEditableProfile } from '../../..***REMOVED***bleProfile';
+import { GetUserEditableProfile } from '../../../application/usecases/users/GetUserEditableProfile';
 
 
 interface AuthenticatedRequest extends Request {

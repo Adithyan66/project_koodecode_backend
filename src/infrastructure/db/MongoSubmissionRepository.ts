@@ -1,6 +1,6 @@
 
 
-import { ISubmissionRepository } from '../..***REMOVED***itory';
+import { ISubmissionRepository } from '../../application/interfaces/ISubmissionRepository';
 import { Submission } from '../../domain/entities/Submission';
 import { SubmissionModel } from './models/SubmissionModel';
 

@@ -1,20 +1,20 @@
 
 import { Router } from "express";
 
-import { UserProblemController } from "../..***REMOVED***ontroller";
-import { GetProblemsListUseCase } from "../../..***REMOVED***msListUseCase";
-import { MongoProblemRepository } from "../../..***REMOVED***y";
-import { ProblemSolvingController } from '../..***REMOVED***ngController';
-import { GetProblemByIdUseCase } from "../../..***REMOVED***mByIdUseCase";
+import { UserProblemController } from "../../controllers/users/problems/UserProblemController";
+import { GetProblemsListUseCase } from "../../../application/usecases/problems/GetProblemsListUseCase";
+import { MongoProblemRepository } from "../../../infrastructure/db/MongoProblemRepository"; 
+import { ProblemSolvingController } from "../../controllers/users/problems/ProblemSolvingController";
+import { GetProblemByIdUseCase } from "../../../application/usecases/problems/GetProblemByIdUseCase"; 
 import { Judge0Service } from "../../../infrastructure/services/Judge0Service";
-import { MongoSubmissionRepository } from "../../..***REMOVED***tory";
-import { CreateSubmissionUseCase } from "../../..***REMOVED***SubmissionUseCase";
-import { GetSubmissionResultUseCase } from "../../..***REMOVED***missionResultUseCase";
-import { RunCodeUseCase } from "../../..***REMOVED***eUseCase";
-import { GetLanguagesUseCase } from "../../..***REMOVED***guagesUseCase";
-import { MongoTestCaseRepository } from "../../..***REMOVED***ry";
+import { MongoSubmissionRepository } from "../../../infrastructure/db/MongoSubmissionRepository";
+import { CreateSubmissionUseCase } from "../../../application/usecases/submissions/CreateSubmissionUseCase"; 
+import { GetSubmissionResultUseCase } from "../../../application/usecases/submissions/GetSubmissionResultUseCase"; 
+import { RunCodeUseCase } from "../../../application/usecases/submissions/RunCodeUseCase";
+import { GetLanguagesUseCase } from "../../../application/usecases/submissions/GetLanguagesUseCase";
+import { MongoTestCaseRepository } from "../../../infrastructure/db/MongoTestCaseRepository"; 
 import { authMiddleware } from "../../middleware/authMiddleware";
-import { CodeExecutionHelperService } from "../../..***REMOVED***rService";
+import { CodeExecutionHelperService } from "../../../application/services/CodeExecutionHelperService"; 
 
 const router = Router()
 

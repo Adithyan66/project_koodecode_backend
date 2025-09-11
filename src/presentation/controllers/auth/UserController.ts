@@ -1,6 +1,6 @@
 // src/controllers/UserController.ts
 import { Request, Response } from 'express';
-import { ValidateUserUseCase } from '../../..***REMOVED***UseCase';
+import { ValidateUserUseCase } from '../../../application/usecases/users/ValidateUserUseCase'; 
 
 export class UserController {
     constructor(

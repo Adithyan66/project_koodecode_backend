@@ -1,5 +1,5 @@
 import { UserProfile, UserStreak } from '../../domain/entities/UserProfile';
-import { IUserProfileRepository } from '../..***REMOVED***sitory';
+import { IUserProfileRepository } from '../../application/interfaces/IUserProfileRepository'; 
 import { UserProfileModel } from './models/UserProfileModel';
 import { Types } from 'mongoose';
 
