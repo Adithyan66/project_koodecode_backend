@@ -2,37 +2,26 @@
 
 import { Router } from 'express';
 import { UserProfileController } from '../../controllers/users/UserProfileController'; 
-<<<<<<< HEAD
+
 import { UserSocialController } from '../../controllers/users/UserSocialController';
 import { authMiddleware } from '../../middleware/authMiddleware';
 import { GetUserProfileUseCase } from '../../../application/usecases/users/GetUserProfileUseCase';
-=======
-import { UserSocialController } from '../../controllers/users/UserSocialController'; 
-import { authMiddleware } from '../../middleware/authMiddleware';
-import { GetUserProfileUseCase } from '../../../application/usecases/users/GetUserProfileUseCase'; 
->>>>>>> feature/s3-bucket
+
 import { UpdateUserProfileUseCase } from '../../../application/usecases/users/UpdateUserProfileUseCase'; 
 import { MongoUserRepository } from '../../../infrastructure/db/MongoUserRepository';
 import { MongoUserProfileRepository } from '../../../infrastructure/db/MongoUserProfileRepository'; 
 import { MongoUserConnectionRepository } from '../../../infrastructure/db/MongoUserConnectionRepository'; 
-<<<<<<< HEAD
 import { FollowUserUseCase } from '../../../application/usecases/users/FollowUserUseCase'; 
 import { UnfollowUserUseCase } from '../../../application/usecases/users/UnfollowUserUseCase'; 
 import { GetUserFollowersUseCase } from '../../../application/usecases/users/GetUserFollowersUseCase'; 
 import { GetUserFollowingUseCase } from '../../../application/usecases/users/GetUserFollowingUseCase'; 
 import { GetUserEditableProfile } from '../../../application/usecases/users/GetUserEditableProfile'; 
-=======
-import { FollowUserUseCase } from '../../../application/usecases/users/FollowUserUseCase';
-import { UnfollowUserUseCase } from '../../../application/usecases/users/UnfollowUserUseCase'; 
-import { GetUserFollowersUseCase } from '../../../application/usecases/users/GetUserFollowersUseCase'; 
-import { GetUserFollowingUseCase } from '../../../application/usecases/users/GetUserFollowingUseCase';
-import { GetUserEditableProfile } from '../../../application/usecases/users/GetUserEditableProfile'; 
+ 
 import { GenerateProfileImageUploadUrlUseCase } from '../../../application/usecases/users/GenerateProfileImageUploadUrlUseCase'; 
 import { ImageUploadService } from '../../../application/services/ImageUploadService'; 
 import { S3Service } from '../../../infrastructure/services/S3Service';
 import { UpdateProfileImageUseCase } from '../../../application/usecases/users/UpdateProfileImageUseCase'; 
 import { ProfileImageController } from '../../controllers/users/ProfileImageController';
->>>>>>> feature/s3-bucket
 
 
 

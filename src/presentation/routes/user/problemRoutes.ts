@@ -1,7 +1,6 @@
 
 import { Router } from "express";
 
-<<<<<<< HEAD
 import { UserProblemController } from "../../controllers/users/problems/UserProblemController";
 import { GetProblemsListUseCase } from "../../../application/usecases/problems/GetProblemsListUseCase";
 import { MongoProblemRepository } from "../../../infrastructure/db/MongoProblemRepository"; 
@@ -13,19 +12,7 @@ import { CreateSubmissionUseCase } from "../../../application/usecases/submissio
 import { GetSubmissionResultUseCase } from "../../../application/usecases/submissions/GetSubmissionResultUseCase"; 
 import { RunCodeUseCase } from "../../../application/usecases/submissions/RunCodeUseCase";
 import { GetLanguagesUseCase } from "../../../application/usecases/submissions/GetLanguagesUseCase";
-=======
-import { UserProblemController } from "../../controllers/users/problems/UserProblemController"; 
-import { GetProblemsListUseCase } from "../../../application/usecases/problems/GetProblemsListUseCase"; 
-import { MongoProblemRepository } from "../../../infrastructure/db/MongoProblemRepository"; 
-import { ProblemSolvingController } from "../../controllers/users/problems/ProblemSolvingController"; 
-import { GetProblemByIdUseCase } from "../../../application/usecases/problems/GetProblemByIdUseCase"; 
-import { Judge0Service } from "../../../infrastructure/services/Judge0Service";
-import { MongoSubmissionRepository } from "../../../infrastructure/db/MongoSubmissionRepository"; 
-import { CreateSubmissionUseCase } from "../../../application/usecases/submissions/CreateSubmissionUseCase"; 
-import { GetSubmissionResultUseCase } from "../../../application/usecases/submissions/GetSubmissionResultUseCase"; 
-import { RunCodeUseCase } from "../../../application/usecases/submissions/RunCodeUseCase"; 
-import { GetLanguagesUseCase } from "../../../application/usecases/submissions/GetLanguagesUseCase"; 
->>>>>>> feature/s3-bucket
+
 import { MongoTestCaseRepository } from "../../../infrastructure/db/MongoTestCaseRepository"; 
 import { authMiddleware } from "../../middleware/authMiddleware";
 import { CodeExecutionHelperService } from "../../../application/services/CodeExecutionHelperService"; 

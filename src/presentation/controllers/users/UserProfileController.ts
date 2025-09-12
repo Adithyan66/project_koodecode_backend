@@ -1,13 +1,10 @@
 
 
 import { Request, Response } from 'express';
-<<<<<<< HEAD
+
 import { GetUserProfileUseCase } from '../../../application/usecases/users/GetUserProfileUseCase'; 
 import { UpdateUserProfileUseCase } from '../../../application/usecases/users/UpdateUserProfileUseCase'; 
-=======
-import { GetUserProfileUseCase } from '../../../application/usecases/users/GetUserProfileUseCase';
-import { UpdateUserProfileUseCase } from '../../../application/usecases/users/UpdateUserProfileUseCase';
->>>>>>> feature/s3-bucket
+
 import { UpdateProfileDto } from '../../../application/dto/users/UserProfileDto';
 import { HTTP_STATUS } from '../../../shared/constants/httpStatus';
 import { IUserRepository } from '../../../application/interfaces/IUserRepository';
