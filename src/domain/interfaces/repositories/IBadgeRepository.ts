@@ -1,5 +1,5 @@
-import { Badge, BadgeCategory } from '../../domain/entities/Badge';
-import { BadgeType } from '../../domain/entities/UserProfile';
+import { Badge, BadgeCategory } from '../../entities/Badge';
+import { BadgeType } from '../../entities/UserProfile';
 
 
 export interface IBadgeRepository {

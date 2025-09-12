@@ -1,7 +1,7 @@
 import { SortOrder } from 'mongoose';
 import { Problem } from '../../domain/entities/Problem';
 import ProblemModel from './models/ProblemModel';
-import { IProblemRepository, PaginationOptions, ProblemFilters } from '../../application/interfaces/IProblemRepository';
+import { IProblemRepository, PaginationOptions, ProblemFilters } from '../../domain/interfaces/repositories/IProblemRepository';
 
 
 
@@ -159,52 +159,33 @@ export class MongoProblemRepository implements IProblemRepository {
         hasPrev: boolean;
     }> {
         try {
-            // Build MongoDB query
+            console.log("query", filters);
+
             const query: any = {};
 
-            // Search functionality - searches in title and description
             if (filters.search) {
+                const searchNum = Number(filters.search);
+
                 query.$or = [
                     { title: { $regex: filters.search, $options: 'i' } },
-                    { description: { $regex: filters.search, $options: 'i' } }
+                    ...(isNaN(searchNum) ? [] : [{ problemNumber: searchNum }])
                 ];
             }
 
             // Filter by difficulty
             if (filters.difficulty) {
-                query.difficulty = filters.difficulty;
+                query.difficulty = filters.difficulty.toLowerCase();
             }
-
-            // Filter by category
-            // if (filters.category) {
-            //     query.category = filters.category;
-            // }
-
-            // Filter by tags
-            // if (filters.tags && filters.tags.length > 0) {
-            //     query.tags = { $in: filters.tags };
-            // }
-
-            // Filter by status (for published problems only for users)
-            // if (filters.status) {
-            //     query.status = filters.status;
-            // } else {
-            //     // Default to published problems for user requests
-            //     query.status = 'Published';
-            // }
 
             // Pagination
             const skip = (pagination.page - 1) * pagination.limit;
 
             // Sorting
-            const sortField = pagination.sortBy || 'createdAt';
-            const sortDirection = pagination.sortOrder === 'asc' ? 1 : -1;
-            const sort = { [sortField]: sortDirection as SortOrder };
+
 
             // Execute queries in parallel
             const [problems, total] = await Promise.all([
                 ProblemModel.find(query)
-                    .sort(sort)
                     .skip(skip)
                     .limit(pagination.limit)
                     .lean(),

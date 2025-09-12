@@ -1,6 +1,6 @@
 
 
-import { TestCase } from '../../domain/entities/TestCase';
+import { TestCase } from '../../entities/TestCase';
 
 export interface ITestCaseRepository {
     create(testCase: TestCase): Promise<TestCase>;

@@ -1,5 +1,5 @@
 import { Problem } from '../../../domain/entities/Problem';
-import { IProblemRepository } from '../../interfaces/IProblemRepository';
+import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
 
 export class GetProblemByNumberUseCase {
     constructor(private problemRepository: IProblemRepository) {}

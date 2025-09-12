@@ -2,14 +2,9 @@ tree  -I 'node_modules' > structure.txt
 
 
 
-
-
-
-
-
-
 ├── package.json
 ├── package-lock.json
+├── replacements.txt
 ├── src
 │   ├── application
 │   │   ├── dto
@@ -29,28 +24,20 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   │   └── SubmissionResponseDto.ts
 │   │   │   └── users
 │   │   │       ├── FollowUserDto.ts
+│   │   │       ├── GenerateUploadUrlDto.ts
 │   │   │       ├── loginUserResponse.ts
 │   │   │       ├── safeUser.ts
 │   │   │       ├── signupUserResponse.ts
+│   │   │       ├── UploadUrlResponseDto.ts
 │   │   │       └── UserProfileDto.ts
 │   │   ├── interfaces
-│   │   │   ├── IBadgeRepository.ts
-│   │   │   ├── ICodeExecutionService.ts
-│   │   │   ├── ICounterRepository.ts
-│   │   │   ├── IEmailService.ts
+│   │   │   ├── IImageUploadService.ts
 │   │   │   ├── IJudge0Repository.ts
-│   │   │   ├── IJudge0Service.ts
 │   │   │   ├── IOtpRepository.ts
-│   │   │   ├── IProblemRepository.ts
-│   │   │   ├── ISubmissionRepository.ts
-│   │   │   ├── ITestCaseRepository.ts
-│   │   │   ├── ITokenService.ts
-│   │   │   ├── IUserConnectionRepository.ts
-│   │   │   ├── IUserProfileRepository.ts
-│   │   │   ├── IUserRepository.ts
-│   │   │   └── IUserStatsService.ts
+│   │   │   └── IS3Service.ts
 │   │   ├── services
 │   │   │   ├── CodeExecutionHelperService.ts
+│   │   │   ├── ImageUploadService.ts
 │   │   │   ├── PasswordService.ts
 │   │   │   └── userMapper.ts
 │   │   └── usecases
@@ -68,6 +55,8 @@ tree  -I 'node_modules' > structure.txt
 │   │       │   └── RunCodeUseCase.ts
 │   │       └── users
 │   │           ├── FollowUserUseCase.ts
+│   │           ├── ForgotPasswordUseCase.ts
+│   │           ├── GenerateProfileImageUploadUrlUseCase.ts
 │   │           ├── GetUserEditableProfile.ts
 │   │           ├── GetUserFollowersUseCase.ts
 │   │           ├── GetUserFollowingUseCase.ts
@@ -77,22 +66,40 @@ tree  -I 'node_modules' > structure.txt
 │   │           ├── OtpUseCase.ts
 │   │           ├── SignupUseCase.ts
 │   │           ├── UnfollowUserUseCase.ts
+│   │           ├── UpdateProfileImageUseCase.ts
 │   │           ├── UpdateUserProfileUseCase.ts
 │   │           └── ValidateUserUseCase.ts
 │   ├── app.ts
 │   ├── domain
-│   │   └── entities
-│   │       ├── Badge.ts
-│   │       ├── ContestParticipant.ts
-│   │       ├── Contest.ts
-│   │       ├── Counter.ts
-│   │       ├── Judge0Submission.ts
-│   │       ├── Problem.ts
-│   │       ├── Submission.ts
-│   │       ├── TestCase.ts
-│   │       ├── UserConnection.ts
-│   │       ├── UserProfile.ts
-│   │       └── User.ts
+│   │   ├── entities
+│   │   │   ├── Badge.ts
+│   │   │   ├── ContestParticipant.ts
+│   │   │   ├── Contest.ts
+│   │   │   ├── Counter.ts
+│   │   │   ├── Judge0Submission.ts
+│   │   │   ├── Otp.ts
+│   │   │   ├── Problem.ts
+│   │   │   ├── Submission.ts
+│   │   │   ├── TestCase.ts
+│   │   │   ├── UserConnection.ts
+│   │   │   ├── UserProfile.ts
+│   │   │   └── User.ts
+│   │   └── interfaces
+│   │       ├── repositories
+│   │       │   ├── IBadgeRepository.ts
+│   │       │   ├── ICounterRepository.ts
+│   │       │   ├── IProblemRepository.ts
+│   │       │   ├── ISubmissionRepository.ts
+│   │       │   ├── ITestCaseRepository.ts
+│   │       │   ├── IUserConnectionRepository.ts
+│   │       │   ├── IUserProfileRepository.ts
+│   │       │   └── IUserRepository.ts
+│   │       └── services
+│   │           ├── ICodeExecutionService.ts
+│   │           ├── IEmailService.ts
+│   │           ├── IJudge0Service.ts
+│   │           ├── ITokenService.ts
+│   │           └── IUserStatsService.ts
 │   ├── infrastructure
 │   │   ├── config
 │   │   │   └── config.ts
@@ -132,6 +139,7 @@ tree  -I 'node_modules' > structure.txt
 │   │       ├── Judge0Service.ts
 │   │       ├── JwtService.ts
 │   │       ├── NodemailerEmailService.ts
+│   │       ├── S3Service.ts
 │   │       └── UserStatsService.ts
 │   ├── presentation
 │   │   ├── controllers
@@ -140,6 +148,7 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   │   └── problems
 │   │   │   │       └── AdminProblemController.ts
 │   │   │   ├── auth
+│   │   │   │   ├── ForgotPasswordController.ts
 │   │   │   │   ├── LoginController.ts
 │   │   │   │   ├── LogoutController.ts
 │   │   │   │   ├── RefreshTokenController.ts
@@ -151,6 +160,7 @@ tree  -I 'node_modules' > structure.txt
 │   │   │       ├── problems
 │   │   │       │   ├── ProblemSolvingController.ts
 │   │   │       │   └── UserProblemController.ts
+│   │   │       ├── ProfileImageController.ts
 │   │   │       ├── UserProfileController.ts
 │   │   │       └── UserSocialController.ts
 │   │   ├── middleware
@@ -173,6 +183,8 @@ tree  -I 'node_modules' > structure.txt
 │       │   └── TokenPayload.ts
 │       └── utils
 ├── structure.txt
+├── test-aws.js
+├── test-presigned-url.js
 └── tsconfig.json
 
-41 directories, 126 files
+44 directories, 141 files

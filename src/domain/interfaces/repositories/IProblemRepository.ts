@@ -1,12 +1,12 @@
 
 
-import { Problem } from '../../domain/entities/Problem';
+import { Problem } from '../../entities/Problem';
 
 
 
 export interface ProblemFilters {
     search?: string;
-    difficulty?: 'Easy' | 'Medium' | 'Hard';
+    difficulty?: 'easy' | 'medium' | 'hard';
     category?: string;
     tags?: string[];
     status?: 'Draft' | 'Published';
@@ -28,7 +28,6 @@ export interface IProblemRepository {
     findByProblemNumber(problemNumber: number): Promise<Problem | null>;
     findAll(filters?: {
         difficulty?: 'easy' | 'medium' | 'hard';
-        tags?: string[];
         isActive?: boolean;
         name?: string;
         page?: number;

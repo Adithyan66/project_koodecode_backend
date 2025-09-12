@@ -1,6 +1,6 @@
 
 
-import { ICounterRepository } from '../../application/interfaces/ICounterRepository';
+import { ICounterRepository } from '../../domain/interfaces/repositories/ICounterRepository';
 import { CounterModel } from './models/CounterModel';
 
 export class MongoCounterRepository implements ICounterRepository {

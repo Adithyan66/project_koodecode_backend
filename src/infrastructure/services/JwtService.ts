@@ -5,7 +5,7 @@
 import jwt from 'jsonwebtoken';
 import { config } from '../config/config';
 import Redis from 'ioredis';
-import { ITokenService } from '../../application/interfaces/ITokenService';
+import { ITokenService } from '../../domain/interfaces/services/ITokenService';
 import { TokenPayload } from '../../shared/types/TokenPayload';
 
 const redis = new Redis();

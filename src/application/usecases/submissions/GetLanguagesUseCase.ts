@@ -1,6 +1,6 @@
 
 
-import { IJudge0Service } from '../../interfaces/IJudge0Service';
+import { IJudge0Service } from '../../../domain/interfaces/services/IJudge0Service';
 import { Judge0Language } from '../../../domain/entities/Judge0Submission';
 
 export class GetLanguagesUseCase {

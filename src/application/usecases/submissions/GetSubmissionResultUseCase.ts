@@ -4,8 +4,8 @@
 
 
 
-import { IJudge0Service } from '../../interfaces/IJudge0Service';
-import { ISubmissionRepository } from '../../interfaces/ISubmissionRepository';
+import { IJudge0Service } from '../../../domain/interfaces/services/IJudge0Service';
+import { ISubmissionRepository } from '../../../domain/interfaces/repositories/ISubmissionRepository';
 import { SubmissionResponseDto } from '../../dto/submissions/SubmissionResponseDto';
 
 export class GetSubmissionResultUseCase {

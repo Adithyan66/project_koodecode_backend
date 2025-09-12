@@ -1,6 +1,6 @@
-import { IUserRepository } from '../../interfaces/IUserRepository';
-import { IUserProfileRepository } from '../../interfaces/IUserProfileRepository';
-import { IUserConnectionRepository } from '../../interfaces/IUserConnectionRepository';
+import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
+import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
+import { IUserConnectionRepository } from '../../../domain/interfaces/repositories/IUserConnectionRepository';
 import { User } from '../../../domain/entities/User';
 import { UserProfile } from '../../../domain/entities/UserProfile';
 import { UserProfileResponseDto } from '../../dto/users/UserProfileDto';
@@ -12,21 +12,21 @@ export class GetUserProfileUseCase {
         private userRepository: IUserRepository,
         private profileRepository: IUserProfileRepository,
         private connectionRepository: IUserConnectionRepository
-    ) {}
+    ) { }
 
     async execute(userId: string, year: number = new Date().getFullYear()): Promise<UserProfileResponseDto> {
 
         const user = await this.userRepository.findById(userId);
-        
+
         if (!user) {
             throw new Error('User not found');
         }
-        
+
 
         let profile = await this.profileRepository.findByUserId(userId);
 
         if (!profile) {
-            profile = new UserProfile(userId);
+            profile = new UserProfile({userId});
             await this.profileRepository.create(profile);
         }
 
@@ -37,7 +37,7 @@ export class GetUserProfileUseCase {
 
         const activities: Record<string, number> = {};
         const yearPrefix = year.toString();
-        
+
         profile.activities
             .filter(activity => activity.date.startsWith(yearPrefix))
             .forEach(activity => {
@@ -54,7 +54,7 @@ export class GetUserProfileUseCase {
                 description: badge.description,
                 iconUrl: badge.iconUrl,
                 badgeType: badge.badgeType,
-                rarity: 'common', 
+                rarity: 'common',
                 awardedAt: badge.awardedAt.toISOString()
             }));
 

@@ -1,5 +1,5 @@
 
-import { Judge0Language } from '../../domain/entities/Judge0Submission';
+import { Judge0Language } from '../../entities/Judge0Submission';
 
 export interface Judge0SubmissionRequest {
   source_code: string;
@@ -30,6 +30,7 @@ export interface Judge0SubmissionResponse {
 }
 
 export interface IJudge0Service {
+  
   submitCode(request: Judge0SubmissionRequest): Promise<Judge0SubmissionResponse>;
   getSubmissionResult(token: string): Promise<Judge0SubmissionResponse>;
   getLanguages(): Promise<Judge0Language[]>;

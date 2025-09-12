@@ -1,4 +1,4 @@
-import { IProblemRepository } from '../../interfaces/IProblemRepository';
+import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
 import { ProblemResponseDto } from '../../dto/problems/ProblemResponseDto';
 import { ITestCaseRepository } from '../../interfaces/ITestCaseRepository';
 

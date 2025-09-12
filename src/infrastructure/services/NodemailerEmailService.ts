@@ -71,7 +71,7 @@
 
 
 import nodemailer from 'nodemailer';
-import { IEmailService } from '../../application/interfaces/IEmailService';
+import { IEmailService } from '../../domain/interfaces/services/IEmailService';
 import { config } from '../config/config';
 
 export class NodemailerEmailService implements IEmailService {

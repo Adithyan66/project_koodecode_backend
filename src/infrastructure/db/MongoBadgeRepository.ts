@@ -1,7 +1,8 @@
 
 
-import { Badge, BadgeType, BadgeCategory, BADGE_DEFINITIONS } from '../../domain/entities/Badge';
-import { IBadgeRepository } from '../../application/interfaces/IBadgeRepository';
+import { Badge, BadgeCategory, BADGE_DEFINITIONS } from '../../domain/entities/Badge';
+import { BadgeType } from '../../domain/entities/UserProfile';
+import { IBadgeRepository } from '../../domain/interfaces/repositories/IBadgeRepository';
 import { BadgeModel } from './models/BadgeModel';
 
 export class MongoBadgeRepository implements IBadgeRepository {
@@ -16,7 +17,7 @@ export class MongoBadgeRepository implements IBadgeRepository {
             badge.category as BadgeCategory,
             badge.rarity as any,
             badge.isActive,
-            badge._id.toString(),
+            badge.id.toString(),
             badge.createdAt,
             badge.updatedAt
         ));
@@ -33,7 +34,7 @@ export class MongoBadgeRepository implements IBadgeRepository {
             badge.category as BadgeCategory,
             badge.rarity as any,
             badge.isActive,
-            badge._id.toString(),
+            badge.id.toString(),
             badge.createdAt,
             badge.updatedAt
         ));
@@ -52,7 +53,7 @@ export class MongoBadgeRepository implements IBadgeRepository {
             badge.category as BadgeCategory,
             badge.rarity as any,
             badge.isActive,
-            badge._id.toString(),
+            badge.id.toString(),
             badge.createdAt,
             badge.updatedAt
         );
@@ -71,7 +72,7 @@ export class MongoBadgeRepository implements IBadgeRepository {
         });
 
         const saved = await newBadge.save();
-        badge.id = saved._id.toString();
+        badge.id = saved.id.toString();
         badge.createdAt = saved.createdAt;
         badge.updatedAt = saved.updatedAt;
         
@@ -91,7 +92,7 @@ export class MongoBadgeRepository implements IBadgeRepository {
             updated.category as BadgeCategory,
             updated.rarity as any,
             updated.isActive,
-            updated._id.toString(),
+            updated.id.toString(),
             updated.createdAt,
             updated.updatedAt
         );
@@ -113,7 +114,7 @@ export class MongoBadgeRepository implements IBadgeRepository {
             badge.category as BadgeCategory,
             badge.rarity as any,
             badge.isActive,
-            badge._id.toString(),
+            badge.id.toString(),
             badge.createdAt,
             badge.updatedAt
         ));

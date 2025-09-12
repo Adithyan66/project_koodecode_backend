@@ -1,6 +1,6 @@
 
 
-import { UserProfile } from '../../domain/entities/UserProfile';
+import { UserProfile } from '../../entities/UserProfile';
 
 export interface IUserProfileRepository {
     

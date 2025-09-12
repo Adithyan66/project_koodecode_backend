@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { JwtService } from "../../../infrastructure/services/JwtService";
-import { ITokenService } from "../../../application/interfaces/ITokenService";
+import { ITokenService } from "../../../domain/interfaces/services/ITokenService";
 import { TokenPayload } from "../../../shared/types/TokenPayload";
 
 

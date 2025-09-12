@@ -4,9 +4,10 @@ import { Request, Response } from 'express';
 import { PasswordService } from '../../../application/services/PasswordService';
 import { SignupUseCase } from '../../../application/usecases/users/SignupUseCase'; 
 
-import { IOtpRepository } from '../../../application/interfaces/IOtpRepository';
+import { IOtpRepository } from '../../../domain/interfaces/repositories/IOtpRepository';
 import { JwtService } from '../../../infrastructure/services/JwtService';
 import { config } from '../../../infrastructure/config/config';
+import { HTTP_STATUS } from '../../../shared/constants/httpStatus';
 
 
 export class SignupController {
@@ -25,7 +26,7 @@ export class SignupController {
 
             const result = await this.signupUseCase.otpRequestExecute(fullName, userName, email)
 
-            res.status(200).json({
+            res.status(HTTP_STATUS.OK).json({
                 success: true,
                 message: "otp sent succesfully",
                 result
@@ -33,7 +34,7 @@ export class SignupController {
 
         } catch (error: any) {
 
-            res.status(500).json({
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
                 success: false,
                 error: error.message
             });
@@ -58,7 +59,7 @@ export class SignupController {
                 maxAge: config.cookieMaxAge
             });
 
-            res.status(200).json({
+            res.status(HTTP_STATUS.OK).json({
                 success: true,
                 message: "User signed successfully",
                 user: {
@@ -72,7 +73,7 @@ export class SignupController {
 
         } catch (error: any) {
 
-            res.status(500).json({
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
                 success: false,
                 error: error.message
             });

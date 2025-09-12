@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
 import { HTTP_STATUS } from "../../../shared/constants/httpStatus";
+import { ForgotPasswordUseCase } from "../../../application/usecases/users/ForgotPasswordUseCase";
+import { config } from "../../../infrastructure/config/config";
+import { LoginUserResponse } from "../../../application/dto/users/loginUserResponse";
 
 
 export class ForgotPasswordController {
 
     constructor(
-        private forgotPasswordUseCase: any
+        private forgotPasswordUseCase: ForgotPasswordUseCase
     ) { }
 
     async requestOtp(req: Request, res: Response) {
@@ -22,7 +25,10 @@ export class ForgotPasswordController {
                 return
             }
 
-            const data = await this.forgotPasswordUseCase.requestOtp(email)
+            const data = await this.forgotPasswordUseCase.otpRequestExecute(email)
+
+            console.log("data", data);
+
 
             res.status(HTTP_STATUS.OK).json({
                 success: true,
@@ -33,10 +39,49 @@ export class ForgotPasswordController {
             console.log(error);
             res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
                 success: false,
-                message:"something wrong"
+                message: "something wrong"
             })
 
         }
+    }
+
+    async changePassword(req: Request, res: Response) {
+
+        try {
+
+            const { email, otp, password } = req.body
+
+            if (!email || !otp || !password) {
+                res.status(HTTP_STATUS.BAD_REQUEST).json({
+                    success: false,
+                    message: "email , otp , password required"
+                })
+            }
+
+            let { user } = await this.forgotPasswordUseCase.verifyOtpExecute(email, otp, password)
+
+            res.cookie("refreshToken", user.refreshToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: "strict",
+                path: "/",
+                maxAge: config.cookieMaxAge
+            });
+
+            res.status(HTTP_STATUS.OK).json({
+                success: true,
+                message: "Password changed succesfully",
+                 user
+            })
+
+        } catch (error) {
+            console.log(error);
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                message: "inernal server error",
+            })
+        }
+
     }
 
 }

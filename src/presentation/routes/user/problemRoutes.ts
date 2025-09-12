@@ -45,7 +45,6 @@ const getLanguagesUseCase = new GetLanguagesUseCase(judge0Service);
 const problemSolvingController = new ProblemSolvingController(createSubmissionUseCase, getSubmissionResultUseCase, runCodeUseCase, getLanguagesUseCase);
 
 
-// app.use(authMiddleware())
 
 router.get("/get-problems", authMiddleware(), (req, res) => userProblemController.getProblemsWithFilters(req, res))
 

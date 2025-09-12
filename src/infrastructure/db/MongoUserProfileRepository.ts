@@ -260,12 +260,14 @@
 
 import { UserProfile, UserStreak } from '../../domain/entities/UserProfile';
 
-import { IUserProfileRepository } from '../../application/interfaces/IUserProfileRepository'; 
+import { IUserProfileRepository } from '../../domain/interfaces/repositories/IUserProfileRepository'; 
 
 import { UserProfileModel } from './models/UserProfileModel';
 import { Types } from 'mongoose';
 
 export class MongoUserProfileRepository implements IUserProfileRepository {
+
+
     async create(profile: UserProfile): Promise<UserProfile> {
         const newProfile = new UserProfileModel({
             userId: new Types.ObjectId(profile.userId),
@@ -382,7 +384,10 @@ export class MongoUserProfileRepository implements IUserProfileRepository {
             isBlocked: updated.isBlocked,
             badges: updated.badges,
             leaderboard: updated.leaderboard,
-            hints: updated.hints,
+            hints: {
+                problemId:updated.hints.problemId,
+                
+            },
             activities: updated.activities,
             lastLogin: updated.lastLogin,
             id: updated._id.toString(),

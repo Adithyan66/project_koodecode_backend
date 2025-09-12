@@ -1,4 +1,4 @@
-import { IUserRepository } from '../../interfaces/IUserRepository';
+import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
 import { PasswordService } from '../../services/PasswordService';
 import { toLoginUserResponse } from '../../services/userMapper';
 import { LoginUserResponse } from '../../dto/users/loginUserResponse';

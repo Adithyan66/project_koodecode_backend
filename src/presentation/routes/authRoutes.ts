@@ -14,6 +14,8 @@ import { ValidateUserUseCase } from '../../application/usecases/users/ValidateUs
 import { UserController } from '../controllers/auth/UserController';
 import { LogoutController } from '../controllers/auth/LogoutController';
 import { RefreshTokenController } from '../controllers/auth/RefreshTokenController';
+import { ForgotPasswordController } from '../controllers/auth/ForgotPasswordController';
+import { ForgotPasswordUseCase } from '../../application/usecases/users/ForgotPasswordUseCase';
 
 const router = Router();
 
@@ -25,7 +27,9 @@ const otpService = new OtpUseCase(redisOtpService, nodeMailerService);
 
 const signupUseCase = new SignupUseCase(userRepository, otpService, jwtService);
 const loginUseCase = new LoginUseCase(userRepository, jwtService);
+const forgotPasswordUseCase = new ForgotPasswordUseCase(userRepository, otpService, jwtService)
 
+const forgotPasswordController = new ForgotPasswordController(forgotPasswordUseCase)
 const signupController = new SignupController(signupUseCase, jwtService);
 const loginController = new LoginController(loginUseCase);
 
@@ -48,11 +52,9 @@ router.get('/refresh-token', (req, res) => refreshTokenController.verifyToken(re
 
 router.post("/logout", (req, res) => logoutController.logoutUser(req, res))
 
-router.post('forgot/request-otp', (req, res) => forgotController.requestOtp(req, res))
+router.post('/forgot/request-otp', (req, res) => forgotPasswordController.requestOtp(req, res))
 
-router.post('forgot/verify-otp', (req, res) => forgotController.requestOtp(req, res))
-
-router.post('forgot/change-password', (req, res) => forgotController.requestOtp(req, res))
+router.post('/forgot/change-password', (req, res) => forgotPasswordController.changePassword(req, res))
 
 
 

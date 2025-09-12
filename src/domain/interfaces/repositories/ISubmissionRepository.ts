@@ -1,5 +1,5 @@
 
-import { Submission } from '../../domain/entities/Submission';
+import { Submission } from '../../entities/Submission';
 
 export interface ISubmissionRepository {
   create(submission: Omit<Submission, 'id' | 'createdAt' | 'updatedAt'>): Promise<Submission>;

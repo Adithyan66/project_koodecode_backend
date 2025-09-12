@@ -1,8 +1,8 @@
 
 import { TestCaseResult } from "../../../domain/entities/Submission";
 import { RunCodeDto, RunCodeResponseDto } from "../../dto/submissions/RunCodeDto";
-import { IJudge0Service } from "../../interfaces/IJudge0Service";
-import { IProblemRepository } from "../../interfaces/IProblemRepository";
+import { IJudge0Service } from "../../../domain/interfaces/services/IJudge0Service";
+import { IProblemRepository } from "../../../domain/interfaces/repositories/IProblemRepository";
 import { ITestCaseRepository } from "../../interfaces/ITestCaseRepository";
 import { CodeExecutionHelperService } from "../../services/CodeExecutionHelperService";
 

@@ -2,10 +2,10 @@
 
 import { Problem } from '../../../domain/entities/Problem';
 import { TestCase } from '../../../domain/entities/TestCase';
-import { IProblemRepository } from '../../interfaces/IProblemRepository';
+import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
 import { ITestCaseRepository } from '../../interfaces/ITestCaseRepository';
 import { CreateProblemDto } from '../../dto/problems/CreateProblemDto';
-import { ICounterRepository } from '../../interfaces/ICounterRepository';
+import { ICounterRepository } from '../../../domain/interfaces/repositories/ICounterRepository';
 
 
 

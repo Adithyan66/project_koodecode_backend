@@ -2,38 +2,28 @@
 
 
 
-import { IProblemRepository } from '../../interfaces/IProblemRepository';
+import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
 import { ProblemListResponseDto } from '../../dto/problems/ProblemListDto';
 
 export class GetProblemsListUseCase {
-    
-    constructor(private problemRepository: IProblemRepository) {}
+
+    constructor(private problemRepository: IProblemRepository) { }
 
     async execute(filters: {
         difficulty?: 'easy' | 'medium' | 'hard';
-        tags?: string[];
-        name?: string; 
-        category?: string;
         search?: string;
-        // status?: 'Published';
         page?: number;
         limit?: number;
-        sortBy?: string;
-        sortOrder?: 'asc' | 'desc';
     } = {}): Promise<ProblemListResponseDto> {
 
-        
+
 
         const page = filters.page || 1;
         const limit = filters.limit || 20;
+        const pagination = { page, limit }
 
-        const result = await this.problemRepository.findAll({
-            ...filters,
-            isActive: true,
-            page,
-            limit
-        });
-        
+        const result = await this.problemRepository.getFilteredProblems(filters, pagination);
+
 
         const problems = result.problems.map(problem => ({
             id: problem.id!,

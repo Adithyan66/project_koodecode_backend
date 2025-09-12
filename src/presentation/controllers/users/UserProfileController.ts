@@ -7,7 +7,7 @@ import { UpdateUserProfileUseCase } from '../../../application/usecases/users/Up
 
 import { UpdateProfileDto } from '../../../application/dto/users/UserProfileDto';
 import { HTTP_STATUS } from '../../../shared/constants/httpStatus';
-import { IUserRepository } from '../../../application/interfaces/IUserRepository';
+import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
 import { GetUserEditableProfile } from '../../../application/usecases/users/GetUserEditableProfile';
 
 
@@ -61,7 +61,8 @@ export class UserProfileController {
 
         try {
             const userId = req.user?.userId;
-
+            
+            
             if (!userId) {
                 res.status(HTTP_STATUS.UNAUTHORIZED).json({
                     success: false,
@@ -69,16 +70,19 @@ export class UserProfileController {
                 });
                 return;
             }
-
+            
             const updateData: UpdateProfileDto = req.body;
-
+            
             const updatedProfile = await this.updateUserProfileUseCase.execute(userId, updateData);
+            
+            console.log("helooooooooooooooooooooooooooooooooooooooooooooooooooooooo",updatedProfile);
 
             res.status(HTTP_STATUS.OK).json({
                 success: true,
                 message: 'Profile updated successfully',
                 data: updatedProfile
             });
+
         } catch (error: any) {
             res.status(HTTP_STATUS.BAD_REQUEST).json({
                 success: false,

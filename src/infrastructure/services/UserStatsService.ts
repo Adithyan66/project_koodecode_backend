@@ -3,7 +3,7 @@
 import { IUserStatsService } from '../../application/interfaces/IUserStatsService';
 import { IUserRepository } from '../../application/interfaces/IUserRepository';
 import { IUserProfileRepository } from '../../application/interfaces/IUserProfileRepository';
-import { IBadgeRepository } from '../../application/interfaces/IBadgeRepository'; 
+import { IBadgeRepository } from '../../domain/interfaces/repositories/IBadgeRepository'; 
 import { ActivityType, BadgeType, UserProfile } from '../../domain/entities/UserProfile';
 import { Badge } from '../../domain/entities/Badge';
 

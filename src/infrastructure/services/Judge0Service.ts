@@ -1,7 +1,7 @@
 
 
 import axios, { AxiosError, AxiosInstance } from 'axios';
-import { IJudge0Service, Judge0SubmissionRequest, Judge0SubmissionResponse } from '../../application/interfaces/IJudge0Service';
+import { IJudge0Service, Judge0SubmissionRequest, Judge0SubmissionResponse } from '../../domain/interfaces/services/IJudge0Service';
 import { Judge0Language } from '../../domain/entities/Judge0Submission';
 import { config } from '../config/config';
 

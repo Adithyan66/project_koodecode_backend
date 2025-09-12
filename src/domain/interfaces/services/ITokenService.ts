@@ -1,4 +1,4 @@
-import { TokenPayload } from "../../shared/types/TokenPayload";
+import { TokenPayload } from "../../../shared/types/TokenPayload";
 
 
 export interface ITokenService {

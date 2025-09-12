@@ -1,4 +1,4 @@
-import { IUserRepository } from '../../interfaces/IUserRepository';
+import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
 import { PasswordService } from '../../services/PasswordService';
 import { toSignupUserResponse } from '../../services/userMapper';
 import { JwtService } from '../../../infrastructure/services/JwtService';
@@ -23,11 +23,11 @@ export class SignupUseCase {
 
         const existingUsernameUser = await this.userRepository.findByUsername(userName);
 
-        if (existingEmailUser) throw new Error("Email already exists");
-
         if (existingUsernameUser) throw new Error("Username already exists");
 
-        await this.otpService.sendOtp(email, fullName, userName);
+        if (existingEmailUser) throw new Error("Email already exists");
+
+        await this.otpService.sendOtp(email, "signup", { fullName, userName });
 
         // return { success: true, message: "OTP sent to your email" };
 
@@ -40,17 +40,23 @@ export class SignupUseCase {
             throw new Error("Email, OTP, and password are required")
         }
 
-        const otpRecord = await this.otpService.verifyOtp(email, otp);
+        const otpRecord = await this.otpService.verifyOtp(email, "signup", otp);        
 
         if (!otpRecord) {
             throw new Error("Invalid or Expired OTP")
         }
 
+        const { fullName, userName } = otpRecord
+
+        if (fullName == undefined || userName == undefined) {
+            throw new Error("fullname and username missing")
+        }
+
         const passwordHash = await PasswordService.hashPassword(password);
 
         const user = await this.userRepository.saveUser({
-            fullName: otpRecord.fullName,
-            userName: otpRecord.userName,
+            fullName,
+            userName,
             email,
             passwordHash,
             role: "user",

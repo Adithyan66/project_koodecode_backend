@@ -1,5 +1,5 @@
 import { TestCaseResult } from "../../domain/entities/Submission";
-import { IJudge0Service } from "../interfaces/IJudge0Service";
+import { IJudge0Service } from "../../domain/interfaces/services/IJudge0Service";
 
 type SubmissionStatus =
   | "pending"

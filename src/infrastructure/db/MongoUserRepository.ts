@@ -210,7 +210,7 @@
 
 
 
-import { IUserRepository } from '../../application/interfaces/IUserRepository';
+import { IUserRepository } from '../../domain/interfaces/repositories/IUserRepository';
 import { User, UserProps } from '../../domain/entities/User';
 import { UserModel } from './models/UserModel';
 
@@ -262,8 +262,7 @@ export class MongoUserRepository implements IUserRepository {
   }
 
   async updateUser(id: string, updates: Partial<UserProps>): Promise<User | null> {
-    console.log("mongorepository",updates);
-    
+
     const userDoc = await UserModel.findByIdAndUpdate(
       id,
       { ...updates, updatedAt: new Date() },
@@ -271,5 +270,17 @@ export class MongoUserRepository implements IUserRepository {
     ).exec();
 
     return userDoc ? this.mapToEntity(userDoc) : null;
+  }
+
+
+  async changePassword(id: string, passwordHash: string): Promise<User | null> {
+
+    const userDoc = await UserModel.findByIdAndUpdate(
+      id,
+      { passwordHash, updatedAt: new Date() },
+      { new: true }
+    ).exec()
+
+    return userDoc ? this.mapToEntity(userDoc) : null
   }
 }

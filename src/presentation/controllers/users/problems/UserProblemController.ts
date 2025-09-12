@@ -21,10 +21,6 @@ export class UserProblemController {
                 limit = '10',
                 search,
                 difficulty,
-                category,
-                tags,
-                sortBy = 'createdAt',
-                sortOrder = "desc"
             } = req.query;
 
 
@@ -32,12 +28,9 @@ export class UserProblemController {
                 isActive: true as const,
                 search: search as string,
                 difficulty: difficulty as 'easy' | 'medium' | 'hard',
-                category: category as string,
-                tags: Array.isArray(tags) ? tags as string[] : tags ? [tags as string] : [],
                 page: parseInt(page as string, 10) || 1,
                 limit: Math.min(parseInt(limit as string, 10) || 10, 100),
-                sortBy: sortBy as string,
-                sortOrder: sortOrder as 'asc' | 'desc'
+             
             };
 
             const result = await this.getProblemsListUseCase.execute(filters);

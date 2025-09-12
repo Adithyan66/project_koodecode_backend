@@ -1,9 +1,9 @@
 
 
 
-import { IJudge0Service } from '../../interfaces/IJudge0Service';
-import { ISubmissionRepository } from '../../interfaces/ISubmissionRepository';
-import { IProblemRepository } from '../../interfaces/IProblemRepository';
+import { IJudge0Service } from '../../../domain/interfaces/services/IJudge0Service';
+import { ISubmissionRepository } from '../../../domain/interfaces/repositories/ISubmissionRepository';
+import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
 import { ExecuteCodeDto } from '../../dto/submissions/ExecuteCodeDto';
 import { TestCaseResult } from '../../../domain/entities/Submission';
 import { ITestCaseRepository } from '../../interfaces/ITestCaseRepository';

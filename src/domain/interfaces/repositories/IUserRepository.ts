@@ -10,7 +10,7 @@
 
 
 // application/interfaces/IUserRepository.ts
-import { User, UserProps } from "../../domain/entities/User";
+import { User, UserProps } from "../../entities/User";
 
 export interface IUserRepository {
   findByEmail(email: string): Promise<User | null>;
@@ -18,4 +18,5 @@ export interface IUserRepository {
   findByUsername(userName: string): Promise<User | null>;
   saveUser(user: User): Promise<User>;
   updateUser(id: string, updates: Partial<UserProps>): Promise<User | null>;
+  changePassword(id: string, hashedPassword: string): Promise<User | null>;
 }

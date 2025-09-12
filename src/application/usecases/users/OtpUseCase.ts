@@ -1,5 +1,5 @@
-import { IOtpRepository } from '../../interfaces/IOtpRepository';
-import { IEmailService } from '../../interfaces/IEmailService';
+import { IOtpRepository } from '../../../domain/interfaces/repositories/IOtpRepository';
+import { IEmailService } from '../../../domain/interfaces/services/IEmailService';
 
 export class OtpUseCase {
     constructor(
@@ -8,43 +8,66 @@ export class OtpUseCase {
     ) { }
 
     generateOtp(): string {
-        return Math.floor(10000 + Math.random() * 90000).toString(); // 6-digit OTP
+        return Math.floor(10000 + Math.random() * 90000).toString();
     }
 
-    async sendOtp(email: string, fullName: string, userName: string): Promise<void> {
+    async sendOtp(
+        email: string,
+        context: "signup" | "forgot",
+        extraData?: { fullName: string, userName: string })
+        : Promise<void> {
 
         // const otp = this.generateOtp();
 
         const otp = 11111
 
-        const ttlSeconds = 600; // 10 minutes
+        const ttlSeconds = 60; // 1 minutes
 
-        console.log("otp is - ", otp)
+        const payload: Record<string, any> = { otp };
 
-        const data = { otp, fullName, userName }
+        if (context === "signup" && extraData) {
+            payload.fullName = extraData.fullName;
+            payload.userName = extraData.userName;
+        }
 
-
-        await this.otpRepository.saveOtp(email, data, ttlSeconds);
+        await this.otpRepository.saveOtp(email, payload, ttlSeconds);
 
         const subject = 'Your OTP Code';
-        const text = `Your OTP code is: ${otp}. It expires in 10 minutes.`;
+        const text = `Your OTP code is: ${otp}. It expires in 1 minutes.`;
 
         await this.emailService.sendEmail(email, subject, text);
     }
 
-    async verifyOtp(email: string, otp: number): Promise<{ userName: string; fullName: string; } | null> {
+    async verifyOtp(
+        email: string,
+        context: "signup" | "forgot",
+        otp: number)
+        : Promise<{ userName?: string; fullName?: string; } | null> {
 
         const storedOtp = await this.otpRepository.getOtp(email);
 
+        console.log("stored otp", storedOtp);
+
+
         if (!storedOtp) return null
 
-        if (Number(storedOtp.otp) == otp) {
-
-            return {
-                userName: storedOtp.username,
-                fullName: storedOtp.fullname
+        if (storedOtp.isValid(otp)) {
+            console.log("ivte vannit und");
+            
+            
+            if (context == "signup") {
+                return {
+                    userName: storedOtp.meta.username,
+                    fullName: storedOtp.meta.fullname
+                }
+            } else if (context == 'forgot') {
+                return {
+                    userName: "storedOtp.meta.username",
+                    fullName: "storedOtp.meta.fullname"
+                }
             }
         }
+
         return null;
     }
 }

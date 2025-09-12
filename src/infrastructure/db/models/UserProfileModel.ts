@@ -24,8 +24,8 @@ export interface ILeaderboard {
 
 export interface IHint {
     problemId: Types.ObjectId;
-    requestedAt: Date;
     hintText: string;
+    requestedAt: Date;
 }
 
 export interface IStreak {

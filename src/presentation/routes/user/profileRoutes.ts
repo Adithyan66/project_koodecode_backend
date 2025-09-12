@@ -1,26 +1,26 @@
 
 
 import { Router } from 'express';
-import { UserProfileController } from '../../controllers/users/UserProfileController'; 
+import { UserProfileController } from '../../controllers/users/UserProfileController';
 
 import { UserSocialController } from '../../controllers/users/UserSocialController';
 import { authMiddleware } from '../../middleware/authMiddleware';
 import { GetUserProfileUseCase } from '../../../application/usecases/users/GetUserProfileUseCase';
 
-import { UpdateUserProfileUseCase } from '../../../application/usecases/users/UpdateUserProfileUseCase'; 
+import { UpdateUserProfileUseCase } from '../../../application/usecases/users/UpdateUserProfileUseCase';
 import { MongoUserRepository } from '../../../infrastructure/db/MongoUserRepository';
-import { MongoUserProfileRepository } from '../../../infrastructure/db/MongoUserProfileRepository'; 
-import { MongoUserConnectionRepository } from '../../../infrastructure/db/MongoUserConnectionRepository'; 
-import { FollowUserUseCase } from '../../../application/usecases/users/FollowUserUseCase'; 
-import { UnfollowUserUseCase } from '../../../application/usecases/users/UnfollowUserUseCase'; 
-import { GetUserFollowersUseCase } from '../../../application/usecases/users/GetUserFollowersUseCase'; 
-import { GetUserFollowingUseCase } from '../../../application/usecases/users/GetUserFollowingUseCase'; 
-import { GetUserEditableProfile } from '../../../application/usecases/users/GetUserEditableProfile'; 
- 
-import { GenerateProfileImageUploadUrlUseCase } from '../../../application/usecases/users/GenerateProfileImageUploadUrlUseCase'; 
-import { ImageUploadService } from '../../../application/services/ImageUploadService'; 
+import { MongoUserProfileRepository } from '../../../infrastructure/db/MongoUserProfileRepository';
+import { MongoUserConnectionRepository } from '../../../infrastructure/db/MongoUserConnectionRepository';
+import { FollowUserUseCase } from '../../../application/usecases/users/FollowUserUseCase';
+import { UnfollowUserUseCase } from '../../../application/usecases/users/UnfollowUserUseCase';
+import { GetUserFollowersUseCase } from '../../../application/usecases/users/GetUserFollowersUseCase';
+import { GetUserFollowingUseCase } from '../../../application/usecases/users/GetUserFollowingUseCase';
+import { GetUserEditableProfile } from '../../../application/usecases/users/GetUserEditableProfile';
+
+import { GenerateProfileImageUploadUrlUseCase } from '../../../application/usecases/users/GenerateProfileImageUploadUrlUseCase';
+import { ImageUploadService } from '../../../application/services/ImageUploadService';
 import { S3Service } from '../../../infrastructure/services/S3Service';
-import { UpdateProfileImageUseCase } from '../../../application/usecases/users/UpdateProfileImageUseCase'; 
+import { UpdateProfileImageUseCase } from '../../../application/usecases/users/UpdateProfileImageUseCase';
 import { ProfileImageController } from '../../controllers/users/ProfileImageController';
 
 
@@ -36,7 +36,7 @@ const getUserEditableProfile = new GetUserEditableProfile(userRepository, userPr
 
 const getUserProfileUseCase = new GetUserProfileUseCase(userRepository, userProfileRepository, userConnectionRepository)
 
-const updateUserProfileUseCase = new UpdateUserProfileUseCase(userProfileRepository, getUserProfileUseCase,userRepository)
+const updateUserProfileUseCase = new UpdateUserProfileUseCase(userProfileRepository, getUserProfileUseCase, userRepository)
 
 const userProfileController = new UserProfileController(getUserProfileUseCase, updateUserProfileUseCase, getUserEditableProfile, userRepository)
 
@@ -84,13 +84,13 @@ router.put('/profile', authMiddleware(), (req, res) => userProfileController.upd
 
 
 
-router.post('/follow', authMiddleware, userSocialController.followUser.bind(userSocialController));
+// router.post('/follow', authMiddleware, userSocialController.followUser.bind(userSocialController));
 
-router.delete('/unfollow', authMiddleware, userSocialController.unfollowUser.bind(userSocialController));
+// router.delete('/unfollow', authMiddleware, userSocialController.unfollowUser.bind(userSocialController));
 
-router.get('/followers/:userId', userSocialController.getFollowers.bind(userSocialController));
+// router.get('/followers/:userId', userSocialController.getFollowers.bind(userSocialController));
 
-router.get('/following/:userId', userSocialController.getFollowing.bind(userSocialController));
+// router.get('/following/:userId', userSocialController.getFollowing.bind(userSocialController));
 
 
 

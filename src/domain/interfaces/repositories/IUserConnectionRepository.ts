@@ -1,4 +1,4 @@
-import { UserConnection, ConnectionStatus } from '../../domain/entities/UserConnection';
+import { UserConnection, ConnectionStatus } from '../../entities/UserConnection';
 
 export interface IUserConnectionRepository {
     create(connection: UserConnection): Promise<UserConnection>;
