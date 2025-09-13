@@ -1,6 +1,6 @@
 import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
 import { ProblemResponseDto } from '../../dto/problems/ProblemResponseDto';
-import { ITestCaseRepository } from '../../interfaces/ITestCaseRepository';
+import { ITestCaseRepository } from '../../../domain/interfaces/repositories/ITestCaseRepository';
 
 export class GetProblemByIdUseCase {
 
@@ -9,15 +9,15 @@ export class GetProblemByIdUseCase {
         private testCaseRepository: ITestCaseRepository
     ) { }
 
-    async execute(problemId: string): Promise<ProblemResponseDto> {
+    async execute(slug: string): Promise<ProblemResponseDto> {
 
-        const problem = await this.problemRepository.findById(problemId);
+        const problem = await this.problemRepository.findBySlug(slug);
 
         if (!problem || !problem.isActive) {
             throw new Error('Problem not found');
         }
 
-        const sampleTestCases = await this.testCaseRepository.findSampleByProblemId(problemId);
+        const sampleTestCases = await this.testCaseRepository.findSampleByProblemId(problem.id!);
 
 
         return {

@@ -118,30 +118,56 @@ export class MongoProblemRepository implements IProblemRepository {
         return !!result;
     }
 
+    // private mapToDomain(doc: any): Problem {
+    //     return new Problem(
+    //         doc.problemNumber,
+    //         doc.title,
+    //         doc.slug,
+    //         doc.difficulty,
+    //         doc.tags,
+    //         doc.description,
+    //         doc.constraints,
+    //         doc.examples,
+    //         doc.likes,
+    //         doc.totalSubmissions,
+    //         doc.acceptedSubmissions,
+    //         doc.hints,
+    //         doc.companies,
+    //         doc.isActive,
+    //         doc.createdBy,
+    //         doc.functionName,
+    //         doc.returnType,
+    //         doc.parameters,
+    //         doc._id.toString(),
+    //         doc.createdAt,
+    //         doc.updatedAt
+    //     );
+    // }
+
     private mapToDomain(doc: any): Problem {
-        return new Problem(
-            doc.problemNumber,
-            doc.title,
-            doc.slug,
-            doc.difficulty,
-            doc.tags,
-            doc.description,
-            doc.constraints,
-            doc.examples,
-            doc.likes,
-            doc.totalSubmissions,
-            doc.acceptedSubmissions,
-            doc.hints,
-            doc.companies,
-            doc.isActive,
-            doc.createdBy,
-            doc.functionName,
-            doc.returnType,
-            doc.parameters,
-            doc._id.toString(),
-            doc.createdAt,
-            doc.updatedAt
-        );
+        return new Problem({
+            problemNumber: doc.problemNumber,
+            title: doc.title,
+            slug: doc.slug,
+            difficulty: doc.difficulty,
+            tags: doc.tags,
+            description: doc.description,
+            constraints: doc.constraints,
+            examples: doc.examples,
+            likes: doc.likes,
+            totalSubmissions: doc.totalSubmissions,
+            acceptedSubmissions: doc.acceptedSubmissions,
+            hints: doc.hints,
+            companies: doc.companies,
+            isActive: doc.isActive,
+            createdBy: doc.createdBy,
+            functionName: doc.functionName,
+            returnType: doc.returnType,
+            parameters: doc.parameters,
+            id: doc._id.toString(),
+            createdAt: doc.createdAt,
+            updatedAt: doc.updatedAt,
+        });
     }
 
 

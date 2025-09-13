@@ -4,9 +4,10 @@
 
 
 import { Request, Response } from 'express';
-import { GetProblemsListUseCase } from '../../../../application/usecases/problems/GetProblemsListUseCase'; 
+import { GetProblemsListUseCase } from '../../../../application/usecases/problems/GetProblemsListUseCase';
 import { GetProblemByIdUseCase } from '../../../../application/usecases/problems/GetProblemByIdUseCase';
 import { profileEnd } from 'console';
+import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 
 export class UserProblemController {
     constructor(
@@ -30,7 +31,7 @@ export class UserProblemController {
                 difficulty: difficulty as 'easy' | 'medium' | 'hard',
                 page: parseInt(page as string, 10) || 1,
                 limit: Math.min(parseInt(limit as string, 10) || 10, 100),
-             
+
             };
 
             const result = await this.getProblemsListUseCase.execute(filters);
@@ -51,21 +52,30 @@ export class UserProblemController {
 
 
     async getProblemDetail(req: Request, res: Response): Promise<void> {
-        try {
-            const { problemId } = req.params;
-            
-            const problemDetail = await this.getProblemDetailUseCase.execute(problemId);
 
-            res.status(200).json({
+        try {
+            const { slug } = req.params;
+
+            if (!slug) {
+                res.status(HTTP_STATUS.BAD_REQUEST).json({
+                    success: false,
+                    message: "problem id required",
+                });
+            }
+
+
+            const problemDetail = await this.getProblemDetailUseCase.execute(slug);
+
+            res.status(HTTP_STATUS.OK).json({
                 success: true,
                 message: "problem fetched succesfully",
                 data: problemDetail
             });
 
         } catch (error) {
-            console.log("problem error",error);
-            
-            res.status(404).json({
+            console.log("problem error", error);
+
+            res.status(HTTP_STATUS.NOT_FOUND).json({
                 success: false,
                 message: error instanceof Error ? error.message : 'Problem not found'
             });

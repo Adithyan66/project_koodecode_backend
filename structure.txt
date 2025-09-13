@@ -2,6 +2,12 @@ tree  -I 'node_modules' > structure.txt
 
 
 
+
+
+
+
+
+
 ├── package.json
 ├── package-lock.json
 ├── replacements.txt
@@ -33,7 +39,6 @@ tree  -I 'node_modules' > structure.txt
 │   │   ├── interfaces
 │   │   │   ├── IImageUploadService.ts
 │   │   │   ├── IJudge0Repository.ts
-│   │   │   ├── IOtpRepository.ts
 │   │   │   └── IS3Service.ts
 │   │   ├── services
 │   │   │   ├── CodeExecutionHelperService.ts
@@ -88,6 +93,7 @@ tree  -I 'node_modules' > structure.txt
 │   │       ├── repositories
 │   │       │   ├── IBadgeRepository.ts
 │   │       │   ├── ICounterRepository.ts
+│   │       │   ├── IOtpRepository.ts
 │   │       │   ├── IProblemRepository.ts
 │   │       │   ├── ISubmissionRepository.ts
 │   │       │   ├── ITestCaseRepository.ts

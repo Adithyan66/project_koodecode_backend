@@ -60,6 +60,8 @@ export class SignupUseCase {
             email,
             passwordHash,
             role: "user",
+            provider: 'email',
+            emailVerified: true
         });
 
 

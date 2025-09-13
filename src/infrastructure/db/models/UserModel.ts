@@ -19,7 +19,7 @@ const UserSchema = new Schema<IUser>({
     fullName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     userName: { type: String, required: true, unique: true },
-    passwordHash: { type: String, required: true },
+    passwordHash: { type: String },
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
     profilePicUrl: { type: String },
     profilePicKey: { type: String }

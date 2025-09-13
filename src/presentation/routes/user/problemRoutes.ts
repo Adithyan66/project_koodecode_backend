@@ -48,7 +48,7 @@ const problemSolvingController = new ProblemSolvingController(createSubmissionUs
 
 router.get("/get-problems", authMiddleware(), (req, res) => userProblemController.getProblemsWithFilters(req, res))
 
-router.get('/:problemId/detail', authMiddleware(), (req, res) => userProblemController.getProblemDetail(req, res));
+router.get('/:slug/detail', authMiddleware(), (req, res) => userProblemController.getProblemDetail(req, res));
 
 router.post('/test-case', authMiddleware(), (req, res) => problemSolvingController.runTestCase(req, res))
 

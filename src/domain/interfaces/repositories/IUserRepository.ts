@@ -19,4 +19,7 @@ export interface IUserRepository {
   saveUser(user: User): Promise<User>;
   updateUser(id: string, updates: Partial<UserProps>): Promise<User | null>;
   changePassword(id: string, hashedPassword: string): Promise<User | null>;
+  findByGoogleId(googleId: string): Promise<User | null>;
+  findByGithubId(githubId: string): Promise<User | null>;
+  findByEmailAndProvider(email: string, provider: string): Promise<User | null>;
 }
