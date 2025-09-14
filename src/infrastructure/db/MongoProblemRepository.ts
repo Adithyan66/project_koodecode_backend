@@ -29,7 +29,9 @@ export class MongoProblemRepository implements IProblemRepository {
             createdBy: problem.createdBy,
             functionName: problem.functionName,
             returnType: problem.returnType,
-            parameters: problem.parameters
+            parameters: problem.parameters,
+            templates: problem.templates,
+            supportedLanguages: problem.supportedLanguages
         });
 
         const saved = await problemDoc.save();
@@ -97,7 +99,7 @@ export class MongoProblemRepository implements IProblemRepository {
         ]);
 
         return {
-            problems: problems.map(p => this.mapToDomain(p)),
+            problems: problems.map((p: any) => this.mapToDomain(p)),
             total,
             page,
             limit
@@ -164,12 +166,13 @@ export class MongoProblemRepository implements IProblemRepository {
             functionName: doc.functionName,
             returnType: doc.returnType,
             parameters: doc.parameters,
+            supportedLanguages: doc.supportedLanguages,
+            templates: doc.templates,
             id: doc._id.toString(),
             createdAt: doc.createdAt,
             updatedAt: doc.updatedAt,
         });
     }
-
 
 
 
@@ -221,7 +224,7 @@ export class MongoProblemRepository implements IProblemRepository {
             const totalPages = Math.ceil(total / pagination.limit);
 
             return {
-                problems: problems.map(p => p as unknown as Problem),
+                problems: problems.map((p: unknown) => p as unknown as Problem),
                 total,
                 currentPage: pagination.page,
                 totalPages,

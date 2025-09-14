@@ -51,8 +51,6 @@ export class ForgotPasswordUseCase {
 
         const otpRecord = await this.otpService.verifyOtp(email, "forgot", otp)
 
-        console.log("otp recode thaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",otpRecord)
-
         if (!otpRecord) {
             throw new Error("Invalid or Expired OTP")
         }

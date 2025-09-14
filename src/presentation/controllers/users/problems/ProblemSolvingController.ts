@@ -111,7 +111,6 @@ export class ProblemSolvingController {
                 });
                 return;
             }
-            console.log(problemId, sourceCode, languageId, testCases);
             
 
             if (!problemId || !sourceCode || !languageId || !testCases) {

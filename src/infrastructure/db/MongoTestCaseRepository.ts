@@ -1,7 +1,7 @@
 
 
 import { TestCase } from '../../domain/entities/TestCase';
-import { ITestCaseRepository } from '../../application/interfaces/ITestCaseRepository'; 
+import { ITestCaseRepository } from '../../domain/interfaces/repositories/ITestCaseRepository'; 
 import { TestCaseModel, ITestCaseDocument } from './models/TestCaseModel';
 import { Types } from 'mongoose';
 

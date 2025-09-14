@@ -53,7 +53,6 @@ export class Judge0Service implements IJudge0Service {
 
   async getSubmissionResult(token: string): Promise<Judge0SubmissionResponse> {
     try {
-      console.log("token for from judge o",token);
       const response = await this.httpClient.get(`/submissions/${token}`, {
         params: {
           base64_encoded: false,

@@ -19,9 +19,6 @@ export class GitHubOAuthUseCase {
 
     const profile = await this.oauthService.verifyGithubToken(code);
 
-    console.log("proffileeee", profile);
-
-
     let user = await this.userRepository.findByGithubId(profile.id);
     let isNewUser = false;
 

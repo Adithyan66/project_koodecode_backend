@@ -5,7 +5,6 @@ export interface CreateProblemDto {
     difficulty: 'easy' | 'medium' | 'hard';
     tags: string[];
     description: string;
-    // constraints: string[];
     examples: {
         inputs: any;
         expectedOutput: any;
@@ -31,7 +30,13 @@ export interface CreateProblemDto {
         arrayMaxLength?: number;
         elementConstraints?: any;
     }[],
-    testCases: CreateTestCaseDto[]
+    testCases: CreateTestCaseDto[];
+    supportedLanguages: number[];
+    templates: Record<string, {
+        templateCode: string;
+        userFunctionSignature: string;
+        placeholder: string;
+    }>;
     hints?: string[];
     companies?: string[];
 }

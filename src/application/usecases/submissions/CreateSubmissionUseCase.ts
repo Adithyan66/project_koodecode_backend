@@ -6,7 +6,7 @@ import { ISubmissionRepository } from '../../../domain/interfaces/repositories/I
 import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
 import { ExecuteCodeDto } from '../../dto/submissions/ExecuteCodeDto';
 import { TestCaseResult } from '../../../domain/entities/Submission';
-import { ITestCaseRepository } from '../../interfaces/ITestCaseRepository';
+import { ITestCaseRepository } from '../../../domain/interfaces/repositories/ITestCaseRepository';
 import { CodeExecutionHelperService } from '../../services/CodeExecutionHelperService';
 import { SubmissionResponseDto } from '../../dto/submissions/SubmissionResponseDto';
 
@@ -30,72 +30,6 @@ export class CreateSubmissionUseCase {
   async execute(params: ExecuteCodeDto): Promise<SubmissionResponseDto> {
 
 
-    const templates = {
-      c: {
-        templateCode: `#include <stdio.h>
-#include <stdlib.h>
-
-USER_FUNCTION_PLACEHOLDER
-
-int main() {
-    int nums[1000];
-    int count = 0;
-    int num;
-    char ch;
-
-    // Read numbers until newline
-    while (scanf("%d", &num) == 1) {
-        nums[count++] = num;
-        ch = getchar();
-        if (ch == '\\n') break;
-    }
-
-    // Read target value
-    int target;
-    scanf("%d", &target);
-
-    // Call twoSum function
-    int returnSize;
-    int* result = twoSum(nums, count, target, &returnSize);
-
-    if (result != NULL) {
-        printf("[%d,%d]", result[0], result[1]);
-        free(result);
-    } else {
-        printf("[]");
-    }
-
-    return 0;
-}`,
-        userFunctionSignature: "int* twoSum(int* nums, int numsSize, int target, int* returnSize)",
-        placeholder: "USER_FUNCTION_PLACEHOLDER"
-      },
-      python: {
-        templateCode: `import sys
-
-USER_FUNCTION_PLACEHOLDER
-
-if __name__ == "__main__":
-    # Read input from stdin
-    lines = sys.stdin.read().strip().split('\\n')
-    
-    # Parse the array
-    nums = list(map(int, lines[0].split()))
-    
-    # Parse the target
-    target = int(lines[1])
-    
-    # Create solution instance and call twoSum
-    solution = Solution()
-    result = solution.twoSum(nums, target)
-    
-    # Print result
-    print(f"[{result[0]},{result[1]}]")`,
-        userFunctionSignature: "def twoSum(self, nums: List[int], target: int) -> List[int]:",
-        placeholder: "USER_FUNCTION_PLACEHOLDER"
-      }
-    };
-
     const problem = await this.problemRepository.findById(params.problemId);
 
     if (!problem) {
@@ -108,24 +42,14 @@ if __name__ == "__main__":
       throw new Error('Problem has no test cases');
     }
 
-    const languageMap: { [key: number]: keyof typeof templates } = {
-      50: "c",
-      71: "python"
-    };
-
-    const languageKey = languageMap[params.languageId];
-
-    if (!languageKey) {
-      throw new Error(`Unsupported language ID: ${params.languageId}`);
-    }
-
-    const template = templates[languageKey];
+    const template = problem.templates[params.languageId]
 
     if (!template) {
-      throw new Error(`Template not found for language: ${languageKey}`);
+      throw new Error(`Template not found for language:}`);
     }
 
     const code = this.codeExecutionHelperService.CombineCodeUseCase(template, params.sourceCode);
+
 
     const submission = await this.submissionRepository.create({
       userId: params.userId,
@@ -171,22 +95,7 @@ if __name__ == "__main__":
         maxMemoryUsage: maxMemory
       });
 
-      // if (updatedSubmission.isAccepted) {
-      //   await this.userStatsService.updateProblemStats(
-      //     submission.userId,
-      //     submission.problem.difficulty
-      //   );
-      // }
 
-      // // Update acceptance rate
-      // const userSubmissions = await this.submissionRepository.findByUserId(submission.userId);
-      // const acceptedSubmissions = userSubmissions.filter(s => s.isAccepted).length;
-
-      // await this.userStatsService.calculateAcceptanceRate(
-      //   submission.userId,
-      //   userSubmissions.length,
-      //   acceptedSubmissions
-      // );
 
 
       return {
@@ -250,9 +159,6 @@ if __name__ == "__main__":
 
         const formattedInput = this.codeExecutionHelperService.formatTestCaseInput(testCase.inputs);
 
-        console.log("formattedInput", formattedInput);
-
-
         return this.judge0Service.submitCode({
           source_code: sourceCode,
           language_id: languageId,
@@ -302,7 +208,6 @@ if __name__ == "__main__":
       })
     );
 
-    console.log("results", results);
     return results;
   }
 

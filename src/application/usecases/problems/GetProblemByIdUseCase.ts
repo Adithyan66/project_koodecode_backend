@@ -19,7 +19,6 @@ export class GetProblemByIdUseCase {
 
         const sampleTestCases = await this.testCaseRepository.findSampleByProblemId(problem.id!);
 
-
         return {
             problem: {
                 id: problem.id!,
@@ -41,6 +40,8 @@ export class GetProblemByIdUseCase {
                 functionName: problem.functionName,
                 returnType: problem.returnType,
                 parameters: problem.parameters,
+                supportedLanguages: problem.supportedLanguages,
+                templates: problem.templates,
                 createdAt: problem.createdAt ?? new Date(),
                 updatedAt: problem.updatedAt ?? new Date(),
             },

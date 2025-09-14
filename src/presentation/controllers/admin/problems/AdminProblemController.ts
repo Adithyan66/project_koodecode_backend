@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { CreateProblemUseCase } from '../../../../application/usecases/problems/CreateProblemUseCase'; 
+import { CreateProblemUseCase } from '../../../../application/usecases/problems/CreateProblemUseCase';
 import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 import { diff } from 'util';
-import { CreateProblemDto } from '../../../../application/dto/problems/CreateProblemDto'; 
+import { CreateProblemDto } from '../../../../application/dto/problems/CreateProblemDto';
 // import { MESSAGES } from '../../../shared/constants/messages';
 
 interface AuthenticatedRequest extends Request {
@@ -17,6 +17,8 @@ export class AdminProblemController {
 
     async createProblem(req: AuthenticatedRequest, res: Response): Promise<void> {
         try {
+
+            // console.log("ithaaaanda venom", req.body);
 
 
             if (!req.user || req.user.role !== 'admin') {
@@ -38,15 +40,15 @@ export class AdminProblemController {
                 functionName,
                 returnType,
                 parameters,
-                // parameterConstraints,
                 testCases,
                 hints,
-                companies
+                companies,
+                templates,
+                supportedLanguages
             } = req.body;
 
 
-            if (!title || !difficulty || !description || !testCases) {
-                console.log(title, difficulty, description, testCases);
+            if (!title || !difficulty || !description || !testCases || !templates || !supportedLanguages) {
 
                 res.status(HTTP_STATUS.BAD_REQUEST).json({
                     success: false,
@@ -69,7 +71,8 @@ export class AdminProblemController {
                 functionName,
                 returnType,
                 parameters,
-                // parameterConstraints
+                templates,
+                supportedLanguages
             };
 
 
@@ -102,3 +105,17 @@ export class AdminProblemController {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -15,7 +15,7 @@ export class MongoCounterRepository implements ICounterRepository {
                 new: true 
             }
         );
-
+        
         return result?.sequence_value || 1;
     }
 

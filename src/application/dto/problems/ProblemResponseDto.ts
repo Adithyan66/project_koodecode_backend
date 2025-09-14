@@ -30,6 +30,8 @@ export interface ProblemResponseDto {
             type: string;
             description?: string;
         }[],
+        supportedLanguages: number[];
+        templates: any;
         createdAt: Date;
         updatedAt: Date;
     }

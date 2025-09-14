@@ -38,8 +38,11 @@ export class CreateProblemUseCase {
       throw new Error('At least one sample test case is required');
     }
 
+    // console.log("problem numberrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",problemNumber);
 
     const problemNumber = await this.counterRepository.getNextSequenceValue('problemNumber');
+
+    
 
 
     const transformedExamples = data.examples.map(example => ({
@@ -55,6 +58,30 @@ export class CreateProblemUseCase {
       description: param.description
     }));
 
+
+    // console.log("nokkikoooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo",
+    //   problemNumber,
+    //   'title', data.title,
+    //   slug,
+    //   'difficulty', data.difficulty,
+    //   'tags', data.tags,
+    //   'description', data.description,
+    //   'constraints', data.constraints,
+    //   'examples', transformedExamples,
+    //   'likes', [], 
+    //   'totalSubmissions', 0, 
+    //   'acceptedSubmissions', 0, 
+    //   'hints', data.hints ,
+    //   'companies', data.companies,
+    //   'isActive',true, 
+    //   'createdBy', adminId,
+    //   'functionName', data.functionName,
+    //   'returnType', data.returnType,
+    //   'parameters', transformedParameters,
+    //   'templates', data.templates,
+    //   'supportedLanguages', data.supportedLanguages
+    // );
+    
     const problem = new Problem({
       problemNumber,
       title: data.title,
@@ -64,19 +91,23 @@ export class CreateProblemUseCase {
       description: data.description,
       constraints: data.constraints,
       examples: transformedExamples,
-      likes: [], // default, can omit
-      totalSubmissions: 0, // default, can omit
-      acceptedSubmissions: 0, // default, can omit
+      likes: [], 
+      totalSubmissions: 0, 
+      acceptedSubmissions: 0, 
       hints: data.hints || [],
       companies: data.companies || [],
-      isActive: true, // default, can omit
+      isActive: true, 
       createdBy: adminId,
       functionName: data.functionName,
       returnType: data.returnType,
       parameters: transformedParameters,
+      templates: data.templates,
+      supportedLanguages: data.supportedLanguages
     });
 
+    
     const savedProblem = await this.problemRepository.create(problem);
+    console.log("prebl;emmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm",savedProblem);
 
 
     const testCases = data.testCases.map(tc =>

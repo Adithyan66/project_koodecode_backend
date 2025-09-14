@@ -3,7 +3,7 @@ import { TestCaseResult } from "../../../domain/entities/Submission";
 import { RunCodeDto, RunCodeResponseDto } from "../../dto/submissions/RunCodeDto";
 import { IJudge0Service } from "../../../domain/interfaces/services/IJudge0Service";
 import { IProblemRepository } from "../../../domain/interfaces/repositories/IProblemRepository";
-import { ITestCaseRepository } from "../../interfaces/ITestCaseRepository";
+import { ITestCaseRepository } from "../../../domain/interfaces/repositories/ITestCaseRepository";
 import { CodeExecutionHelperService } from "../../services/CodeExecutionHelperService";
 
 
@@ -18,76 +18,12 @@ export class RunCodeUseCase {
     private problemRepository: IProblemRepository,
     private testCaseRepository: ITestCaseRepository,
     private codeExecutionHelperService: CodeExecutionHelperService
-  ) {}
+  ) { }
 
   async execute(params: RunCodeDto): Promise<RunCodeResponseDto> {
-    const templates = {
-      c: {
-        templateCode: `#include <stdio.h>
-#include <stdlib.h>
-
-USER_FUNCTION_PLACEHOLDER
-
-int main() {
-    int nums[1000];
-    int count = 0;
-    int num;
-    char ch;
-
-    // Read numbers until newline
-    while (scanf("%d", &num) == 1) {
-        nums[count++] = num;
-        ch = getchar();
-        if (ch == '\\n') break;
-    }
-
-    // Read target value
-    int target;
-    scanf("%d", &target);
-
-    // Call twoSum function
-    int returnSize;
-    int* result = twoSum(nums, count, target, &returnSize);
-
-    if (result != NULL) {
-        printf("[%d,%d]", result[0], result[1]);
-        free(result);
-    } else {
-        printf("[]");
-    }
-
-    return 0;
-}`,
-        userFunctionSignature: "int* twoSum(int* nums, int numsSize, int target, int* returnSize)",
-        placeholder: "USER_FUNCTION_PLACEHOLDER"
-      },
-      python: {
-        templateCode: `import sys
-
-USER_FUNCTION_PLACEHOLDER
-
-if __name__ == "__main__":
-    # Read input from stdin
-    lines = sys.stdin.read().strip().split('\\n')
-    
-    # Parse the array
-    nums = list(map(int, lines[0].split()))
-    
-    # Parse the target
-    target = int(lines[1])
-    
-    # Create solution instance and call twoSum
-    solution = Solution()
-    result = solution.twoSum(nums, target)
-    
-    # Print result
-    print(f"[{result[0]},{result[1]}]")`,
-        userFunctionSignature: "def twoSum(self, nums: List[int], target: int) -> List[int]:",
-        placeholder: "USER_FUNCTION_PLACEHOLDER"
-      }
-    };
 
     const problem = await this.problemRepository.findById(params.problemId);
+
     if (!problem) {
       throw new Error('Problem not found');
     }
@@ -96,32 +32,24 @@ if __name__ == "__main__":
       params.testCases.map(id => this.testCaseRepository.findById(id))
     );
 
-    const validTestCases = allTestCases.filter(tc => tc !== null);
+    const validTestCases = allTestCases.filter((tc: any) => tc !== null);
     if (validTestCases.length === 0) {
       throw new Error('No valid test cases found');
     }
 
-    const languageMap: { [key: number]: keyof typeof templates } = {
-      50: "c",
-      71: "python"
-    };
+    const template = problem.templates[params.languageId]
 
-    const languageKey = languageMap[params.languageId];
-    if (!languageKey) {
-      throw new Error(`Unsupported language ID: ${params.languageId}`);
-    }
-
-    const template = templates[languageKey];
     if (!template) {
-      throw new Error(`Template not found for language: ${languageKey}`);
+      throw new Error(`Template not found for language:}`);
     }
+
 
     const code = this.codeExecutionHelperService.CombineCodeUseCase(template, params.sourceCode);
 
     const testCaseResults = await this.executeAllTestCases(
       code,
       params.languageId,
-      validTestCases, 
+      validTestCases,
       this.timeLimit,
       this.memoryLimit
     );
@@ -145,6 +73,7 @@ if __name__ == "__main__":
   }
 
   private async executeAllTestCases(
+
     sourceCode: string,
     languageId: number,
     testCases: any[],
@@ -153,9 +82,10 @@ if __name__ == "__main__":
   ): Promise<TestCaseResult[]> {
 
     const submissions = await Promise.all(
+
       testCases.map(testCase => {
+
         const formattedInput = this.codeExecutionHelperService.formatTestCaseInput(testCase.inputs);
-        console.log("formattedInput", formattedInput);
 
         return this.judge0Service.submitCode({
           source_code: sourceCode,
@@ -165,6 +95,7 @@ if __name__ == "__main__":
           cpu_time_limit: timeLimit,
           memory_limit: memoryLimit,
           wall_time_limit: timeLimit + 1
+
         });
       })
     );
@@ -172,14 +103,24 @@ if __name__ == "__main__":
     const results = await Promise.all(
       submissions.map(async (submission, index) => {
         try {
+
+          console.log("Starting waitForResult for submission", index);
+          
           const result = await this.codeExecutionHelperService.waitForResult(submission.token);
+
+          console.log("waitForResult output:", result);
+
+
+          const expectedOut = this.codeExecutionHelperService.formatExpectedOutput(testCases[index].expectedOutput)
+
+          const status = this.codeExecutionHelperService.determineTestCaseStatus(result, expectedOut)
 
           return {
             testCaseId: testCases[index].id,
             input: this.codeExecutionHelperService.formatTestCaseInput(testCases[index].inputs),
             expectedOutput: this.codeExecutionHelperService.formatExpectedOutput(testCases[index].expectedOutput),
             actualOutput: result.stdout?.trim(),
-            status: this.codeExecutionHelperService.determineTestCaseStatus(result, this.codeExecutionHelperService.formatExpectedOutput(testCases[index].expectedOutput)),
+            status,
             executionTime: result.time ? parseFloat(result.time) : 0,
             memoryUsage: result.memory || 0,
             judge0Token: submission.token,
@@ -204,7 +145,6 @@ if __name__ == "__main__":
       })
     );
 
-    console.log("results", results);
     return results;
   }
 }

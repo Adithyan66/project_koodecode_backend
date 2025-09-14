@@ -14,26 +14,25 @@ type SubmissionStatus =
 
 
 
-export class CodeExecutionHelperService{
+export class CodeExecutionHelperService {
 
-    constructor(private judge0Service:IJudge0Service){}
-    
+  constructor(private judge0Service: IJudge0Service) { }
 
 
-   CombineCodeUseCase(template: any, userCode: string): string {
 
-    console.log("Template code:", template.templateCode);
+  CombineCodeUseCase(template: any, userCode: string): string {
 
     const combinedCode = template.templateCode.replace(template.placeholder, userCode);
+    console.log("combineddd");
 
-    console.log("Combined code:", combinedCode);
+
 
     return combinedCode;
   }
 
 
 
-   async waitForResult(token: string, maxAttempts: number = 15): Promise<any> {
+  async waitForResult(token: string, maxAttempts: number = 15): Promise<any> {
     let attempts = 0;
 
     while (attempts < maxAttempts) {
@@ -43,7 +42,7 @@ export class CodeExecutionHelperService{
         return result;
       }
 
-      console.log(`Attempt ${attempts + 1}: Status ${result.status?.id || result.status_id}`);
+      // console.log(`Attempt ${attempts + 1}: Status ${result.status?.id || result.status_id}`);
 
       const delay = Math.min(500 + (attempts * 200), 2000);
 
@@ -72,11 +71,14 @@ export class CodeExecutionHelperService{
 
 
 
-   determineTestCaseStatus(
+  determineTestCaseStatus(
     judge0Result: any,
     expectedOutput: string
   ): 'passed' | 'failed' | 'error' | 'time_limit_exceeded' | 'memory_limit_exceeded' {
-    // Handle both status.id and status_id formats
+
+    console.log("outttttttttttttttttttttttttttttttttttttttttttt");
+
+
     const statusId = judge0Result.status?.id || judge0Result.status_id;
 
     switch (statusId) {
@@ -92,7 +94,7 @@ export class CodeExecutionHelperService{
       case 6: // Compilation Error
         return 'error';
       case 7: // Runtime Error (SIGSEGV)
-      case 8: // Runtime Error (SIGXFSZ)
+      case 8: // Runtime Error (SIGXFSZ)`
       case 9: // Runtime Error (SIGFPE)
       case 10: // Runtime Error (SIGABRT)
       case 11: // Runtime Error (NZEC)
@@ -120,18 +122,31 @@ export class CodeExecutionHelperService{
 
 
 
-   compareOutputs(actualOutput: string | null, expectedOutput: string): boolean {
+  //  compareOutputs(actualOutput: string | null, expectedOutput: string): boolean {
 
-    console.log("actual output", typeof expectedOutput);
+  //   if (!actualOutput) return !expectedOutput || expectedOutput.trim() === '';
 
+  //   const normalizeOutput = (output: string) =>
+
+  //     output.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
+
+  //   return normalizeOutput(actualOutput) === normalizeOutput(expectedOutput);
+
+  // }
+
+
+
+  compareOutputs(actualOutput: string | null, expectedOutput: string): boolean {
     if (!actualOutput) return !expectedOutput || expectedOutput.trim() === '';
 
     const normalizeOutput = (output: string) =>
-
-      output.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
+      output
+        .replace(/\r\n/g, '\n') // Normalize Windows line endings
+        .replace(/\r/g, '\n')   // Normalize old Mac line endings
+        .replace(/\s+/g, '')    // Remove all whitespace (spaces, tabs, etc.)
+        .trim();                // Trim any remaining leading/trailing whitespace
 
     return normalizeOutput(actualOutput) === normalizeOutput(expectedOutput);
-
   }
 
 
@@ -148,11 +163,7 @@ export class CodeExecutionHelperService{
 
 
 
-
-
-
-
-   formatTestCaseInput(inputs: any): string {
+  formatTestCaseInput(inputs: any): string {
 
     if (typeof inputs === 'string') {
       return inputs;
@@ -187,34 +198,26 @@ export class CodeExecutionHelperService{
 
 
 
+  formatExpectedOutput(expectedOutput: any): string {
 
-
-
-
-   formatExpectedOutput(expectedOutput: any): string {
-    console.log("expectedOutput ", expectedOutput);
-
-    // If it's already a string, return as-is
     if (typeof expectedOutput === 'string') {
       return expectedOutput.trim();
     }
 
-    // Handle arrays - format as JSON-like string
     if (Array.isArray(expectedOutput)) {
       return `[${expectedOutput.join(',')}]`;
     }
 
-    // Handle objects - convert to JSON string
     if (typeof expectedOutput === 'object' && expectedOutput !== null) {
       return JSON.stringify(expectedOutput);
     }
 
-    // Handle primitive types (numbers, booleans)
     return String(expectedOutput);
   }
 
+  calculateResults(testCaseResults: TestCaseResult[], totalPoints: number) {
 
-   calculateResults(testCaseResults: TestCaseResult[], totalPoints: number) {
+
     const passedCount = testCaseResults.filter(tc => tc.status === 'passed').length;
     const totalCount = testCaseResults.length;
     const hasCompilationError = testCaseResults.some(tc => tc.status === 'error' && tc.errorMessage?.toLowerCase().includes('compilation'));
