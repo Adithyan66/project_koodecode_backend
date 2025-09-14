@@ -10,6 +10,9 @@ import adminProblemRoutes from './presentation/routes/admin/problemRoutes'
 import userProblemRoutes from './presentation/routes/user/problemRoutes';
 import healthRoutes from "./presentation/routes/healthRoutes";
 import profileRoutes from "./presentation/routes/user/profileRoutes"
+import adminContestRoutes from "./presentation/routes/admin/contestRoutes"
+import userContestRoutes from './presentation/routes/user/contestRoutes'
+
 
 
 dotenv.config();
@@ -36,10 +39,14 @@ app.use('/api/admin/problems', adminProblemRoutes);
 
 app.use('/api/user/problems', userProblemRoutes);
 
+app.use('/api/admin/contests', adminContestRoutes)
+
+app.use('api/user/contests', userContestRoutes)
+
 
 app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-    console.error(err);
-    res.status(500).json({ error: 'Internal server error' });
+  console.error(err);
+  res.status(500).json({ error: 'Internal server error' });
 });
 
 

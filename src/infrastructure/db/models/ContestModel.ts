@@ -1,43 +1,39 @@
-import mongoose, { Schema, Document } from 'mongoose';
 
-export interface IContestDocument extends Document {
-  title: string;
-  description: string;
-  startTime: Date;
-  endTime: Date;
-  duration: number;
-  problems: mongoose.Types.ObjectId[];
-  participants: mongoose.Types.ObjectId[];
-  isPublic: boolean;
-  maxParticipants?: number;
-  status: 'upcoming' | 'active' | 'completed' | 'cancelled';
-  rules?: string;
-  prizes?: string[];
+
+import mongoose, { Schema, Document } from 'mongoose';
+import { Contest, ContestState, ContestReward } from '../../../domain/entities/Contest';
+
+export interface ContestDocument extends Omit<Contest, 'id'>, Document {
+  _id: string;
 }
 
-const ContestSchema = new Schema<IContestDocument>({
-  title: { type: String, required: true, trim: true },
-  description: { type: String, required: true },
-  startTime: { type: Date, required: true },
-  endTime: { type: Date, required: true },
-  duration: { type: Number, required: true },
-  problems: [{ type: Schema.Types.ObjectId, ref: 'Problem' }],
-  participants: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-  isPublic: { type: Boolean, default: true },
-  maxParticipants: { type: Number },
-  status: { 
-    type: String, 
-    enum: ['upcoming', 'active', 'completed', 'cancelled'],
-    default: 'upcoming'
-  },
-  rules: { type: String },
-  prizes: [{ type: String }]
-}, {
-  timestamps: true
+const ContestRewardSchema = new Schema<ContestReward>({
+  rank: { type: Number, required: true },
+  coins: { type: Number, required: true }
 });
 
-ContestSchema.index({ status: 1, startTime: 1 });
-ContestSchema.index({ createdBy: 1 });
-ContestSchema.index({ participants: 1 });
+const ContestSchema = new Schema<ContestDocument>({
+  contestNumber: { type: Number, required: true, unique: true },
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  createdBy: { type: String, required: true },
+  problems: [{ type: Schema.Types.ObjectId, ref: 'Problem', required: true }],
+  startTime: { type: Date, required: true },
+  endTime: { type: Date, required: true },
+  thumbnail: { type: String, required: true },
+  registrationDeadline: { type: Date, required: true },
+  problemTimeLimit: { type: Number, required: true },
+  maxAttempts: { type: Number, required: true },
+  wrongSubmissionPenalty: { type: Number, required: true },
+  coinRewards: [ContestRewardSchema],
+  state: { type: String, enum: Object.values(ContestState), default: ContestState.UPCOMING },
+  participants: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
 
-export const ContestModel = mongoose.model<IContestDocument>('Contest', ContestSchema);
+ContestSchema.index({ contestNumber: 1 });
+ContestSchema.index({ state: 1 });
+ContestSchema.index({ startTime: 1 });
+
+export const ContestModel = mongoose.model<ContestDocument>('Contest', ContestSchema);

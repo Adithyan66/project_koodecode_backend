@@ -12,6 +12,8 @@ export interface ProblemFilters {
     status?: 'Draft' | 'Published';
 }
 
+
+
 export interface PaginationOptions {
     page: number;
     limit: number;
@@ -53,6 +55,8 @@ export interface IProblemRepository {
         hasNext: boolean;
         hasPrev: boolean;
     }>;
+
+    getProblemNames(): Promise<Pick<Problem, 'title' | 'problemNumber' | 'id'>[]>;
 }
 
 

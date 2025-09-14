@@ -1,0 +1,66 @@
+
+
+import { IContestRepository } from '../../../domain/interfaces/repositories/IContestRepository';
+import { IContestParticipantRepository } from '../../../domain/interfaces/repositories/IContestParticipantRepository';
+import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
+import { ContestParticipant, ParticipantStatus } from '../../../domain/entities/ContestParticipant';
+import { ContestState } from '../../../domain/entities/Contest';
+import { ContestRegistrationResponseDto } from '../../dto/contests/ContestRegistrationDto';
+
+export class RegisterForContestUseCase {
+  constructor(
+    private contestRepository: IContestRepository,
+    private participantRepository: IContestParticipantRepository,
+    private problemRepository: IProblemRepository
+  ) {}
+
+  async execute(contestId: string, userId: string): Promise<ContestRegistrationResponseDto> {
+    const contest = await this.contestRepository.findById(contestId);
+    if (!contest) {
+      throw new Error('Contest not found');
+    }
+
+    if (!contest.isRegistrationOpen()) {
+      throw new Error('Registration is not open for this contest');
+    }
+
+    // Check if already registered
+    const existingParticipant = await this.participantRepository.findByContestAndUser(contestId, userId);
+    if (existingParticipant) {
+      throw new Error('Already registered for this contest');
+    }
+
+    // Assign random problem
+    const randomProblemId = this.getRandomProblem(contest.problems);
+    const assignedProblem = await this.problemRepository.findById(randomProblemId);
+
+    if (!assignedProblem) {
+      throw new Error('Error assigning problem for contest');
+    }
+
+    const participant = new ContestParticipant({
+      id: '',
+      contestId,
+      userId,
+      assignedProblemId: randomProblemId,
+      registrationTime: new Date(),
+      status: ParticipantStatus.REGISTERED
+    });
+
+    const createdParticipant = await this.participantRepository.create(participant);
+    await this.contestRepository.addParticipant(contestId, userId);
+
+    return {
+      participantId: createdParticipant.id,
+      contestId,
+      assignedProblemTitle: assignedProblem.title,
+      registrationTime: createdParticipant.registrationTime,
+      message: 'Successfully registered for contest'
+    };
+  }
+
+  private getRandomProblem(problems: string[]): string {
+    const randomIndex = Math.floor(Math.random() * problems.length);
+    return problems[randomIndex];
+  }
+}

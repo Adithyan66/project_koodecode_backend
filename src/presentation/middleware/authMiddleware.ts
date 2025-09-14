@@ -8,9 +8,8 @@ import { HTTP_STATUS } from '../../shared/constants/httpStatus';
 const jwtService = new JwtService();
 
 interface JwtPayload {
-    id: string;
+    userId: string;
     role: string;
-    // add other expected JWT payload fields here
 }
 
 interface AuthenticatedRequest extends Request {
@@ -51,8 +50,7 @@ export function authMiddleware(requiredRole?: string) {
                     message: 'Invalid or expired token',
                 });
             }
-
-            // Check required role if specified
+            
             if (requiredRole && payload.role !== requiredRole) {
                 return res.status(HTTP_STATUS.FORBIDDEN).json({
                     success: false,

@@ -3,23 +3,25 @@ import { CreateProblemUseCase } from '../../../../application/usecases/problems/
 import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 import { diff } from 'util';
 import { CreateProblemDto } from '../../../../application/dto/problems/CreateProblemDto';
+import { GetProblemNamesUseCase } from '../../../../application/usecases/problems/GetProblemNamesUseCase';
 // import { MESSAGES } from '../../../shared/constants/messages';
 
-interface AuthenticatedRequest extends Request {
-    user?: {
-        userId: string;
-        role: string;
-    };
-}
+// interface AuthenticatedRequest extends Request {
+//     user?: {
+//         userId: string;
+//         role: string;
+//     };
+// }
 
 export class AdminProblemController {
-    constructor(private createProblemUseCase: CreateProblemUseCase) { }
 
-    async createProblem(req: AuthenticatedRequest, res: Response): Promise<void> {
+    constructor(
+        private createProblemUseCase: CreateProblemUseCase,
+        private getProblemNameUseCase: GetProblemNamesUseCase
+    ) { }
+
+    async createProblem(req: Request, res: Response): Promise<void> {
         try {
-
-            // console.log("ithaaaanda venom", req.body);
-
 
             if (!req.user || req.user.role !== 'admin') {
                 res.status(HTTP_STATUS.FORBIDDEN).json({
@@ -102,6 +104,31 @@ export class AdminProblemController {
                 success: false,
                 message: error.message || "MESSAGES.INTERNAL_ERROR"
             });
+        }
+    }
+
+    async getProblemNames(req: Request, res: Response) {
+
+
+        try {
+
+            if (!req.user || req.user.role !== 'admin') {
+                res.status(HTTP_STATUS.FORBIDDEN).json({
+                    success: false,
+                    message: 'Admin access required'
+                });
+                return;
+            }
+
+            let data = await this.getProblemNameUseCase.execute()
+
+            res.status(HTTP_STATUS.OK).json({
+                success: true,
+                message: "problem names fetched succesfully",
+                data
+            })
+        } catch (error) {
+
         }
     }
 }

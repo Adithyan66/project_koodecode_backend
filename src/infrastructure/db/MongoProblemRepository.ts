@@ -201,18 +201,12 @@ export class MongoProblemRepository implements IProblemRepository {
                 ];
             }
 
-            // Filter by difficulty
             if (filters.difficulty) {
                 query.difficulty = filters.difficulty.toLowerCase();
             }
 
-            // Pagination
             const skip = (pagination.page - 1) * pagination.limit;
 
-            // Sorting
-
-
-            // Execute queries in parallel
             const [problems, total] = await Promise.all([
                 ProblemModel.find(query)
                     .skip(skip)
@@ -235,5 +229,20 @@ export class MongoProblemRepository implements IProblemRepository {
             throw new Error(`Failed to fetch filtered problems: `);
         }
     }
+
+
+async getProblemNames(): Promise<Pick<Problem, 'title' | 'problemNumber' | 'id'>[]> {
+    const problems = await ProblemModel.find()
+        .select('title problemNumber _id')
+        .lean();
+
+    return problems.map(p => ({
+        title: p.title,
+        problemNumber: p.problemNumber,
+        id: String(p._id) 
+    }));
+}
+
+
 
 }
