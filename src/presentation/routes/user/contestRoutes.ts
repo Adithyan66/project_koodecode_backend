@@ -11,7 +11,7 @@ import { StartContestProblemUseCase } from '../../../application/usecases/contes
 import { ContestTimerService } from '../../../application/services/ContestTimerService';
 import { GetContestLeaderboardUseCase } from '../../../application/usecases/contests/GetContestLeaderboardUseCase';
 import { MongoUserRepository } from '../../../infrastructure/db/MongoUserRepository';
-
+import { GetContestsListUseCase } from '../../../application/usecases/contests/GetContestsListUseCase';
 const router = Router();
 
 const contestRepository = new MongoContestRepository()
@@ -22,16 +22,23 @@ const registerForContestUseCase = new RegisterForContestUseCase(contestRepositor
 
 const timerService = new ContestTimerService()
 const userRepository = new MongoUserRepository()
+const getContestsListUseCase = new GetContestsListUseCase(contestRepository)
 
 const startContestProblemUseCase = new StartContestProblemUseCase(contestRepository, participantRepository, problemRepository, timerService)
 const getContestLeaderboardUseCase = new GetContestLeaderboardUseCase(contestRepository, participantRepository, userRepository)
-const userContestController = new UserContestController(registerForContestUseCase, startContestProblemUseCase, getContestLeaderboardUseCase)
+const userContestController = new UserContestController(registerForContestUseCase, startContestProblemUseCase, getContestLeaderboardUseCase,getContestsListUseCase)
 
 
 
-router.post('/contests/register', authMiddleware, userContestController.registerForContest.bind(userContestController));
-router.get('/contests/:contestId/start', authMiddleware, userContestController.startContestProblem.bind(userContestController));
-router.get('/contests/:contestId/leaderboard', authMiddleware, userContestController.getLeaderboard.bind(userContestController));
+router.post('/register', authMiddleware, userContestController.registerForContest.bind(userContestController));
+router.get('/:contestId/start', authMiddleware, userContestController.startContestProblem.bind(userContestController));
+router.get('/:contestId/leaderboard', authMiddleware, userContestController.getLeaderboard.bind(userContestController));
+
+
+router.get('/state/:state', authMiddleware(), (req, res) => userContestController.getActiveContests(req, res));
+// router.get('/contests/upcoming', authMiddleware, userContestController.getUpcomingContests.bind(userContestController));
+// router.get('/contests/past', authMiddleware, userContestController.getPastContests.bind(userContestController));
+
 
 
 

@@ -5,15 +5,20 @@ tree  -I 'node_modules' > structure.txt
 
 
 
-
-
-
 ├── package.json
 ├── package-lock.json
 ├── replacements.txt
 ├── src
 │   ├── application
 │   │   ├── dto
+│   │   │   ├── contests
+│   │   │   │   ├── ContestLeaderboardDto.ts
+│   │   │   │   ├── ContestListDto.ts
+│   │   │   │   ├── ContestRegistrationDto.ts
+│   │   │   │   ├── ContestResponseDto.ts
+│   │   │   │   ├── ContestSubmissionDto.ts
+│   │   │   │   ├── CreateContestDto.ts
+│   │   │   │   └── UpdateContestDto.ts
 │   │   │   ├── problems
 │   │   │   │   ├── CreateProblemDto.ts
 │   │   │   │   ├── CreateTestCaseDto.ts
@@ -44,14 +49,23 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   └── IS3Service.ts
 │   │   ├── services
 │   │   │   ├── CodeExecutionHelperService.ts
+│   │   │   ├── ContestScoringService.ts
+│   │   │   ├── ContestTimerService.ts
 │   │   │   ├── ImageUploadService.ts
 │   │   │   ├── PasswordService.ts
 │   │   │   └── userMapper.ts
 │   │   └── usecases
+│   │       ├── contests
+│   │       │   ├── CreateContestUseCase.ts
+│   │       │   ├── GetContestLeaderboardUseCase.ts
+│   │       │   ├── RegisterForContestUseCase.ts
+│   │       │   ├── StartContestProblemUseCase.ts
+│   │       │   └── SubmitContestSolutionUseCase.ts
 │   │       ├── problems
 │   │       │   ├── CreateProblemUseCase.ts
 │   │       │   ├── GetProblemByIdUseCase.ts
 │   │       │   ├── GetProblemByNumberUseCase.ts
+│   │       │   ├── GetProblemNamesUseCase.ts
 │   │       │   ├── GetProblemsListUseCase.ts
 │   │       │   ├── GetProblemTestCasesUseCase.ts
 │   │       │   └── GetSubmissionTestCasesUseCase.ts
@@ -82,6 +96,9 @@ tree  -I 'node_modules' > structure.txt
 │   ├── domain
 │   │   ├── entities
 │   │   │   ├── Badge.ts
+│   │   │   ├── ContestLeaderboard.ts
+│   │   │   ├── ContestParticipant.ts
+│   │   │   ├── Contest.ts
 │   │   │   ├── Counter.ts
 │   │   │   ├── Judge0Submission.ts
 │   │   │   ├── Otp.ts
@@ -94,6 +111,8 @@ tree  -I 'node_modules' > structure.txt
 │   │   └── interfaces
 │   │       ├── repositories
 │   │       │   ├── IBadgeRepository.ts
+│   │       │   ├── IContestParticipantRepository.ts
+│   │       │   ├── IContestRepository.ts
 │   │       │   ├── ICounterRepository.ts
 │   │       │   ├── IOtpRepository.ts
 │   │       │   ├── IProblemRepository.ts
@@ -115,6 +134,8 @@ tree  -I 'node_modules' > structure.txt
 │   │   ├── db
 │   │   │   ├── models
 │   │   │   │   ├── BadgeModel.ts
+│   │   │   │   ├── ContestModel.ts
+│   │   │   │   ├── ContestParticipantModel.ts
 │   │   │   │   ├── CounterModel.ts
 │   │   │   │   ├── Judge0SubmissionModel.ts
 │   │   │   │   ├── ProblemModel.ts
@@ -125,6 +146,8 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   │   └── UserProfileModel.ts
 │   │   │   ├── MongoBadgeRepository.ts
 │   │   │   ├── mongoConnection.ts
+│   │   │   ├── MongoContestParticipantRepository.ts
+│   │   │   ├── MongoContestRepository.ts
 │   │   │   ├── MongoCounterRepository.ts
 │   │   │   ├── MongoJudge0Repository.ts
 │   │   │   ├── MongoProblemRepository.ts
@@ -153,6 +176,7 @@ tree  -I 'node_modules' > structure.txt
 │   │   ├── controllers
 │   │   │   ├── admin
 │   │   │   │   ├── contests
+│   │   │   │   │   └── AdminContestController.ts
 │   │   │   │   └── problems
 │   │   │   │       └── AdminProblemController.ts
 │   │   │   ├── auth
@@ -166,6 +190,7 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   ├── HealthController.ts
 │   │   │   └── users
 │   │   │       ├── contests
+│   │   │       │   └── UserContestController.ts
 │   │   │       ├── problems
 │   │   │       │   ├── ProblemSolvingController.ts
 │   │   │       │   └── UserProblemController.ts
@@ -176,10 +201,12 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   └── authMiddleware.ts
 │   │   └── routes
 │   │       ├── admin
+│   │       │   ├── contestRoutes.ts
 │   │       │   └── problemRoutes.ts
 │   │       ├── authRoutes.ts
 │   │       ├── healthRoutes.ts
 │   │       └── user
+│   │           ├── contestRoutes.ts
 │   │           ├── problemRoutes.ts
 │   │           └── profileRoutes.ts
 │   ├── server.ts
@@ -189,6 +216,7 @@ tree  -I 'node_modules' > structure.txt
 │       │   └── messages.ts
 │       ├── exceptions
 │       ├── types
+│       │   ├── AuthenticatedRequest.ts
 │       │   └── TokenPayload.ts
 │       └── utils
 ├── structure.txt
@@ -196,4 +224,4 @@ tree  -I 'node_modules' > structure.txt
 ├── test-presigned-url.js
 └── tsconfig.json
 
-44 directories, 144 files
+46 directories, 173 files

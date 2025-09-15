@@ -91,7 +91,7 @@ export class MongoContestRepository implements IContestRepository {
   async findUpcoming(): Promise<Contest[]> {
     const contests = await ContestModel.find({
       state: { $in: ['upcoming', 'registration_open'] },
-      startTime: { $gt: new Date() }
+      startTime: { $gt: new Date() },
     })
     .populate('problems', 'title difficulty')
     .populate('createdBy', 'username')

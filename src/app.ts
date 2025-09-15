@@ -41,7 +41,7 @@ app.use('/api/user/problems', userProblemRoutes);
 
 app.use('/api/admin/contests', adminContestRoutes)
 
-app.use('api/user/contests', userContestRoutes)
+app.use('/api/user/contests', userContestRoutes)
 
 
 app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

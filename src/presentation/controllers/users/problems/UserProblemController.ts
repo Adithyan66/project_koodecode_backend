@@ -36,14 +36,14 @@ export class UserProblemController {
 
             const result = await this.getProblemsListUseCase.execute(filters);
 
-            res.status(200).json({
+            res.status(HTTP_STATUS.OK).json({
                 success: true,
                 data: result,
                 message: 'Problems retrieved successfully'
             });
 
         } catch (error: any) {
-            res.status(500).json({
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
                 success: false,
                 message: error.message
             });

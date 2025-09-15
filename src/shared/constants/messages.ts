@@ -1,4 +1,4 @@
-export const Messages = {
+export const MESSAGES = {
     USER_CREATED: 'User successfully created',
     INVALID_CREDENTIALS: 'Invalid email or password',
     USER_ALREADY_EXISTS: 'User already exists',
@@ -6,5 +6,5 @@ export const Messages = {
     NOT_FOUND: 'Requested resource not found',
     SERVER_ERROR: 'Internal server error occurred',
     BAD_REQUEST: 'Bad request',
-    // Add more as needed
+    SUCCESS_FETCH :'Successfully fetches'
 } as const;
