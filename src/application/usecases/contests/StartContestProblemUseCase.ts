@@ -7,17 +7,21 @@ import { ContestState } from '../../../domain/entities/Contest';
 import { ParticipantStatus } from '../../../domain/entities/ContestParticipant';
 import { AssignedProblemDto } from '../../dto/contests/ContestResponseDto';
 import { ContestTimerService } from '../../services/ContestTimerService';
+import { ITestCaseRepository } from '../../../domain/interfaces/repositories/ITestCaseRepository';
 
 export class StartContestProblemUseCase {
   constructor(
     private contestRepository: IContestRepository,
     private participantRepository: IContestParticipantRepository,
     private problemRepository: IProblemRepository,
-    private timerService: ContestTimerService
-  ) {}
+    private timerService: ContestTimerService,
+    private testCaseRepository: ITestCaseRepository
+  ) { }
 
-  async execute(contestId: string, userId: string): Promise<AssignedProblemDto & { timeRemaining: number }> {
-    const contest = await this.contestRepository.findById(contestId);
+  async execute(contestNumber: number, userId: string): Promise<AssignedProblemDto & { timeRemaining: number }> {
+
+    const contest = await this.contestRepository.findByNumber(contestNumber);
+
     if (!contest) {
       throw new Error('Contest not found');
     }
@@ -26,7 +30,7 @@ export class StartContestProblemUseCase {
       throw new Error('Contest is not active');
     }
 
-    const participant = await this.participantRepository.findByContestAndUser(contestId, userId);
+    const participant = await this.participantRepository.findByContestAndUser(contest.id, userId);
     if (!participant) {
       throw new Error('Not registered for this contest');
     }
@@ -35,7 +39,6 @@ export class StartContestProblemUseCase {
       throw new Error('Contest already completed for this user');
     }
 
-    // Update participant start time if not already started
     if (!participant.startTime && participant.status === ParticipantStatus.REGISTERED) {
       participant.startContest();
       await this.participantRepository.update(participant.id, {
@@ -51,13 +54,43 @@ export class StartContestProblemUseCase {
 
     const timeRemaining = this.timerService.getRemainingTime(participant, contest);
 
+    const sampleTestCases = await this.testCaseRepository.findSampleByProblemId(problem.id!);
+
     return {
-      id: problem.id,
-      title: problem.title,
-      difficulty: problem.difficulty,
-      description: problem.description,
-      constraints: problem.constraints,
-      examples: problem.examples,
+      // id: problem.id!,
+      // title: problem.title,
+      // difficulty: problem.difficulty,
+      // description: problem.description,
+      // constraints: problem.constraints,
+      // examples: problem.examples,
+      // timeRemaining
+
+      problem: {
+        id: problem.id!,
+        problemNumber: problem.problemNumber,
+        title: problem.title,
+        slug: problem.slug,
+        difficulty: problem.difficulty,
+        tags: problem.tags,
+        description: problem.description,
+        constraints: problem.constraints,
+        examples: problem.examples,
+        likes: problem.likes.length,
+        totalSubmissions: problem.totalSubmissions,
+        acceptedSubmissions: problem.acceptedSubmissions,
+        acceptanceRate: problem.acceptanceRate,
+        hints: problem.hints,
+        companies: problem.companies,
+        isActive: problem.isActive,
+        functionName: problem.functionName,
+        returnType: problem.returnType,
+        parameters: problem.parameters,
+        supportedLanguages: problem.supportedLanguages,
+        templates: problem.templates,
+        createdAt: problem.createdAt ?? new Date(),
+        updatedAt: problem.updatedAt ?? new Date(),
+      },
+      sampleTestCases,
       timeRemaining
     };
   }

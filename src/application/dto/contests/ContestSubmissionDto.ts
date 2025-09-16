@@ -1,8 +1,8 @@
 
 
 export interface ContestSubmissionDto {
-  contestId: string;
-  code: string;
+  contestNumber: number;
+  sourceCode: string;
   languageId: number;
 }
 

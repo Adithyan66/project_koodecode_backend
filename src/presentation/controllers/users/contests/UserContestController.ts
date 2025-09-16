@@ -7,6 +7,8 @@ import { GetContestLeaderboardUseCase } from '../../../../application/usecases/c
 import { ContestListType, GetContestsListUseCase } from '../../../../application/usecases/contests/GetContestsListUseCase';
 import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 import { MESSAGES } from '../../../../shared/constants/messages';
+import { GetContestDetailUseCase } from '../../../../application/usecases/contests/GetContestDetailUseCase';
+import { SubmitContestSolutionUseCase } from '../../../../application/usecases/contests/SubmitContestSolutionUseCase';
 
 export class UserContestController {
   constructor(
@@ -14,9 +16,12 @@ export class UserContestController {
     private startContestProblemUseCase: StartContestProblemUseCase,
     private getContestLeaderboardUseCase: GetContestLeaderboardUseCase,
     private getContestsListUseCase: GetContestsListUseCase,
+    private getContestDetailUseCase: GetContestDetailUseCase,
+    private submitContestSolutionUseCase: SubmitContestSolutionUseCase,
   ) { }
 
   async registerForContest(req: Request, res: Response): Promise<void> {
+
     try {
       const { contestId } = req.body;
       const userId = req.user?.userId;
@@ -29,6 +34,7 @@ export class UserContestController {
       const participant = await this.registerForContestUseCase.execute(contestId, userId);
 
       res.status(200).json({
+        success: true,
         message: 'Successfully registered for contest',
         data: participant
       });
@@ -38,8 +44,9 @@ export class UserContestController {
   }
 
   async startContestProblem(req: Request, res: Response): Promise<void> {
+
     try {
-      const { contestId } = req.params;
+      const { contestNumber } = req.params;
       const userId = req.user?.userId;
 
       if (!userId) {
@@ -47,14 +54,18 @@ export class UserContestController {
         return;
       }
 
-      const problem = await this.startContestProblemUseCase.execute(contestId, userId);
+      const problem = await this.startContestProblemUseCase.execute(+contestNumber, userId);
 
       res.status(200).json({
+        success: true,
         message: 'Contest problem retrieved',
         data: problem
       });
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res.status(400).json({
+        success: false,
+        message: error.message
+      });
     }
   }
 
@@ -65,11 +76,15 @@ export class UserContestController {
       const leaderboard = await this.getContestLeaderboardUseCase.execute(contestId);
 
       res.status(200).json({
+        success: true,
         message: 'Leaderboard retrieved',
         data: leaderboard
       });
     } catch (error: any) {
-      res.status(400).json({ message: error.message });
+      res.status(400).json({
+        success: false,
+        message: error.message
+      });
     }
   }
 
@@ -106,6 +121,85 @@ export class UserContestController {
   }
 
 
+  async getContestDetail(req: Request, res: Response): Promise<void> {
+
+    try {
+      const contestNumber = parseInt(req.params.contestNumber);
+
+      if (isNaN(contestNumber) || contestNumber <= 0) {
+        res.status(HTTP_STATUS.BAD_REQUEST).json({
+          success: false,
+          message: 'Invalid contest number'
+        });
+        return;
+      }
+
+      const userId = req.user?.userId;
+      const contest = await this.getContestDetailUseCase.execute(contestNumber, userId);
+
+      if (!contest) {
+        res.status(HTTP_STATUS.NOT_FOUND).json({
+          success: false,
+          message: MESSAGES.NOT_FOUND
+        });
+        return;
+      }
+
+      res.status(HTTP_STATUS.OK).json({
+        success: true,
+        contest
+      });
+    } catch (error) {
+      console.error('Error fetching contest detail:', error);
+      res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: MESSAGES.SERVER_ERROR
+      });
+    }
+  }
+
+
+  async submitSolution(req: Request, res: Response): Promise<void> {
+    try {
+      const { contestNumber, sourceCode, languageId } = req.body;
+      const userId = req.user?.userId;
+
+      if (!userId) {
+        res.status(HTTP_STATUS.UNAUTHORIZED).json({
+          success: false,
+          message: 'Unauthorized'
+        });
+        return;
+      }
+
+      if (!contestNumber || !sourceCode || !languageId) {
+        res.status(HTTP_STATUS.BAD_REQUEST).json({
+          success: false,
+          message: 'Missing required fields: contestId, code, languageId'
+        });
+        return;
+      }
+
+      const result = await this.submitContestSolutionUseCase.execute(
+        { contestNumber, sourceCode, languageId },
+        userId
+      );
+
+      res.status(HTTP_STATUS.OK).json({
+        success: true,
+        data: result,
+        message: result.message
+      });
+
+    } catch (error) {
+      console.error('Contest solution submission error:', error);
+
+      res.status(HTTP_STATUS.BAD_REQUEST).json({
+        success: false,
+        message: error instanceof Error ? error.message : 'Contest submission failed'
+      });
+    }
+  }
 
 
 

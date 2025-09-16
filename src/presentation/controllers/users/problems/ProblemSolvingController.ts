@@ -10,7 +10,7 @@ import { RunCodeUseCase } from '../../../../application/usecases/submissions/Run
 import { GetLanguagesUseCase } from '../../../../application/usecases/submissions/GetLanguagesUseCase'; 
 
 import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
-import { Messages } from '../../../../shared/constants/messages';
+import { MESSAGES } from '../../../../shared/constants/messages';
 
 
 interface AuthenticatedRequest extends Request {
@@ -42,7 +42,7 @@ export class ProblemSolvingController {
             if (!userId) {
                 res.status(HTTP_STATUS.UNAUTHORIZED).json({
                     success: false,
-                    message: Messages.UNAUTHORIZED_ACCESS
+                    message: MESSAGES.UNAUTHORIZED_ACCESS
                 });
                 return;
             }
@@ -107,7 +107,7 @@ export class ProblemSolvingController {
             if (!userId) {
                 res.status(HTTP_STATUS.UNAUTHORIZED).json({
                     success: false,
-                    message: Messages.UNAUTHORIZED_ACCESS
+                    message: MESSAGES.UNAUTHORIZED_ACCESS
                 });
                 return;
             }

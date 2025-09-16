@@ -15,6 +15,7 @@ export class RegisterForContestUseCase {
   ) {}
 
   async execute(contestId: string, userId: string): Promise<ContestRegistrationResponseDto> {
+
     const contest = await this.contestRepository.findById(contestId);
     if (!contest) {
       throw new Error('Contest not found');
@@ -24,13 +25,13 @@ export class RegisterForContestUseCase {
       throw new Error('Registration is not open for this contest');
     }
 
-    // Check if already registered
+
     const existingParticipant = await this.participantRepository.findByContestAndUser(contestId, userId);
     if (existingParticipant) {
       throw new Error('Already registered for this contest');
     }
 
-    // Assign random problem
+
     const randomProblemId = this.getRandomProblem(contest.problems);
     const assignedProblem = await this.problemRepository.findById(randomProblemId);
 

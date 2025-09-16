@@ -1,3 +1,4 @@
+import { Constraint } from "../../../domain/entities/Problem";
 
 
 export interface ContestResponseDto {
@@ -22,31 +23,58 @@ export interface ContestResponseDto {
 
 }
 
-// export interface ContestListResponseDto {
+
+// export interface AssignedProblemDto {
 //   id: string;
-//   contestNumber: number;
 //   title: string;
+//   difficulty: string;
 //   description: string;
-//   thumbnail: string;
-//   startTime: Date;
-//   endTime: Date;
-//   registrationDeadline: Date;
-//   totalParticipants: number;
-//   maxReward: number;
-//   state: string;
-//   isRegistered: boolean;
-//   canRegister: boolean;
-//   timeRemaining?: number; // Only for active contests - seconds remaining
+//   constraints: Constraint[];
+//   examples: any[];
 // }
 
-
 export interface AssignedProblemDto {
-  id: string;
-  title: string;
-  difficulty: string;
-  description: string;
-  constraints: string;
-  examples: any[];
+  problem: {
+    id: string,
+    problemNumber: number,
+    title: string,
+    slug: string,
+    difficulty: string,
+    tags: string[],
+    description: string,
+    constraints: Constraint[],
+    examples: {
+       input: string;
+    output: string;
+    explanation: string;
+    isSample?: boolean;
+    }[],
+    likes: number,
+    totalSubmissions: number,
+    acceptedSubmissions: number,
+    acceptanceRate: number,
+    hints: string[],
+    companies: string[],
+    isActive: boolean,
+    functionName: string,
+    returnType: string,
+    parameters: {
+    name: string;
+    type: string;
+    description?: string;
+  }[];
+    supportedLanguages: number[],
+    templates:  Record<string, {
+    templateCode: string;
+    userFunctionSignature: string;
+    placeholder: string;
+  }>;
+    createdAt: Date;
+    updatedAt: Date
+  }
+
+  sampleTestCases: any;
+  timeRemaining: any;
 }
 
 export interface ContestRewardDto {

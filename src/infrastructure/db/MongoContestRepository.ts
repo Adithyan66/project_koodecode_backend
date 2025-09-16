@@ -18,7 +18,7 @@ export class MongoContestRepository implements IContestRepository {
       problems: contest.problems,
       startTime: contest.startTime,
       endTime: contest.endTime,
-      thumbnail:contest.thumbnail,
+      thumbnail: contest.thumbnail,
       registrationDeadline: contest.registrationDeadline,
       problemTimeLimit: contest.problemTimeLimit,
       maxAttempts: contest.maxAttempts,
@@ -36,25 +36,36 @@ export class MongoContestRepository implements IContestRepository {
   }
 
 
-  
+
   async findById(id: string): Promise<Contest | null> {
     const contest = await ContestModel.findById(id)
-      .populate('problems', 'title difficulty')
-      .populate('createdBy', 'username')
-      .populate('participants', 'username profileImage');
+    // .populate('problems', 'title difficulty')
+    // .populate('createdBy', 'username')
+    // .populate('participants', 'username profileImage');
     return contest ? this.mapToEntity(contest) : null;
   }
 
+  // async findByNumber(contestNumber: number): Promise<Contest | null> {
+  //   const contest = await ContestModel.findOne({ contestNumber })
+  //     .populate('problems', 'title difficulty')
+  //     .populate('createdBy', 'username');
+  //   return contest ? this.mapToEntity(contest) : null;
+  // }
+
   async findByNumber(contestNumber: number): Promise<Contest | null> {
-    const contest = await ContestModel.findOne({ contestNumber })
-      .populate('problems', 'title difficulty')
-      .populate('createdBy', 'username');
+    const contest = await ContestModel.findOne({ contestNumber }).exec();
     return contest ? this.mapToEntity(contest) : null;
   }
+
+  async find(): Promise<Contest[]> {
+    const contests = await ContestModel.find()
+    return contests.map(contest => this.mapToEntity(contest))
+  }
+
 
   async findAll(page: number, limit: number, filters?: ContestFilters): Promise<Contest[]> {
     const query: any = {};
-    
+
     if (filters) {
       if (filters.state) {
         query.state = filters.state;
@@ -76,7 +87,7 @@ export class MongoContestRepository implements IContestRepository {
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit);
-    
+
     return contests.map(contest => this.mapToEntity(contest));
   }
 
@@ -93,21 +104,21 @@ export class MongoContestRepository implements IContestRepository {
       state: { $in: ['upcoming', 'registration_open'] },
       startTime: { $gt: new Date() },
     })
-    .populate('problems', 'title difficulty')
-    .populate('createdBy', 'username')
-    .sort({ startTime: 1 });
+      .populate('problems', 'title difficulty')
+      .populate('createdBy', 'username')
+      .sort({ startTime: 1 });
     return contests.map(contest => this.mapToEntity(contest));
   }
 
   async findActive(): Promise<Contest[]> {
-    const contests = await ContestModel.find({ 
+    const contests = await ContestModel.find({
       state: 'active',
       startTime: { $lte: new Date() },
       endTime: { $gt: new Date() }
     })
-    .populate('problems', 'title difficulty')
-    .populate('createdBy', 'username')
-    .sort({ startTime: 1 });
+      .populate('problems', 'title difficulty')
+      .populate('createdBy', 'username')
+      .sort({ startTime: 1 });
     return contests.map(contest => this.mapToEntity(contest));
   }
 
@@ -124,8 +135,8 @@ export class MongoContestRepository implements IContestRepository {
       { ...updates, updatedAt: new Date() },
       { new: true }
     )
-    .populate('problems', 'title difficulty')
-    .populate('createdBy', 'username');
+      .populate('problems', 'title difficulty')
+      .populate('createdBy', 'username');
     return contest ? this.mapToEntity(contest) : null;
   }
 
@@ -137,7 +148,7 @@ export class MongoContestRepository implements IContestRepository {
   async addParticipant(contestId: string, userId: string): Promise<boolean> {
     const result = await ContestModel.findByIdAndUpdate(
       contestId,
-      { 
+      {
         $addToSet: { participants: userId },
         updatedAt: new Date()
       }
@@ -148,7 +159,7 @@ export class MongoContestRepository implements IContestRepository {
   async removeParticipant(contestId: string, userId: string): Promise<boolean> {
     const result = await ContestModel.findByIdAndUpdate(
       contestId,
-      { 
+      {
         $pull: { participants: userId },
         updatedAt: new Date()
       }
@@ -164,7 +175,7 @@ export class MongoContestRepository implements IContestRepository {
   async updateState(contestId: string, state: string): Promise<boolean> {
     const result = await ContestModel.findByIdAndUpdate(
       contestId,
-      { 
+      {
         state,
         updatedAt: new Date()
       }
@@ -178,15 +189,15 @@ export class MongoContestRepository implements IContestRepository {
       $or: [
         { startTime: { $gte: startDate, $lte: endDate } },
         { endTime: { $gte: startDate, $lte: endDate } },
-        { 
+        {
           startTime: { $lte: startDate },
           endTime: { $gte: endDate }
         }
       ]
     })
-    .populate('problems', 'title difficulty')
-    .populate('createdBy', 'username')
-    .sort({ startTime: 1 });
+      .populate('problems', 'title difficulty')
+      .populate('createdBy', 'username')
+      .sort({ startTime: 1 });
     return contests.map(contest => this.mapToEntity(contest));
   }
 
@@ -215,18 +226,18 @@ export class MongoContestRepository implements IContestRepository {
 
   async searchContests(searchQuery: string, page: number = 1, limit: number = 10): Promise<Contest[]> {
     const skip = (page - 1) * limit;
-    
+
     const contests = await ContestModel.find({
       $or: [
         { title: { $regex: searchQuery, $options: 'i' } },
         { description: { $regex: searchQuery, $options: 'i' } }
       ]
     })
-    .populate('problems', 'title difficulty')
-    .populate('createdBy', 'username')
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit);
+      .populate('problems', 'title difficulty')
+      .populate('createdBy', 'username')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
     return contests.map(contest => this.mapToEntity(contest));
   }
@@ -251,7 +262,7 @@ export class MongoContestRepository implements IContestRepository {
 
   async getTotalContestCount(filters?: ContestFilters): Promise<number> {
     const query: any = {};
-    
+
     if (filters) {
       if (filters.state) {
         query.state = filters.state;
@@ -286,14 +297,14 @@ export class MongoContestRepository implements IContestRepository {
   async updateContestState(contestId: string, newState: string): Promise<Contest | null> {
     const contest = await ContestModel.findByIdAndUpdate(
       contestId,
-      { 
+      {
         state: newState,
         updatedAt: new Date()
       },
       { new: true }
     )
-    .populate('problems', 'title difficulty')
-    .populate('createdBy', 'username');
+      .populate('problems', 'title difficulty')
+      .populate('createdBy', 'username');
 
     return contest ? this.mapToEntity(contest) : null;
   }
@@ -304,15 +315,15 @@ export class MongoContestRepository implements IContestRepository {
       contestNumber: contestDoc.contestNumber,
       title: contestDoc.title,
       description: contestDoc.description,
-      createdBy: typeof contestDoc.createdBy === 'object' 
-        ? contestDoc.createdBy._id.toString() 
+      createdBy: typeof contestDoc.createdBy === 'object'
+        ? contestDoc.createdBy._id.toString()
         : contestDoc.createdBy.toString(),
-      problems: contestDoc.problems.map((p: any) => 
+      problems: contestDoc.problems.map((p: any) =>
         typeof p === 'object' ? p._id.toString() : p.toString()
       ),
       startTime: contestDoc.startTime,
       endTime: contestDoc.endTime,
-      thumbnail:contestDoc.thumbnail,
+      thumbnail: contestDoc.thumbnail,
       registrationDeadline: contestDoc.registrationDeadline,
       problemTimeLimit: contestDoc.problemTimeLimit,
       maxAttempts: contestDoc.maxAttempts,
@@ -322,7 +333,7 @@ export class MongoContestRepository implements IContestRepository {
         coins: reward.coins
       })),
       state: contestDoc.state,
-      participants: contestDoc.participants.map((p: any) => 
+      participants: contestDoc.participants.map((p: any) =>
         typeof p === 'object' ? p._id.toString() : p.toString()
       ),
       createdAt: contestDoc.createdAt,

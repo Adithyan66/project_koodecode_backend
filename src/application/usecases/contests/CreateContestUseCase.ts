@@ -35,13 +35,13 @@ export class CreateContestUseCase {
             problems: createContestDto.problemIds,
             startTime: createContestDto.startTime,
             endTime: createContestDto.endTime,
-            thumbnail:createContestDto.thumbnail,
+            thumbnail: createContestDto.thumbnail,
             registrationDeadline: createContestDto.registrationDeadline,
             problemTimeLimit: createContestDto.problemTimeLimit,
             maxAttempts: createContestDto.maxAttempts,
             wrongSubmissionPenalty: createContestDto.wrongSubmissionPenalty,
             coinRewards,
-            state: ContestState.UPCOMING
+            state: this.getContestState(createContestDto.startTime, createContestDto.endTime, createContestDto.registrationDeadline)
         });
 
         return await this.contestRepository.create(contest);
@@ -83,4 +83,35 @@ export class CreateContestUseCase {
             throw new Error('Max attempts must be greater than 0');
         }
     }
+
+
+
+    getContestState(startTime: Date, endTime: Date, registrationDeadline: Date) {
+
+        const now = new Date();
+
+        const start = new Date(startTime);
+        const end = new Date(endTime);
+        const regDeadline = new Date(registrationDeadline);
+
+
+        if (now < regDeadline) {
+            return ContestState.REGISTRATION_OPEN;
+        }
+
+        if (now >= regDeadline && now < start) {
+            return ContestState.UPCOMING;
+        }
+
+        if (now >= start && now <= end) {
+            return ContestState.ACTIVE;
+        }
+
+        if (now > end) {
+            return ContestState.ENDED;
+        }
+
+        return ContestState.UPCOMING; 
+    }
+
 }

@@ -25,21 +25,21 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
     return this.mapToEntity(savedParticipant);
   }
 
-  async findById(id: string): Promise<ContestParticipant | null> {
-    const participant = await ContestParticipantModel.findById(id)
-      .populate('contestId', 'title contestNumber')
-      .populate('userId', 'username profileImage')
-      .populate('assignedProblemId', 'title difficulty');
-    
-    return participant ? this.mapToEntity(participant) : null;
-  }
+  // async findById(id: string): Promise<ContestParticipant | null> {
+  //   const participant = await ContestParticipantModel.findById(id)
+  //     .populate('contestId', 'title contestNumber')
+  //     .populate('userId', 'username profileImage')
+  //     .populate('assignedProblemId', 'title difficulty');
+
+  //   return participant ? this.mapToEntity(participant) : null;
+  // }
 
   async findByContestAndUser(contestId: string, userId: string): Promise<ContestParticipant | null> {
     const participant = await ContestParticipantModel.findOne({
       contestId,
       userId
     }).populate('assignedProblemId', 'title difficulty');
-    
+
     return participant ? this.mapToEntity(participant) : null;
   }
 
@@ -48,34 +48,34 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
       .populate('userId', 'username profileImage')
       .populate('assignedProblemId', 'title difficulty')
       .sort({ totalScore: -1, updatedAt: 1 });
-    
+
     return participants.map(participant => this.mapToEntity(participant));
   }
 
   async findByUser(userId: string, page: number = 1, limit: number = 10): Promise<ContestParticipant[]> {
     const skip = (page - 1) * limit;
-    
+
     const participants = await ContestParticipantModel.find({ userId })
       .populate('contestId', 'title contestNumber startTime endTime state')
       .populate('assignedProblemId', 'title difficulty')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
-    
+
     return participants.map(participant => this.mapToEntity(participant));
   }
 
   async update(id: string, updates: Partial<ContestParticipant>): Promise<ContestParticipant | null> {
     const participant = await ContestParticipantModel.findByIdAndUpdate(
       id,
-      { 
-        ...updates, 
-        updatedAt: new Date() 
+      {
+        ...updates,
+        updatedAt: new Date()
       },
       { new: true }
     ).populate('userId', 'username profileImage')
-     .populate('assignedProblemId', 'title difficulty');
-    
+      .populate('assignedProblemId', 'title difficulty');
+
     return participant ? this.mapToEntity(participant) : null;
   }
 
@@ -87,7 +87,7 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
   async addSubmission(participantId: string, submission: ContestSubmission): Promise<boolean> {
     const result = await ContestParticipantModel.findByIdAndUpdate(
       participantId,
-      { 
+      {
         $push: { submissions: submission },
         updatedAt: new Date()
       }
@@ -98,7 +98,7 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
   async updateScore(participantId: string, score: number): Promise<boolean> {
     const result = await ContestParticipantModel.findByIdAndUpdate(
       participantId,
-      { 
+      {
         totalScore: score,
         updatedAt: new Date()
       }
@@ -109,7 +109,7 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
   async updateRank(participantId: string, rank: number): Promise<boolean> {
     const result = await ContestParticipantModel.findByIdAndUpdate(
       participantId,
-      { 
+      {
         rank,
         updatedAt: new Date()
       }
@@ -118,7 +118,7 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
   }
 
   async getLeaderboard(contestId: string): Promise<ContestParticipant[]> {
-    const participants = await ContestParticipantModel.find({ 
+    const participants = await ContestParticipantModel.find({
       contestId,
       $or: [
         { status: 'completed' },
@@ -126,26 +126,26 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
         { status: 'in_progress' }
       ]
     })
-    .populate('userId', 'username profileImage')
-    .populate('assignedProblemId', 'title difficulty')
-    .sort({ 
-      totalScore: -1,  // Higher score first
-      updatedAt: 1     // Earlier completion time first for ties
-    });
-    
+      .populate('userId', 'username profileImage')
+      .populate('assignedProblemId', 'title difficulty')
+      .sort({
+        totalScore: -1,  // Higher score first
+        updatedAt: 1     // Earlier completion time first for ties
+      });
+
     return participants.map(participant => this.mapToEntity(participant));
   }
 
   async updateRankings(contestId: string): Promise<void> {
     // Get all participants sorted by score and completion time
-    const participants = await ContestParticipantModel.find({ 
+    const participants = await ContestParticipantModel.find({
       contestId,
       $or: [
         { status: 'completed' },
         { status: 'time_up' },
         { status: 'in_progress' }
       ]
-    }).sort({ 
+    }).sort({
       totalScore: -1,
       updatedAt: 1
     });
@@ -154,7 +154,7 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
     const bulkOps = participants.map((participant, index) => ({
       updateOne: {
         filter: { _id: participant._id },
-        update: { 
+        update: {
           rank: index + 1,
           updatedAt: new Date()
         }
@@ -177,7 +177,7 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
       contestId: participant.contestId,
       $or: [
         { totalScore: { $gt: participant.totalScore } },
-        { 
+        {
           totalScore: participant.totalScore,
           updatedAt: { $lt: participant.updatedAt }
         }
@@ -191,7 +191,7 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
   async awardCoins(participantId: string, coins: number): Promise<boolean> {
     const result = await ContestParticipantModel.findByIdAndUpdate(
       participantId,
-      { 
+      {
         coinsEarned: coins,
         updatedAt: new Date()
       }
@@ -248,13 +248,13 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
       contestId,
       status: { $in: ['completed', 'time_up'] }
     })
-    .populate('userId', 'username profileImage')
-    .populate('assignedProblemId', 'title difficulty')
-    .sort({ 
-      totalScore: -1,
-      updatedAt: 1
-    })
-    .limit(limit);
+      .populate('userId', 'username profileImage')
+      .populate('assignedProblemId', 'title difficulty')
+      .sort({
+        totalScore: -1,
+        updatedAt: 1
+      })
+      .limit(limit);
 
     return participants.map(participant => this.mapToEntity(participant));
   }
@@ -290,18 +290,29 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
       contestId,
       status
     })
-    .populate('userId', 'username profileImage')
-    .populate('assignedProblemId', 'title difficulty')
-    .sort({ updatedAt: -1 });
+      .populate('userId', 'username profileImage')
+      .populate('assignedProblemId', 'title difficulty')
+      .sort({ updatedAt: -1 });
 
     return participants.map(participant => this.mapToEntity(participant));
   }
 
+  async findByContestId(contestId: string): Promise<ContestParticipant[]> {
+    const docs = await ContestParticipantModel.find({ contestId }).exec();
+    return docs.map(doc => this.mapToEntity(doc));
+  }
+
+  async findById(id: string): Promise<ContestParticipant | null> {
+    const doc = await ContestParticipantModel.findById(id).exec();
+    return doc ? this.mapToEntity(doc) : null;
+  }
+
+
   private mapToEntity(participantDoc: any): ContestParticipant {
     return new ContestParticipant({
       id: participantDoc._id.toString(),
-      contestId: typeof participantDoc.contestId === 'object' 
-        ? participantDoc.contestId._id.toString() 
+      contestId: typeof participantDoc.contestId === 'object'
+        ? participantDoc.contestId._id.toString()
         : participantDoc.contestId.toString(),
       userId: typeof participantDoc.userId === 'object'
         ? participantDoc.userId._id.toString()

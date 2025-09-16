@@ -5,6 +5,7 @@ tree  -I 'node_modules' > structure.txt
 
 
 
+
 ├── package.json
 ├── package-lock.json
 ├── replacements.txt
@@ -12,6 +13,7 @@ tree  -I 'node_modules' > structure.txt
 │   ├── application
 │   │   ├── dto
 │   │   │   ├── contests
+│   │   │   │   ├── ContestDetailDto.ts
 │   │   │   │   ├── ContestLeaderboardDto.ts
 │   │   │   │   ├── ContestListDto.ts
 │   │   │   │   ├── ContestRegistrationDto.ts
@@ -57,7 +59,9 @@ tree  -I 'node_modules' > structure.txt
 │   │   └── usecases
 │   │       ├── contests
 │   │       │   ├── CreateContestUseCase.ts
+│   │       │   ├── GetContestDetailUseCase.ts
 │   │       │   ├── GetContestLeaderboardUseCase.ts
+│   │       │   ├── GetContestsListUseCase.ts
 │   │       │   ├── RegisterForContestUseCase.ts
 │   │       │   ├── StartContestProblemUseCase.ts
 │   │       │   └── SubmitContestSolutionUseCase.ts
@@ -224,4 +228,4 @@ tree  -I 'node_modules' > structure.txt
 ├── test-presigned-url.js
 └── tsconfig.json
 
-46 directories, 173 files
+46 directories, 176 files

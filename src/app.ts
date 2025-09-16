@@ -12,7 +12,9 @@ import healthRoutes from "./presentation/routes/healthRoutes";
 import profileRoutes from "./presentation/routes/user/profileRoutes"
 import adminContestRoutes from "./presentation/routes/admin/contestRoutes"
 import userContestRoutes from './presentation/routes/user/contestRoutes'
-
+import { ContestTimerService } from './application/services/ContestTimerService';
+import { MongoContestRepository } from './infrastructure/db/MongoContestRepository';
+import { ContestCron } from './infrastructure/corn/ContestCron';
 
 
 dotenv.config();
@@ -25,7 +27,8 @@ app.use(cors({
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
-
+const cornjob = new ContestCron(new ContestTimerService(new MongoContestRepository()))
+cornjob.start()
 
 
 

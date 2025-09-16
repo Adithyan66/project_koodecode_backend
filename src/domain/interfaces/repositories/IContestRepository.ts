@@ -3,7 +3,9 @@
 import { Contest } from '../../entities/Contest';
 
 export interface IContestRepository {
+
   create(contest: Contest): Promise<Contest>;
+  find(): Promise<Contest[]>;
   findById(id: string): Promise<Contest | null>;
   findByNumber(contestNumber: number): Promise<Contest | null>;
   findAll(page: number, limit: number, filters?: ContestFilters): Promise<Contest[]>;
@@ -17,6 +19,7 @@ export interface IContestRepository {
   removeParticipant(contestId: string, userId: string): Promise<boolean>;
   getParticipantCount(contestId: string): Promise<number>;
   updateState(contestId: string, state: string): Promise<boolean>;
+
 }
 
 export interface ContestFilters {

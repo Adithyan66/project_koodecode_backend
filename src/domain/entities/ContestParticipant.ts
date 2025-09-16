@@ -2,7 +2,7 @@
 
 export class ContestParticipant {
 
-  public id: string;
+  public id?: string;
   public contestId: string;
   public userId: string;
   public assignedProblemId: string;

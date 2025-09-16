@@ -17,4 +17,6 @@ export interface IContestParticipantRepository {
   updateRankings(contestId: string): Promise<void>;
   getParticipantRank(participantId: string): Promise<number | null>;
   awardCoins(participantId: string, coins: number): Promise<boolean>;
+  findByContestId(contestId: string): Promise<ContestParticipant[]>;
+  findById(id: string): Promise<ContestParticipant | null>;
 }
