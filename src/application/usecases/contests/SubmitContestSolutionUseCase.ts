@@ -198,7 +198,8 @@ export class SubmitContestSolutionUseCase {
         problemId: participant.assignedProblemId,
         sourceCode: dto.sourceCode,
         languageId: dto.languageId,
-        userId: userId
+        userId: userId,
+        submissionType:'contest'
       };
 
       const executionResult = await this.createSubmissionUseCase.execute(executeCodeDto);

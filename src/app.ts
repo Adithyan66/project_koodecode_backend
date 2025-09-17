@@ -20,10 +20,20 @@ import { ContestCron } from './infrastructure/corn/ContestCron';
 dotenv.config();
 const app = express();
 app.use(cookieParser());
+// app.use(cors({
+//   origin: ["http://localhost:5173", 'https://xyz789.ngrok.io'],
+//   credentials: true
+// }));
+
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: [
+    "http://localhost:5173",
+    "https://7eb979cc030d.ngrok-free.app"
+  ],
   credentials: true
-}));
+}))
+
+
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
@@ -45,6 +55,8 @@ app.use('/api/user/problems', userProblemRoutes);
 app.use('/api/admin/contests', adminContestRoutes)
 
 app.use('/api/user/contests', userContestRoutes)
+
+// app.use('/*',(req,res)=> res.send("no route match"))
 
 
 app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {

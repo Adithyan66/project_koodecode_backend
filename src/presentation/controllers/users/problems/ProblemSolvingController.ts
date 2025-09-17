@@ -59,7 +59,8 @@ export class ProblemSolvingController {
                 userId,
                 problemId,
                 sourceCode,
-                languageId
+                languageId,
+                submissionType:'problem'
             });
 
             res.status(HTTP_STATUS.CREATED).json({

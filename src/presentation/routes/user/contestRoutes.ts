@@ -39,7 +39,7 @@ const createSubmissionUseCase = new CreateSubmissionUseCase(judge0Service, submi
 const registerForContestUseCase = new RegisterForContestUseCase(contestRepository, participantRepository, problemRepository)
 const submitContestSolutionUseCase = new SubmitContestSolutionUseCase(contestRepository, participantRepository, submissionRepository, createSubmissionUseCase, scoringService, timerService)
 const getContestsListUseCase = new GetContestsListUseCase(contestRepository)
-const getContestDetailUseCase = new GetContestDetailUseCase(contestRepository, participantRepository)
+const getContestDetailUseCase = new GetContestDetailUseCase(contestRepository, participantRepository, submissionRepository)
 const startContestProblemUseCase = new StartContestProblemUseCase(contestRepository, participantRepository, problemRepository, timerService, testCaseRepository)
 const getContestLeaderboardUseCase = new GetContestLeaderboardUseCase(contestRepository, participantRepository, userRepository)
 const userContestController = new UserContestController(registerForContestUseCase, startContestProblemUseCase, getContestLeaderboardUseCase, getContestsListUseCase, getContestDetailUseCase, submitContestSolutionUseCase)
@@ -55,7 +55,7 @@ router.get('/:contestNumber/start', authMiddleware(), (req, res) => userContestC
 
 router.post('/submit-solution', authMiddleware(), (req, res) => userContestController.submitSolution(req, res));
 
-router.get('/:contestId/leaderboard', authMiddleware, userContestController.getLeaderboard.bind(userContestController));
+router.get('/:contestNumber/leaderboard', authMiddleware(), (req, res) => userContestController.getLeaderboard(req, res));
 
 router.get('/state/:state', authMiddleware(), (req, res) => userContestController.getActiveContests(req, res));
 

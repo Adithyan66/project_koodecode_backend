@@ -11,27 +11,26 @@ export class GetContestLeaderboardUseCase {
     private contestRepository: IContestRepository,
     private participantRepository: IContestParticipantRepository,
     private userRepository: IUserRepository
-  ) {}
+  ) { }
 
-  async execute(contestId: string, currentUserId?: string): Promise<ContestLeaderboardDto> {
-    // Validate contest exists
-    const contest = await this.contestRepository.findById(contestId);
+  async execute(contestNumber: number, currentUserId?: string): Promise<ContestLeaderboardDto> {
+
+    const contest = await this.contestRepository.findByNumber(contestNumber);
     if (!contest) {
       throw new Error('Contest not found');
     }
 
-    // Get sorted participants (leaderboard)
-    const participants = await this.participantRepository.getLeaderboard(contestId);
-    
-    // Map participants to leaderboard entries with user details
+    const participants = await this.participantRepository.getLeaderboard(contest.id);
+
     const rankings: LeaderboardEntryDto[] = await Promise.all(
       participants.map(async (participant, index) => {
         const user = await this.userRepository.findById(participant.userId);
-        
+        console.log("hiiiiiiiiii",participant);
+
         return {
           rank: index + 1,
           username: user?.userName || 'Unknown User',
-          profileImage: user?.profilePicUrl,
+          profileImage: user?.profilePicKey,
           totalScore: participant.totalScore,
           timeTaken: this.formatTime(participant.getTimeTaken()),
           attempts: participant.getTotalAttempts(),
@@ -41,7 +40,6 @@ export class GetContestLeaderboardUseCase {
       })
     );
 
-    // Find current user's rank if provided
     let userRank: number | undefined;
     if (currentUserId) {
       const userParticipant = participants.find(p => p.userId === currentUserId);
@@ -50,8 +48,10 @@ export class GetContestLeaderboardUseCase {
       }
     }
 
+    
+
     return {
-      contestId,
+      contestId: contest.id,
       rankings,
       totalParticipants: participants.length,
       lastUpdated: new Date(),
@@ -67,15 +67,15 @@ export class GetContestLeaderboardUseCase {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const remainingSeconds = Math.floor(seconds % 60);
-    
+
     if (hours > 0) {
       return `${hours}h ${minutes}m ${remainingSeconds}s`;
     }
-    
+
     if (minutes > 0) {
       return `${minutes}m ${remainingSeconds}s`;
     }
-    
+
     return `${remainingSeconds}s`;
   }
 

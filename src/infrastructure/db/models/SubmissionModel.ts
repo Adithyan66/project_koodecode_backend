@@ -108,16 +108,18 @@
 
 import mongoose, { Schema, Document } from 'mongoose';
 import { Submission, TestCaseResult } from '../../../domain/entities/Submission';
+export interface SubmissionDocument extends Omit<Submission, 'id'>, Document { }
+
 
 const TestCaseResultSchema = new Schema({
   testCaseId: { type: String, required: true },
   input: { type: String, required: true },
   expectedOutput: { type: String, required: true },
   actualOutput: { type: String },
-  status: { 
-    type: String, 
+  status: {
+    type: String,
     enum: ['passed', 'failed', 'error', 'time_limit_exceeded', 'memory_limit_exceeded'],
-    required: true 
+    required: true
   },
   executionTime: { type: Number, default: 0 },
   memoryUsage: { type: Number, default: 0 },
@@ -129,10 +131,10 @@ const SubmissionSchema = new Schema({
   problemId: { type: String, required: true },
   sourceCode: { type: String, required: true },
   languageId: { type: Number, required: true },
-  status: { 
-    type: String, 
+  status: {
+    type: String,
     enum: ['pending', 'processing', 'accepted', 'rejected', 'error', 'time_limit_exceeded', 'memory_limit_exceeded', 'compilation_error', 'partially_accepted'],
-    required: true 
+    required: true
   },
   overallVerdict: { type: String, required: true },
   testCaseResults: [TestCaseResultSchema],
@@ -140,7 +142,8 @@ const SubmissionSchema = new Schema({
   totalTestCases: { type: Number, required: true },
   score: { type: Number, default: 0 },
   totalExecutionTime: { type: Number, default: 0 },
-  maxMemoryUsage: { type: Number, default: 0 }
+  maxMemoryUsage: { type: Number, default: 0 },
+  submissionType: { type: String, enum: ['problem', 'contest'] }
 }, {
   timestamps: true
 });
@@ -148,5 +151,4 @@ const SubmissionSchema = new Schema({
 SubmissionSchema.index({ userId: 1, problemId: 1 });
 SubmissionSchema.index({ status: 1 });
 
-export interface SubmissionDocument extends Submission, Document {}
 export const SubmissionModel = mongoose.model<SubmissionDocument>('Submission', SubmissionSchema);

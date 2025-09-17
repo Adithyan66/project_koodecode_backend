@@ -76,6 +76,7 @@ export class MongoSubmissionRepository implements ISubmissionRepository {
       judge0Status: doc.judge0Status,
       testCasesPassed: doc.testCasesPassed,
       totalTestCases: doc.totalTestCases,
+      submissionType:doc.submissionType,
       verdict: doc.verdict,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt

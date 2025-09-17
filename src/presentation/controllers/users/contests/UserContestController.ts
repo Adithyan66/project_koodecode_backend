@@ -71,14 +71,16 @@ export class UserContestController {
 
   async getLeaderboard(req: Request, res: Response): Promise<void> {
     try {
-      const { contestId } = req.params;
+      const { contestNumber } = req.params;
 
-      const leaderboard = await this.getContestLeaderboardUseCase.execute(contestId);
+      const userId = req.user?.userId
+
+      const leaderboard = await this.getContestLeaderboardUseCase.execute(+contestNumber, userId);
 
       res.status(200).json({
         success: true,
         message: 'Leaderboard retrieved',
-        data: leaderboard
+        leaderboard
       });
     } catch (error: any) {
       res.status(400).json({
@@ -149,6 +151,7 @@ export class UserContestController {
         success: true,
         contest
       });
+      
     } catch (error) {
       console.error('Error fetching contest detail:', error);
       res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({

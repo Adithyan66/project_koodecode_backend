@@ -63,7 +63,8 @@ export class CreateSubmissionUseCase {
       totalTestCases: allTestCases.length,
       score: 0,
       totalExecutionTime: 0,
-      maxMemoryUsage: 0
+      maxMemoryUsage: 0,
+      submissionType:params.submissionType
     });
 
     try {

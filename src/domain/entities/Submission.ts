@@ -20,12 +20,13 @@ export interface Submission {
   languageId: number;
   status: 'pending' | 'processing' | 'accepted' | 'rejected' | 'error' | 'time_limit_exceeded' | 'memory_limit_exceeded' | 'compilation_error' | 'partially_accepted';
   overallVerdict: string;
-  testCaseResults: TestCaseResult[]; 
+  testCaseResults: TestCaseResult[];
   testCasesPassed: number;
   totalTestCases: number;
-  score: number; 
+  score: number;
   totalExecutionTime: number;
   maxMemoryUsage: number;
+  submissionType: 'problem' | 'contest';
   createdAt: Date;
   updatedAt: Date;
 }
