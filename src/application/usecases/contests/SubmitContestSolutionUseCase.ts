@@ -240,7 +240,7 @@ export class SubmitContestSolutionUseCase {
       await this.updateContestLeaderboard(contest.id);
 
       const updatedParticipant = await this.participantRepository.findById(participant.id);
-      const rank = updatedParticipant?.rank || null;
+      const rank = updatedParticipant?.rank || undefined;
 
       return {
         submissionId: executionResult.id,

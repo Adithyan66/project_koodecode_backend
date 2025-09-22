@@ -7,7 +7,6 @@
 
 
 
-// domain/interfaces/repositories/IOtpRepository.ts
 export interface IOtpRepository {
   saveOtp(email: string, data: Record<string, any>, ttlSeconds: number): Promise<void>;
   getOtp(email: string): Promise<Record<string, any> | null>;

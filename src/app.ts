@@ -15,6 +15,7 @@ import userContestRoutes from './presentation/routes/user/contestRoutes'
 import { ContestTimerService } from './application/services/ContestTimerService';
 import { MongoContestRepository } from './infrastructure/db/MongoContestRepository';
 import { ContestCron } from './infrastructure/corn/ContestCron';
+import { errorMiddleware } from './presentation/middleware/errorMiddleware';
 
 
 dotenv.config();
@@ -59,11 +60,12 @@ app.use('/api/user/contests', userContestRoutes)
 // app.use('/*',(req,res)=> res.send("no route match"))
 
 
-app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-  console.error(err);
-  res.status(500).json({ error: 'Internal server error' });
-});
+// app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+//   console.error(err);
+//   res.status(500).json({ error: 'Internal server error' });
+// });
 
+app.use(errorMiddleware);
 
 
 

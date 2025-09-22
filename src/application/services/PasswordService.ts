@@ -1,13 +1,14 @@
 import bcrypt from 'bcrypt';
+import { IPasswordService } from '../../domain/interfaces/services/IPasswordService';
 
-export class PasswordService {
+export class PasswordService implements IPasswordService {
 
-    static async hashPassword(password: string): Promise<string> {
+    async hashPassword(password: string): Promise<string> {
 
         return bcrypt.hash(password, 10);
     }
 
-    static async verifyPassword(password: string, hash: string): Promise<boolean> {
+    async verifyPassword(password: string, hash: string): Promise<boolean> {
 
         return bcrypt.compare(password, hash);
     }

@@ -28,6 +28,8 @@ export class Otp {
     }
 
     isValid(inputCode: number): boolean {
+        console.log("helooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo",this.code , inputCode);
+        
         if (this.isExpired()) return false;
 
         return this.code === inputCode;

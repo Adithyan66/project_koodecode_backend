@@ -45,15 +45,13 @@ export class OtpUseCase {
         : Promise<{ userName?: string; fullName?: string; } | null> {
 
         const storedOtp = await this.otpRepository.getOtp(email);
-
-        console.log("stored otp", storedOtp);
-
-
+        
         if (!storedOtp) return null
+        console.log("stored otp",  storedOtp.isValid(otp));
 
         if (storedOtp.isValid(otp)) {
+
             console.log("ivte vannit und");
-            
             
             if (context == "signup") {
                 return {

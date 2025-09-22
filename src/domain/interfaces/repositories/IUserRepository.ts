@@ -8,8 +8,6 @@
 //     updateUser(id: string, updates: Partial<User>): Promise<User> | null;
 // }
 
-
-// application/interfaces/IUserRepository.ts
 import { User, UserProps } from "../../entities/User";
 
 export interface IUserRepository {

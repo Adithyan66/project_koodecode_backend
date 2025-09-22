@@ -7,6 +7,7 @@ import { UserModel } from './models/UserModel';
 export class MongoUserRepository implements IUserRepository {
 
   private mapToEntity(userDoc: any): User {
+    
     return new User({
       id: userDoc._id.toString(),
       fullName: userDoc.fullName,

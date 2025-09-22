@@ -34,8 +34,7 @@ export class RedisOtpRepository implements IOtpRepository {
             return null;
         }
         
-        console.log("othanuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu");
-        return new Otp({
+        let otp =  new Otp({
             code: parseInt(data.otp, 10),
             email: data.email,
             expiresAt: new Date(data.expiresAt),
@@ -44,6 +43,9 @@ export class RedisOtpRepository implements IOtpRepository {
                 fullname: data.fullName
             }
         });
+        
+        console.log("othanuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",otp.isValid(11111));
+        return otp
     }
 
     async deleteOtp(email: string): Promise<void> {

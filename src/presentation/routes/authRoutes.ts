@@ -18,6 +18,10 @@ import { ForgotPasswordUseCase } from '../../application/usecases/users/ForgotPa
 import { GoogleOAuthUseCase } from '../../application/usecases/users/GoogleOAuthUseCase';
 import { GitHubOAuthUseCase } from '../../application/usecases/users/GitHubOAuthUseCase';
 import { OAuthService } from '../../infrastructure/services/OAuthService';
+import { PasswordService } from '../../application/services/PasswordService';
+import { ChangePasswordController } from '../controllers/auth/ChangePasswordController';
+import { ChangePasswordUseCase } from '../../application/usecases/auth/ChangePasswordUseCase';
+import { authMiddleware } from '../middleware/authMiddleware';
 
 const router = Router();
 
@@ -27,10 +31,11 @@ const redisOtpService = new RedisOtpRepository()
 const nodeMailerService = new NodemailerEmailService()
 const otpService = new OtpUseCase(redisOtpService, nodeMailerService);
 const authServive = new OAuthService()
+const passwordService = new PasswordService()
 
 const signupUseCase = new SignupUseCase(userRepository, otpService, jwtService);
-const loginUseCase = new LoginUseCase(userRepository, jwtService);
-const forgotPasswordUseCase = new ForgotPasswordUseCase(userRepository, otpService, jwtService)
+const loginUseCase = new LoginUseCase(userRepository, jwtService, passwordService);
+const forgotPasswordUseCase = new ForgotPasswordUseCase(userRepository, otpService, jwtService, passwordService)
 
 const googleOAuthUseCase = new GoogleOAuthUseCase(userRepository, authServive, jwtService)
 const githubOAuthUseCase = new GitHubOAuthUseCase(userRepository, authServive, jwtService)
@@ -47,6 +52,10 @@ const logoutController = new LogoutController()
 
 const refreshTokenController = new RefreshTokenController(jwtService)
 
+const changePasswordUseCase = new ChangePasswordUseCase(userRepository, passwordService)
+
+const changePasswordController = new ChangePasswordController(changePasswordUseCase)
+
 router.post('/signup/request-otp', (req, res) => signupController.requestOtp(req, res));
 
 router.post('/signup/verify-otp', (req, res) => signupController.verifyOtpAndSignup(req, res));
@@ -61,11 +70,16 @@ router.post('/logout', (req, res) => logoutController.logoutUser(req, res))
 
 router.post('/forgot/request-otp', (req, res) => forgotPasswordController.requestOtp(req, res))
 
+router.post('/verify-otp', (req, res) => forgotPasswordController.verifyOtp(req, res))
+
 router.post('/forgot/change-password', (req, res) => forgotPasswordController.changePassword(req, res))
 
-
 router.post('/google/callback', (req, res) => oauthController.googleLogin(req, res));
+
 router.post('/github/callback', oauthController.githubLogin.bind(oauthController));
+
+router.patch('/change-password', authMiddleware(), (req, res) => changePasswordController.changePassword(req, res))
+
 
 
 export default router;
