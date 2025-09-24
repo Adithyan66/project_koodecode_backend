@@ -19,8 +19,11 @@ import { errorMiddleware } from './presentation/middleware/errorMiddleware';
 
 
 dotenv.config();
+
 const app = express();
+
 app.use(cookieParser());
+
 // app.use(cors({
 //   origin: ["http://localhost:5173", 'https://xyz789.ngrok.io'],
 //   credentials: true
@@ -41,6 +44,8 @@ app.use(urlencoded({ extended: true }));
 const cornjob = new ContestCron(new ContestTimerService(new MongoContestRepository()))
 cornjob.start()
 
+import roomRoutes from './presentation/routes/user/roomRoutes';
+
 
 
 app.use('/api/health', healthRoutes);
@@ -49,21 +54,18 @@ app.use('/api/auth', authRoutes);
 
 app.use('/api/user', profileRoutes);
 
-app.use('/api/admin/problems', adminProblemRoutes);
-
 app.use('/api/user/problems', userProblemRoutes);
-
-app.use('/api/admin/contests', adminContestRoutes)
 
 app.use('/api/user/contests', userContestRoutes)
 
+app.use('/api/user/rooms', roomRoutes);
+
+app.use('/api/admin/problems', adminProblemRoutes);
+
+app.use('/api/admin/contests', adminContestRoutes)
+
 // app.use('/*',(req,res)=> res.send("no route match"))
 
-
-// app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
-//   console.error(err);
-//   res.status(500).json({ error: 'Internal server error' });
-// });
 
 app.use(errorMiddleware);
 

@@ -1,7 +1,10 @@
 import dotenv from 'dotenv';
+
+
 dotenv.config();
 
 export const config = {
+
   jwtSecret: process.env.JWT_SECRET || " ",
   mongoUri: process.env.MONGO_URI || " ",
   jwtAccessSecret: process.env.JWT_SECRET || " ",
@@ -43,9 +46,18 @@ export const config = {
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
     region: process.env.AWS_REGION || "",
     s3BucketName: process.env.S3_BUCKET_NAME || ""
+  },
+
+  jitsi: {
+    domain: process.env.JITSI_DOMAIN || 'https://13.60.228.31',
+    apiSecret: process.env.JITSI_API_SECRET || 'your-secret'
+  },
+
+  socket: {
+    cors: {
+      origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+      methods: ['GET', 'POST']
+    }
   }
 };
 
-
-// AWS_ACCESS_KEY_ID=***REMOVED***
-// AWS_SECRET_ACCESS_***REMOVED***MBbA
