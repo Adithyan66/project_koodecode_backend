@@ -41,13 +41,14 @@ export class SocketService {
                     return next(new Error('Invalid token type'));
                 }
 
-                // Verify room exists and user has access
                 const room = await this.roomRepository.findByRoomId(decoded.roomId);
+
                 if (!room) {
                     return next(new Error('Room not found'));
                 }
 
-                const participant = room.participants.find(p => p.userId === decoded.userId);
+                const participant = room.participants.find(p => p.userId.toString() == decoded.userId);
+
                 if (!participant) {
                     return next(new Error('User not in room'));
                 }
@@ -58,6 +59,7 @@ export class SocketService {
 
                 next();
             } catch (error) {
+                console.log("thi is tojken", error);
                 next(new Error('Authentication error'));
             }
         });
@@ -103,7 +105,7 @@ export class SocketService {
 
                     // Save/Load existing code for this problem
                     const existingCode = await this.roomRepository.getRoomCode(roomId);
-                    
+
                     let codeToSend = problem.templates.userFunctionSignature || '';
 
                     if (existingCode && existingCode.problemNumber === data.problemNumber) {

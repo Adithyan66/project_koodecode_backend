@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { LoginUseCase } from '../../../application/usecases/users/LoginUseCase'; 
+import { LoginUseCase } from '../../../application/usecases/users/LoginUseCase';
 import { config } from '../../../infrastructure/config/config';
 
 export class LoginController {
@@ -9,7 +9,7 @@ export class LoginController {
     async login(req: Request, res: Response) {
 
         const { email, password } = req.body;
-        
+
 
         try {
 
@@ -28,6 +28,7 @@ export class LoginController {
                 success: true,
                 message: "User loged successfully",
                 user: {
+                    id: user.id,
                     fullName: user.fullName,
                     userName: user.userName,
                     email: user.email,
@@ -38,7 +39,7 @@ export class LoginController {
             });
 
         } catch (error: any) {
-            
+
             res.status(401).json({
                 success: false,
                 message: error.message,

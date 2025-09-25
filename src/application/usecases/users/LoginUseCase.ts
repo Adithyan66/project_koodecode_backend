@@ -40,7 +40,7 @@ export class LoginUseCase {
         const refreshToken = this.jwtService.generateRefreshToken({ userId: user.id, role: user.role })
 
         const safeUser: SafeUser = {
-
+            id: user.id!,
             fullName: user.fullName,
             userName: user.userName,
             email: user.email,

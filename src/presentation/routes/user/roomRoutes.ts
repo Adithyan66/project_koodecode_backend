@@ -15,6 +15,7 @@ import { JoinRoomUseCase } from '../../../application/usecases/rooms/JoinRoomUse
 import { GetPublicRoomsUseCase } from '../../../application/usecases/rooms/GetPublicRoomsUseCase';
 import { UpdateRoomPermissionsUseCase } from '../../../application/usecases/rooms/UpdateRoomPermissionsUseCase';
 import { KickUserUseCase } from '../../../application/usecases/rooms/KickUserUseCase';
+import { MongoTestCaseRepository } from '../../../infrastructure/db/MongoTestCaseRepository';
 
 const router = Router();
 
@@ -24,6 +25,7 @@ const counterRepository = new MongoCounterRepository();
 const problemRepository = new MongoProblemRepository();
 const userRepository = new MongoUserRepository();
 const tokenService = new JwtService();
+const testCaseRepository = new MongoTestCaseRepository()
 
 const createRoomUseCase = new CreateRoomUseCase(
     roomRepository,
@@ -37,7 +39,8 @@ const joinRoomUseCase = new JoinRoomUseCase(
     problemRepository,
     userRepository,
     roomActivityRepository,
-    tokenService
+    tokenService,
+    testCaseRepository
 );
 
 const getPublicRoomsUseCase = new GetPublicRoomsUseCase(

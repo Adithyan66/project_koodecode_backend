@@ -2,9 +2,6 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
 import { Room, Participant } from '../../../domain/entities/Room';
 
-// export interface RoomDocument extends Room, Document {}
-
-
 export interface RoomDocument extends Document {
     _id: Types.ObjectId;
     roomNumber: number;

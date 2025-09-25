@@ -2,7 +2,7 @@
 
 import { Request, Response } from 'express';
 import { PasswordService } from '../../../application/services/PasswordService';
-import { SignupUseCase } from '../../../application/usecases/users/SignupUseCase'; 
+import { SignupUseCase } from '../../../application/usecases/users/SignupUseCase';
 
 import { IOtpRepository } from '../../../domain/interfaces/repositories/IOtpRepository';
 import { JwtService } from '../../../infrastructure/services/JwtService';
@@ -63,6 +63,7 @@ export class SignupController {
                 success: true,
                 message: "User signed successfully",
                 user: {
+                    id: user.id,
                     fullName: user.fullName,
                     userName: user.userName,
                     email: user.email,

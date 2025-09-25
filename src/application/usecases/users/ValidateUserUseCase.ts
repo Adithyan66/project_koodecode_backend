@@ -1,5 +1,5 @@
 // src/usecases/ValidateUserUseCase.ts
-import { IUserRepository } from '../../interfaces/IUserRepository';
+import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
 import { JwtService } from '../../../infrastructure/services/JwtService';
 import { User } from '../../../domain/entities/User';
 import { log } from 'console';
@@ -7,6 +7,7 @@ import { log } from 'console';
 export interface ValidateUserResponse {
     success: boolean;
     user?: {
+        id: string;
         fullName: string;
         userName: string;
         email: string;
@@ -20,7 +21,7 @@ export class ValidateUserUseCase {
     constructor(
         private readonly userRepository: IUserRepository,
         private readonly jwtService: JwtService
-    ) {}
+    ) { }
 
     async execute(token: string): Promise<ValidateUserResponse> {
         try {
@@ -30,8 +31,8 @@ export class ValidateUserUseCase {
                     message: 'Token is required'
                 };
             }
-            
-            
+
+
             // Check if token is blacklisted
             const isBlacklisted = await this.jwtService.isBlacklisted(token);
             if (isBlacklisted) {
@@ -40,20 +41,20 @@ export class ValidateUserUseCase {
                     message: 'Token has been revoked'
                 };
             }
-            
+
             // Verify access token
             const decoded = this.jwtService.verifyAccessToken(token);
-            
-            
+
+
             if (!decoded || typeof decoded !== 'object') {
                 return {
                     success: false,
                     message: 'Invalid or expired token'
                 };
             }
-            
+
             // Extract user ID from token payload
-            const userId =  (decoded as any).userId;
+            const userId = (decoded as any).userId;
             if (!userId) {
                 return {
                     success: false,
@@ -62,7 +63,7 @@ export class ValidateUserUseCase {
             }
 
             const user = await this.userRepository.findById(userId);
-            
+
             if (!user) {
                 return {
                     success: false,
@@ -73,6 +74,7 @@ export class ValidateUserUseCase {
             return {
                 success: true,
                 user: {
+                    id: user.id!,
                     fullName: user.fullName,
                     userName: user.userName,
                     email: user.email,

@@ -42,7 +42,9 @@ export class CreateRoomUseCase {
 
             const scheduledTime = createRoomDto.scheduledTime ? new Date(createRoomDto.scheduledTime) : undefined;
 
-            const status = scheduledTime && scheduledTime > new Date() ? 'waiting' : 'inactive';
+            // const status = scheduledTime && scheduledTime > new Date() ? 'waiting' : 'inactive';
+
+            const status = scheduledTime && scheduledTime > new Date() ? 'waiting' : 'active';
 
 
             const room: Omit<Room, 'id' | 'createdAt' | 'updatedAt'> = {
@@ -59,9 +61,9 @@ export class CreateRoomUseCase {
                 status,
                 participants: [],
                 permissions: {
-                    canEditCode: [],
-                    canDrawWhiteboard: [],
-                    canChangeProblem: []
+                    canEditCode: [userId],
+                    canDrawWhiteboard: [userId],
+                    canChangeProblem: [userId]
                 },
                 lastActivity: new Date()
             };

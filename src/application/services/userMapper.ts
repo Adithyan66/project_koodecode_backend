@@ -13,6 +13,7 @@ export function toLoginUserResponse(user: SafeUser, token: Token): LoginUserResp
     return new LoginUserResponse(
 
         {
+            id: user.id.toString(),
             fullName: user.fullName,
             userName: user.userName,
             email: user.email,

@@ -17,9 +17,11 @@ export class MongoRoomRepository implements IRoomRepository {
   }
 
   async findByRoomId(roomId: string): Promise<Room | null> {
-
-    const room = await RoomModel.findById(roomId).populate('participants.userId', 'username');
-    return room ? this.mapToRoom(room) : null;
+ 
+    const room = await RoomModel.findOne({roomId}).populate('participants.userId', 'username');
+    
+    let res =  room ? this.mapToRoom(room) : null;
+    return res
   }
 
   async findByRoomNumber(roomNumber: number): Promise<Room | null> {
@@ -142,7 +144,7 @@ export class MongoRoomRepository implements IRoomRepository {
       problemNumber: roomDoc.problemNumber,
       status: roomDoc.status,
       participants: roomDoc.participants.map(p => ({
-        userId: p.userId.toString(),
+        userId: p.userId._id.toString(),
         username: p.username,
         joinedAt: p.joinedAt,
         isOnline: p.isOnline,

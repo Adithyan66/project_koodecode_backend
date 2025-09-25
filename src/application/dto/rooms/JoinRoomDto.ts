@@ -11,8 +11,10 @@ export interface JoinRoomResponseDto {
     id: string;
     roomId: string;
     name: string;
+    createdBy: string;
     description: string;
     problem?: any;
+    sampleTestCases?: any;
     participants: any[];
     userPermissions: any;
     jitsiUrl: string;

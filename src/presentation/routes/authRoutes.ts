@@ -33,7 +33,7 @@ const otpService = new OtpUseCase(redisOtpService, nodeMailerService);
 const authServive = new OAuthService()
 const passwordService = new PasswordService()
 
-const signupUseCase = new SignupUseCase(userRepository, otpService, jwtService);
+const signupUseCase = new SignupUseCase(userRepository, otpService, jwtService, passwordService);
 const loginUseCase = new LoginUseCase(userRepository, jwtService, passwordService);
 const forgotPasswordUseCase = new ForgotPasswordUseCase(userRepository, otpService, jwtService, passwordService)
 

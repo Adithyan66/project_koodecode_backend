@@ -3,13 +3,15 @@ import { PasswordService } from '../../services/PasswordService';
 import { toSignupUserResponse } from '../../services/userMapper';
 import { JwtService } from '../../../infrastructure/services/JwtService';
 import { OtpUseCase } from './OtpUseCase';
+import { IPasswordService } from '../../../domain/interfaces/services/IPasswordService';
 
 export class SignupUseCase {
 
     constructor(
         private userRepository: IUserRepository,
         private otpService: OtpUseCase,
-        private tokenService: JwtService
+        private tokenService: JwtService,
+        private passwordService: IPasswordService
     ) { }
 
     async otpRequestExecute(fullName: string, userName: string, email: string) {
@@ -52,7 +54,7 @@ export class SignupUseCase {
             throw new Error("fullname and username missing")
         }
 
-        const passwordHash = await PasswordService.hashPassword(password);
+        const passwordHash = await this.passwordService.hashPassword(password);
 
         const user = await this.userRepository.saveUser({
             fullName,

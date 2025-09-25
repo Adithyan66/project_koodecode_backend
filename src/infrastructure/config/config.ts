@@ -49,7 +49,7 @@ export const config = {
   },
 
   jitsi: {
-    domain: process.env.JITSI_DOMAIN || 'https://13.60.228.31',
+    domain: process.env.JITSI_DOMAIN ,
     apiSecret: process.env.JITSI_API_SECRET || 'your-secret'
   },
 
