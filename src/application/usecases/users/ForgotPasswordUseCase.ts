@@ -95,6 +95,7 @@ export class ForgotPasswordUseCase {
         const refreshToken = this.jwtService.generateRefreshToken({ userId, role: user.role })
 
         const safeUser: SafeUser = {
+            id: user.id!,
             fullName: user.fullName,
             userName: user.userName,
             email: user.email,

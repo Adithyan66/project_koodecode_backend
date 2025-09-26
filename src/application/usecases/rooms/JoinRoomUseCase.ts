@@ -47,7 +47,7 @@ export class JoinRoomUseCase {
       }
 
       let userPermissions = {
-        canEditCode: true,
+        canEditCode: false,
         canDrawWhiteboard: false,
         canChangeProblem: false
       };
@@ -70,7 +70,8 @@ export class JoinRoomUseCase {
         await this.roomRepository.addParticipant(room.roomId, participant);
       }
 
-      if (room.createdBy === userId && room.status === 'waiting') {
+      // if (room.createdBy === userId && room.status === 'waiting') {
+      if (room.createdBy === userId) {
 
         await this.roomRepository.update(room.id, { status: 'active' });
 
@@ -80,6 +81,7 @@ export class JoinRoomUseCase {
           canChangeProblem: true
         };
       }
+
 
       let problem = null;
       let sampleTestCases = null

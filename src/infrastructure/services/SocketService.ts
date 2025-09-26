@@ -48,10 +48,12 @@ export class SocketService {
                 }
 
                 const participant = room.participants.find(p => p.userId.toString() == decoded.userId);
+                console.log("permissionsss============================================\n", room.participants[0].userId, decoded.userId);
 
                 if (!participant) {
                     return next(new Error('User not in room'));
                 }
+
 
                 socket.data.userId = decoded.userId;
                 socket.data.roomId = decoded.roomId;
@@ -66,13 +68,28 @@ export class SocketService {
     }
 
     private setupEventHandlers(): void {
+
         this.io.on('connection', (socket) => {
+
             const { userId, roomId } = socket.data;
+
+            console.log("=== USER CONNECTED ===");
+            console.log("User ID:", userId);
+            console.log("Room ID:", roomId);
+            console.log("Socket ID:", socket.id);
+
 
             // Join room
             socket.join(`room_${roomId}`);
             socket.join(`room_${roomId}_code`);
             socket.join(`room_${roomId}_board`);
+
+            console.log("✅ User joined rooms:");
+            console.log("- room_" + roomId);
+            console.log("- room_" + roomId + "_code");
+            console.log("- room_" + roomId + "_board");
+
+            console.log("Socket rooms:", Array.from(socket.rooms));
 
             // Update user online status
             this.updateUserOnlineStatus(roomId, userId, true);
@@ -134,14 +151,33 @@ export class SocketService {
                 }
             });
 
+
             // Handle code updates
             socket.on('code-update', async (data: { code: string; language: string; problemNumber: number }) => {
+
+
+                console.log("=== BACKEND received code-update ===");
+                console.log("From user:", userId, "in room:", roomId);
+                console.log("Socket data:", {
+                    userId: socket.data.userId,
+                    roomId: socket.data.roomId,
+                    permissions: socket.data.permissions
+                });
+                console.log("Data received:", {
+                    codeLength: data.code?.length || 0,
+                    language: data.language,
+                    problemNumber: data.problemNumber
+                });
+
                 if (!socket.data.permissions.canEditCode) {
+                    console.log("❌ No permission to edit code");
                     socket.emit('error', { message: 'No permission to edit code' });
                     return;
                 }
 
                 try {
+                    console.log("✅ Permission check passed, saving code...");
+
                     // Save code to database
                     await this.roomRepository.saveRoomCode({
                         roomId,
@@ -152,6 +188,9 @@ export class SocketService {
                         lastModifiedBy: userId
                     });
 
+                    console.log("✅ Code saved to database");
+                    console.log("✅ Broadcasting to room:", `room_${roomId}_code`);
+
                     // Broadcast to other users
                     socket.to(`room_${roomId}_code`).emit('code-changed', {
                         code: data.code,
@@ -160,13 +199,37 @@ export class SocketService {
                         timestamp: new Date()
                     });
 
+                    console.log("✅ Broadcast completed");
+
                 } catch (error) {
+                    console.error("❌ Failed to save code:", error);
                     socket.emit('error', { message: 'Failed to save code' });
                 }
             });
 
+
+            // Add this in your setupEventHandlers method
+            socket.on('test-event', (data) => {
+                console.log("=== RECEIVED TEST EVENT ===");
+                console.log("Data:", data);
+                console.log("From user:", userId, "in room:", roomId);
+                socket.emit('test-response', { message: 'Hello from backend!' });
+            });
+
+
             // Handle whiteboard updates
             socket.on('whiteboard-update', (data: any) => {
+                console.log("=== BACKEND received white-board update ===");
+                console.log("From user:", userId, "in room:", roomId);
+                console.log("Socket data:", {
+                    userId: socket.data.userId,
+                    roomId: socket.data.roomId,
+                    permissions: socket.data.permissions
+                });
+                console.log("Data received:",
+                    data.elements
+                );
+
                 if (!socket.data.permissions.canDrawWhiteboard) {
                     socket.emit('error', { message: 'No permission to draw on whiteboard' });
                     return;
@@ -179,6 +242,7 @@ export class SocketService {
                     timestamp: new Date()
                 });
             });
+
 
             // Handle permission updates
             socket.on('update-permissions', async (data: { targetUserId: string; permissions: any }) => {
