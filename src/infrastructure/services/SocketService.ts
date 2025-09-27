@@ -48,7 +48,7 @@ export class SocketService {
                 }
 
                 const participant = room.participants.find(p => p.userId.toString() == decoded.userId);
-                console.log("permissionsss============================================\n", room.participants[0].userId, decoded.userId);
+                // console.log("permissionsss============================================\n", room.participants[0].userId, decoded.userId);
 
                 if (!participant) {
                     return next(new Error('User not in room'));
@@ -240,6 +240,87 @@ export class SocketService {
                     ...data,
                     changedBy: userId,
                     timestamp: new Date()
+                });
+            });
+
+
+
+            // Handle chat messages
+            socket.on('send-message', async (data: {
+                content: string;
+                type: 'text' | 'code';
+                language?: string
+            }) => {
+                console.log("=== BACKEND received chat message ===");
+                console.log("From user:", userId, "in room:", roomId);
+                console.log("Message type:", data.type);
+                console.log("Content length:", data.content?.length || 0);
+
+                try {
+                    // Get user details for the message
+                    const room = await this.roomRepository.findByRoomId(roomId);
+                    if (!room) {
+                        socket.emit('error', { message: 'Room not found' });
+                        return;
+                    }
+
+                    const participant = room.participants.find(p => p.userId.toString() === userId);
+                    if (!participant) {
+                        socket.emit('error', { message: 'User not in room' });
+                        return;
+                    }
+
+                    // Create message object
+                    const message = {
+                        id: Date.now().toString() + '_' + userId,
+                        userId,
+                        username: participant.username,
+                        profilePicture: participant.profilePicUrl || null,
+                        content: data.content,
+                        type: data.type,
+                        language: data.language,
+                        timestamp: new Date()
+                    };
+
+                    console.log("✅ Broadcasting message to room:", `room_${roomId}`);
+
+                    // Broadcast to all users in room (including sender)
+                    this.io.to(`room_${roomId}`).emit('message-received', message);
+
+                    console.log("✅ Message broadcast completed");
+
+                    // Log activity
+                    await this.roomActivityRepository.create({
+                        roomId,
+                        userId,
+                        action: 'message_sent',
+                        details: {
+                            messageType: data.type,
+                            contentLength: data.content.length
+                        },
+                        timestamp: new Date()
+                    });
+
+                } catch (error) {
+                    console.error("❌ Failed to send message:", error);
+                    socket.emit('error', { message: 'Failed to send message' });
+                }
+            });
+
+            // Handle typing indicators
+            socket.on('typing-start', () => {
+                socket.to(`room_${roomId}`).emit('user-typing', {
+                    userId,
+                    username: socket.data.username,
+                    isTyping: true
+                });
+            });
+
+            socket.on('typing-stop', () => {
+                socket.to(`room_${roomId}`).emit('user-typing', {
+                    userId,
+                    username: socket.data.username,
+                    isTyping: false
                 });
             });
 

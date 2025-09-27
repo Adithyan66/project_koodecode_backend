@@ -7,7 +7,7 @@ const RoomActivitySchema = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     action: {
         type: String,
-        enum: ['joined', 'left', 'problem_changed', 'permissions_updated', 'code_updated', 'whiteboard_updated', 'user_kicked'],
+        enum: ['joined', 'left', 'problem_changed', 'permissions_updated', 'code_updated', 'whiteboard_updated', 'user_kicked', 'message_sent'],
         required: true
     },
     details: { type: Schema.Types.Mixed },
