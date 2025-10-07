@@ -77,6 +77,7 @@ router.put('/:roomId/permissions', authMiddleware(), (req, res) => roomControlle
 
 router.delete('/:roomId/participants/:userId', authMiddleware(), (req, res) => roomController.kickUser(req, res));
 
+router.get('/problem-names', authMiddleware(), (req, res) => roomController.kickUser(req, res));
 
 
 export default router;

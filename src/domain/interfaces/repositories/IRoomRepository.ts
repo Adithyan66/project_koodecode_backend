@@ -5,11 +5,22 @@ export interface IRoomRepository {
   findById(id: string): Promise<Room | null>;
   findByRoomId(roomId: string): Promise<Room | null>;
   findByRoomNumber(roomNumber: number): Promise<Room | null>;
-  findPublicRooms(limit?: number): Promise<Room[]>;
+  // findPublicRooms(limit?: number): Promise<Room[]>;
   findByCreator(userId: string): Promise<Room[]>;
   findActiveRooms(): Promise<Room[]>;
   update(id: string, updates: Partial<Room>): Promise<Room | null>;
   delete(id: string): Promise<void>;
+   findPublicRooms(params: {
+        status?: 'active' | 'waiting';
+        page: number;
+        limit: number;
+        search?: string;
+    }): Promise<{
+        rooms: Room[];
+        total: number;
+        page: number;
+        totalPages: number;
+    }>;
   
   // Participant management
   addParticipant(roomId: string, participant: any): Promise<void>;

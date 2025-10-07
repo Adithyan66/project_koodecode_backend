@@ -3,19 +3,21 @@ import { Router } from "express";
 
 import { UserProblemController } from "../../controllers/users/problems/UserProblemController";
 import { GetProblemsListUseCase } from "../../../application/usecases/problems/GetProblemsListUseCase";
-import { MongoProblemRepository } from "../../../infrastructure/db/MongoProblemRepository"; 
+import { MongoProblemRepository } from "../../../infrastructure/db/MongoProblemRepository";
 import { ProblemSolvingController } from "../../controllers/users/problems/ProblemSolvingController";
-import { GetProblemByIdUseCase } from "../../../application/usecases/problems/GetProblemByIdUseCase"; 
+import { GetProblemByIdUseCase } from "../../../application/usecases/problems/GetProblemByIdUseCase";
 import { Judge0Service } from "../../../infrastructure/services/Judge0Service";
 import { MongoSubmissionRepository } from "../../../infrastructure/db/MongoSubmissionRepository";
-import { CreateSubmissionUseCase } from "../../../application/usecases/submissions/CreateSubmissionUseCase"; 
-import { GetSubmissionResultUseCase } from "../../../application/usecases/submissions/GetSubmissionResultUseCase"; 
+import { CreateSubmissionUseCase } from "../../../application/usecases/submissions/CreateSubmissionUseCase";
+import { GetSubmissionResultUseCase } from "../../../application/usecases/submissions/GetSubmissionResultUseCase";
 import { RunCodeUseCase } from "../../../application/usecases/submissions/RunCodeUseCase";
 import { GetLanguagesUseCase } from "../../../application/usecases/submissions/GetLanguagesUseCase";
 
-import { MongoTestCaseRepository } from "../../../infrastructure/db/MongoTestCaseRepository"; 
+import { MongoTestCaseRepository } from "../../../infrastructure/db/MongoTestCaseRepository";
 import { authMiddleware } from "../../middleware/authMiddleware";
-import { CodeExecutionHelperService } from "../../../application/services/CodeExecutionHelperService"; 
+import { CodeExecutionHelperService } from "../../../application/services/CodeExecutionHelperService";
+import { ProblemNamesController } from "../../controllers/users/problems/ProblemNamesController";
+import { GetProblemNamesUseCase } from "../../../application/usecases/problems/GetProblemNamesUseCase";
 
 const router = Router()
 
@@ -31,6 +33,9 @@ const getProblemsListUseCase = new GetProblemsListUseCase(mongoProblemRepository
 
 const userProblemController = new UserProblemController(getProblemsListUseCase, getProblemByIdUseCase)
 
+const getProblemNamesUseCase = new GetProblemNamesUseCase(mongoProblemRepository)
+
+const problemNamesController = new ProblemNamesController(getProblemNamesUseCase)
 
 
 const judge0Service = new Judge0Service();
@@ -61,6 +66,6 @@ router.get('/submissions/:submissionId', problemSolvingController.getSubmissionR
 
 router.get('/languages', problemSolvingController.getLanguages.bind(problemSolvingController));
 
-
+router.get('/problem-names', authMiddleware(), (req, res) => problemNamesController.getProblemNames(req, res));
 
 export default router

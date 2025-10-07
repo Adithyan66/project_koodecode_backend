@@ -17,10 +17,10 @@ export class MongoRoomRepository implements IRoomRepository {
   }
 
   async findByRoomId(roomId: string): Promise<Room | null> {
- 
-    const room = await RoomModel.findOne({roomId}).populate('participants.userId', 'username');
-    
-    let res =  room ? this.mapToRoom(room) : null;
+
+    const room = await RoomModel.findOne({ roomId }).populate('participants.userId', 'username');
+
+    let res = room ? this.mapToRoom(room) : null;
     return res
   }
 
@@ -29,17 +29,102 @@ export class MongoRoomRepository implements IRoomRepository {
     return room ? this.mapToRoom(room) : null;
   }
 
-  async findPublicRooms(limit: number = 20): Promise<Room[]> {
-    const rooms = await RoomModel.find({
-      isPrivate: false,
-      status: { $in: ['active', 'waiting'] }
-    })
-      .populate('participants.userId', 'username')
-      .sort({ lastActivity: -1 })
-      .limit(limit);
+  // async findPublicRooms(limit: number = 20): Promise<Room[]> {
+  //   const rooms = await RoomModel.find({
+  //     isPrivate: false,
+  //     status: { $in: ['active', 'waiting'] }
+  //   })
+  //     .populate('participants.userId', 'username')
+  //     .sort({ lastActivity: -1 })
+  //     .limit(limit);
 
-    return rooms.map(room => this.mapToRoom(room));
+  //   return rooms.map(room => this.mapToRoom(room));
+  // }
+
+  async findPublicRooms(params: {
+    status?: 'active' | 'waiting';
+    page: number;
+    limit: number;
+    search?: string;
+  }): Promise<{
+    rooms: Room[];
+    total: number;
+    page: number;
+    totalPages: number;
+  }> {
+    const { status, page, limit, search } = params;
+    const skip = (page - 1) * limit;
+
+    // Build query
+    const query: any = { isPrivate: false };
+
+    if (status) {
+      query.status = status;
+    }
+
+    if (search && search.trim()) {
+      query.$or = [
+        { name: { $regex: search.trim(), $options: 'i' } },
+        { description: { $regex: search.trim(), $options: 'i' } }
+      ];
+    }
+
+    // Execute query with aggregation for participant count
+    const [rooms, total] = await Promise.all([
+      RoomModel.aggregate([
+        { $match: query },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'createdBy',
+            foreignField: '_id',
+            as: 'createdBy',
+            pipeline: [
+              { $project: { username: 1, avatar: 1 } }
+            ]
+          }
+        },
+        {
+          $unwind: '$createdBy'
+        },
+        {
+          $addFields: {
+            id: '$_id',
+            participantCount: { $size: '$participants' }
+          }
+        },
+        {
+          $project: {
+            _id: 0,
+            __v: 0,
+            password: 0,
+            participants: 0,
+            permissions: 0
+          }
+        },
+        {
+          $sort: {
+            status: -1, // active first
+            scheduledTime: 1, // earliest scheduled first
+            createdAt: -1 // newest first
+          }
+        },
+        { $skip: skip },
+        { $limit: limit }
+      ]),
+      RoomModel.countDocuments(query)
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      rooms: rooms as Room[],
+      total,
+      page,
+      totalPages
+    };
   }
+
 
   async findByCreator(userId: string): Promise<Room[]> {
     const rooms = await RoomModel.find({ createdBy: userId })

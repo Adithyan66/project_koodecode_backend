@@ -56,7 +56,20 @@ export interface IProblemRepository {
         hasPrev: boolean;
     }>;
 
-    getProblemNames(): Promise<Pick<Problem, 'title' | 'problemNumber' | 'id'>[]>;
+    getProblemNames(params: {
+        page: number;
+        limit: number;
+        search?: string;
+    }): Promise<{
+        problems: Array<{
+            problemNumber: number;
+            title: string;
+            difficulty: 'easy' | 'medium' | 'hard';
+        }>;
+        totalCount: number;
+    }>;
+
+
 }
 
 

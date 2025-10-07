@@ -103,6 +103,9 @@ export class ProblemSolvingController {
 
             const { problemId, sourceCode, languageId, testCases } = req.body;
 
+            console.log("boddy",req.body);
+            
+
             const userId = req.user?.userId;
 
             if (!userId) {

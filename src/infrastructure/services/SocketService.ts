@@ -5,6 +5,7 @@ import { IRoomRepository } from '../../domain/interfaces/repositories/IRoomRepos
 import { IProblemRepository } from '../../domain/interfaces/repositories/IProblemRepository';
 import { IRoomActivityRepository } from '../../domain/interfaces/repositories/IRoomActivityRepository';
 import { config } from '../config/config';
+import { ITestCaseRepository } from '../../domain/interfaces/repositories/ITestCaseRepository';
 
 export class SocketService {
     private io: SocketIOServer;
@@ -13,7 +14,8 @@ export class SocketService {
         server: HttpServer,
         private roomRepository: IRoomRepository,
         private problemRepository: IProblemRepository,
-        private roomActivityRepository: IRoomActivityRepository
+        private roomActivityRepository: IRoomActivityRepository,
+        private testCaseRepository:ITestCaseRepository
     ) {
         this.io = new SocketIOServer(server, {
             cors: {
@@ -61,7 +63,7 @@ export class SocketService {
 
                 next();
             } catch (error) {
-                console.log("thi is tojken", error);
+                // console.log("thi is tojken", error);
                 next(new Error('Authentication error'));
             }
         });
@@ -73,23 +75,23 @@ export class SocketService {
 
             const { userId, roomId } = socket.data;
 
-            console.log("=== USER CONNECTED ===");
-            console.log("User ID:", userId);
-            console.log("Room ID:", roomId);
-            console.log("Socket ID:", socket.id);
+            // console.log("=== USER CONNECTED ===");
+            // console.log("User ID:", userId);
+            // console.log("Room ID:", roomId);
+            // console.log("Socket ID:", socket.id);
 
 
-            // Join room
+            // // Join room
             socket.join(`room_${roomId}`);
             socket.join(`room_${roomId}_code`);
             socket.join(`room_${roomId}_board`);
 
-            console.log("✅ User joined rooms:");
-            console.log("- room_" + roomId);
-            console.log("- room_" + roomId + "_code");
-            console.log("- room_" + roomId + "_board");
+            // console.log("✅ User joined rooms:");
+            // console.log("- room_" + roomId);
+            // console.log("- room_" + roomId + "_code");
+            // console.log("- room_" + roomId + "_board");
 
-            console.log("Socket rooms:", Array.from(socket.rooms));
+            // console.log("Socket rooms:", Array.from(socket.rooms));
 
             // Update user online status
             this.updateUserOnlineStatus(roomId, userId, true);
@@ -113,6 +115,7 @@ export class SocketService {
                         socket.emit('error', { message: 'Problem not found' });
                         return;
                     }
+                    const sampleTestCases = await this.testCaseRepository.findSampleByProblemId(problem.id!)
 
                     // Update room problem
                     const room = await this.roomRepository.findByRoomId(roomId);
@@ -123,7 +126,9 @@ export class SocketService {
                     // Save/Load existing code for this problem
                     const existingCode = await this.roomRepository.getRoomCode(roomId);
 
-                    let codeToSend = problem.templates.userFunctionSignature || '';
+                    let codeToSend = problem.templates[Object.keys(problem.templates)[0]].userFunctionSignature || 'onnulll';
+
+                    // console.log("code to senddddddddddddddddddddddddddddddddddddddd\n", problem.templates[Object.keys(problem.templates)[0]].userFunctionSignature);
 
                     if (existingCode && existingCode.problemNumber === data.problemNumber) {
                         codeToSend = existingCode.code;
@@ -131,12 +136,18 @@ export class SocketService {
 
                     // Broadcast problem change to all users in room
                     this.io.to(`room_${roomId}`).emit('problem-changed', {
-                        problem,
+                        problem:{
+                            ...problem,
+                            sampleTestCases
+                        },
                         code: codeToSend,
-                        language: problem.supportedLanguages || 'javascript',
+                        language: existingCode?.language || 'javascript',
                         changedBy: userId,
                         timestamp: new Date()
                     });
+
+                    console.log("lasttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
+                    
 
                     // Log activity
                     await this.roomActivityRepository.create({
@@ -156,18 +167,18 @@ export class SocketService {
             socket.on('code-update', async (data: { code: string; language: string; problemNumber: number }) => {
 
 
-                console.log("=== BACKEND received code-update ===");
-                console.log("From user:", userId, "in room:", roomId);
-                console.log("Socket data:", {
-                    userId: socket.data.userId,
-                    roomId: socket.data.roomId,
-                    permissions: socket.data.permissions
-                });
-                console.log("Data received:", {
-                    codeLength: data.code?.length || 0,
-                    language: data.language,
-                    problemNumber: data.problemNumber
-                });
+                // console.log("=== BACKEND received code-update ===");
+                // console.log("From user:", userId, "in room:", roomId);
+                // console.log("Socket data:", {
+                //     userId: socket.data.userId,
+                //     roomId: socket.data.roomId,
+                //     permissions: socket.data.permissions
+                // });
+                // console.log("Data received:", {
+                //     codeLength: data.code?.length || 0,
+                //     language: data.language,
+                //     problemNumber: data.problemNumber
+                // });
 
                 if (!socket.data.permissions.canEditCode) {
                     console.log("❌ No permission to edit code");
@@ -176,7 +187,7 @@ export class SocketService {
                 }
 
                 try {
-                    console.log("✅ Permission check passed, saving code...");
+                    // console.log("✅ Permission check passed, saving code...");
 
                     // Save code to database
                     await this.roomRepository.saveRoomCode({
@@ -188,8 +199,8 @@ export class SocketService {
                         lastModifiedBy: userId
                     });
 
-                    console.log("✅ Code saved to database");
-                    console.log("✅ Broadcasting to room:", `room_${roomId}_code`);
+                    // console.log("✅ Code saved to database");
+                    // console.log("✅ Broadcasting to room:", `room_${roomId}_code`);
 
                     // Broadcast to other users
                     socket.to(`room_${roomId}_code`).emit('code-changed', {
@@ -199,7 +210,7 @@ export class SocketService {
                         timestamp: new Date()
                     });
 
-                    console.log("✅ Broadcast completed");
+                    // console.log("✅ Broadcast completed");
 
                 } catch (error) {
                     console.error("❌ Failed to save code:", error);
@@ -210,25 +221,25 @@ export class SocketService {
 
             // Add this in your setupEventHandlers method
             socket.on('test-event', (data) => {
-                console.log("=== RECEIVED TEST EVENT ===");
-                console.log("Data:", data);
-                console.log("From user:", userId, "in room:", roomId);
+                // console.log("=== RECEIVED TEST EVENT ===");
+                // console.log("Data:", data);
+                // console.log("From user:", userId, "in room:", roomId);
                 socket.emit('test-response', { message: 'Hello from backend!' });
             });
 
 
             // Handle whiteboard updates
             socket.on('whiteboard-update', (data: any) => {
-                console.log("=== BACKEND received white-board update ===");
-                console.log("From user:", userId, "in room:", roomId);
-                console.log("Socket data:", {
-                    userId: socket.data.userId,
-                    roomId: socket.data.roomId,
-                    permissions: socket.data.permissions
-                });
-                console.log("Data received:",
-                    data.elements
-                );
+                // console.log("=== BACKEND received white-board update ===");
+                // console.log("From user:", userId, "in room:", roomId);
+                // console.log("Socket data:", {
+                //     userId: socket.data.userId,
+                //     roomId: socket.data.roomId,
+                //     permissions: socket.data.permissions
+                // });
+                // console.log("Data received:",
+                //     data.elements
+                // );
 
                 if (!socket.data.permissions.canDrawWhiteboard) {
                     socket.emit('error', { message: 'No permission to draw on whiteboard' });
@@ -251,10 +262,10 @@ export class SocketService {
                 type: 'text' | 'code';
                 language?: string
             }) => {
-                console.log("=== BACKEND received chat message ===");
-                console.log("From user:", userId, "in room:", roomId);
-                console.log("Message type:", data.type);
-                console.log("Content length:", data.content?.length || 0);
+                // console.log("=== BACKEND received chat message ===");
+                // console.log("From user:", userId, "in room:", roomId);
+                // console.log("Message type:", data.type);
+                // console.log("Content length:", data.content?.length || 0);
 
                 try {
                     // Get user details for the message
@@ -287,7 +298,7 @@ export class SocketService {
                     // Broadcast to all users in room (including sender)
                     this.io.to(`room_${roomId}`).emit('message-received', message);
 
-                    console.log("✅ Message broadcast completed");
+                    // console.log("✅ Message broadcast completed");
 
                     // Log activity
                     await this.roomActivityRepository.create({

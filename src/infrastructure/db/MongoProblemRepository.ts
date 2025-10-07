@@ -120,31 +120,6 @@ export class MongoProblemRepository implements IProblemRepository {
         return !!result;
     }
 
-    // private mapToDomain(doc: any): Problem {
-    //     return new Problem(
-    //         doc.problemNumber,
-    //         doc.title,
-    //         doc.slug,
-    //         doc.difficulty,
-    //         doc.tags,
-    //         doc.description,
-    //         doc.constraints,
-    //         doc.examples,
-    //         doc.likes,
-    //         doc.totalSubmissions,
-    //         doc.acceptedSubmissions,
-    //         doc.hints,
-    //         doc.companies,
-    //         doc.isActive,
-    //         doc.createdBy,
-    //         doc.functionName,
-    //         doc.returnType,
-    //         doc.parameters,
-    //         doc._id.toString(),
-    //         doc.createdAt,
-    //         doc.updatedAt
-    //     );
-    // }
 
     private mapToDomain(doc: any): Problem {
         return new Problem({
@@ -231,17 +206,73 @@ export class MongoProblemRepository implements IProblemRepository {
     }
 
 
-async getProblemNames(): Promise<Pick<Problem, 'title' | 'problemNumber' | 'id'>[]> {
-    const problems = await ProblemModel.find()
-        .select('title problemNumber _id')
-        .lean();
+    async getProblemNames(params: {
+        page: number;
+        limit: number;
+        search?: string;
+    }): Promise<{
+        problems: Array<{
+            problemNumber: number;
+            title: string;
+            difficulty: 'easy' | 'medium' | 'hard';
+        }>;
+        totalCount: number;
+    }> {
+        const { page, limit, search } = params;
+        const skip = (page - 1) * limit;
 
-    return problems.map(p => ({
-        title: p.title,
-        problemNumber: p.problemNumber,
-        id: String(p._id) 
-    }));
-}
+        // Build search query
+        let query: any = { isActive: true };
+
+        if (search && search.trim()) {
+            // Search by problem number (exact match) or title (regex)
+            const searchTerm = search.trim();
+            const isNumericSearch = /^\d+$/.test(searchTerm);
+
+            if (isNumericSearch) {
+                query.$or = [
+                    { problemNumber: parseInt(searchTerm) },
+                    { title: { $regex: searchTerm, $options: 'i' } }
+                ];
+            } else {
+                query.title = { $regex: searchTerm, $options: 'i' };
+            }
+        }
+
+        // Execute aggregation pipeline for better performance
+        const pipeline = [
+            { $match: query },
+            {
+                $project: {
+                    problemNumber: 1,
+                    title: 1,
+                    difficulty: 1
+                }
+            },
+            { $sort: { problemNumber: 1 } },
+            {
+                $facet: {
+                    problems: [
+                        { $skip: skip },
+                        { $limit: limit }
+                    ],
+                    totalCount: [
+                        { $count: 'count' }
+                    ]
+                }
+            }
+        ];
+
+        const result = await ProblemModel.aggregate(pipeline);
+        const problems = result[0]?.problems || [];
+        const totalCount = result[0]?.totalCount[0]?.count || 0;
+
+        return {
+            problems,
+            totalCount
+        };
+    }
+
 
 
 

@@ -9,6 +9,9 @@ import { JoinRoomDto } from '../../../../application/dto/rooms/JoinRoomDto';
 import { UpdateRoomPermissionsDto, KickUserDto } from '../../../../application/dto/rooms/UpdateRoomPermissionsDto';
 import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 
+
+
+
 export class RoomController {
     constructor(
         private createRoomUseCase: CreateRoomUseCase,
@@ -84,7 +87,7 @@ export class RoomController {
                 });
                 return;
             }
-            
+
 
             const result = await this.joinRoomUseCase.execute(joinRoomDto, userId!);
 
@@ -93,7 +96,7 @@ export class RoomController {
                 res.status(HTTP_STATUS.OK).json({
                     success: true,
                     message: "succesfully fetched join details",
-                    room:result.room
+                    room: result.room
                 });
 
             } else {
@@ -117,21 +120,88 @@ export class RoomController {
         }
     }
 
-    async getPublicRooms(req: Request, res: Response): Promise<void> {
+
+
+    // async getPublicRooms(req: Request, res: Response): Promise<void> {
+
+    //     try {
+    //         console.log("workingggggggggggggggggg");
+
+    //         const limit = parseInt(req.query.limit as string) || 20;
+    //         const result = await this.getPublicRoomsUseCase.execute(limit);
+
+    //         res.status(HTTP_STATUS.OK).json({
+    //             success: true,
+    //             message: "active rooms fetched succesfully ",
+    //             result
+    //         });
+
+    //     } catch (error: any) {
+
+    //         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+    //             success: false,
+    //             error: 'Failed to fetch public rooms',
+    //             rooms: [],
+    //             total: 0
+    //         });
+    //     }
+    // }
+
+
+    getPublicRooms = async (req: Request, res: Response): Promise<void> => {
         try {
-            const limit = parseInt(req.query.limit as string) || 20;
-            const result = await this.getPublicRoomsUseCase.execute(limit);
+            const {
+                status,
+                page = '1',
+                limit = '9',
+                search
+            } = req.query;
+
+            const pageNum = parseInt(page as string, 10);
+            const limitNum = parseInt(limit as string, 10);
+
+            if (isNaN(pageNum) || pageNum < 1) {
+                res.status(HTTP_STATUS.BAD_REQUEST).json({
+                    success: false,
+                    error: 'Invalid page number'
+                });
+                return;
+            }
+
+            if (isNaN(limitNum) || limitNum < 1 || limitNum > 50) {
+                res.status(HTTP_STATUS.BAD_REQUEST).json({
+                    success: false,
+                    error: 'Limit must be between 1 and 50'
+                });
+                return;
+            }
+
+            if (status && !['active', 'waiting'].includes(status as string)) {
+                res.status(HTTP_STATUS.BAD_REQUEST).json({
+                    success: false,
+                    error: 'Invalid status. Must be "active" or "waiting"'
+                });
+                return;
+            }
+
+            const result = await this.getPublicRoomsUseCase.execute({
+                status: status as 'active' | 'waiting' | undefined,
+                page: pageNum,
+                limit: limitNum,
+                search: search as string
+            });
 
             res.status(HTTP_STATUS.OK).json(result);
-        } catch (error: any) {
+        } catch (error) {
+            console.error('Get public rooms error:', error);
             res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
                 success: false,
-                error: 'Failed to fetch public rooms',
-                rooms: [],
-                total: 0
+                error: 'Internal server error'
             });
         }
-    }
+    };
+
+
 
     async updatePermissions(req: Request, res: Response): Promise<void> {
         try {
@@ -198,4 +268,5 @@ export class RoomController {
             });
         }
     }
+
 }
