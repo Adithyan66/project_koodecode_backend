@@ -1,6 +1,7 @@
 
 
 export interface ProblemNameDto {
+  id: string
   problemNumber: number;
   title: string;
   difficulty: 'easy' | 'medium' | 'hard';

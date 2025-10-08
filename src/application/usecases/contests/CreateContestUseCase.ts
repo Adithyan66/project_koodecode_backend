@@ -16,6 +16,7 @@ export class CreateContestUseCase {
 
     async execute(createContestDto: CreateContestDto, adminUserId: string): Promise<Contest> {
 
+        console.log("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",createContestDto.problemIds);
         await this.validateProblems(createContestDto.problemIds);
 
         this.validateDates(createContestDto);
@@ -25,7 +26,7 @@ export class CreateContestUseCase {
         const coinRewards = createContestDto.coinRewards.map(reward =>
             new ContestReward({ rank: reward.rank, coins: reward.coins })
         );
-
+        
         const contest = new Contest({
             id: '',
             contestNumber,

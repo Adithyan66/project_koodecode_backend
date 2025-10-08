@@ -15,7 +15,7 @@ export class SocketService {
         private roomRepository: IRoomRepository,
         private problemRepository: IProblemRepository,
         private roomActivityRepository: IRoomActivityRepository,
-        private testCaseRepository:ITestCaseRepository
+        private testCaseRepository: ITestCaseRepository
     ) {
         this.io = new SocketIOServer(server, {
             cors: {
@@ -50,7 +50,6 @@ export class SocketService {
                 }
 
                 const participant = room.participants.find(p => p.userId.toString() == decoded.userId);
-                // console.log("permissionsss============================================\n", room.participants[0].userId, decoded.userId);
 
                 if (!participant) {
                     return next(new Error('User not in room'));
@@ -59,7 +58,17 @@ export class SocketService {
 
                 socket.data.userId = decoded.userId;
                 socket.data.roomId = decoded.roomId;
-                socket.data.permissions = participant.permissions;
+                // console.log("permissionsss============================================\n", participant.permissions);
+                // socket.data.permissions = participant.permissions;
+                const isCreator = room.createdBy.toString() === decoded.userId;
+                const globalPermissions = {
+                    canEditCode: isCreator || room.permissions.canEditCode.some(id => id.toString() === decoded.userId),
+                    canDrawWhiteboard: isCreator || room.permissions.canDrawWhiteboard.some(id => id.toString() === decoded.userId),
+                    canChangeProblem: isCreator || room.permissions.canChangeProblem.some(id => id.toString() === decoded.userId)
+                };
+
+                console.log("Permissions for user", decoded.userId, ":", globalPermissions);
+                socket.data.permissions = globalPermissions;
 
                 next();
             } catch (error) {
@@ -136,7 +145,7 @@ export class SocketService {
 
                     // Broadcast problem change to all users in room
                     this.io.to(`room_${roomId}`).emit('problem-changed', {
-                        problem:{
+                        problem: {
                             ...problem,
                             sampleTestCases
                         },
@@ -145,9 +154,6 @@ export class SocketService {
                         changedBy: userId,
                         timestamp: new Date()
                     });
-
-                    console.log("lasttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
-                    
 
                     // Log activity
                     await this.roomActivityRepository.create({

@@ -62,6 +62,7 @@ export interface IProblemRepository {
         search?: string;
     }): Promise<{
         problems: Array<{
+            id:string;
             problemNumber: number;
             title: string;
             difficulty: 'easy' | 'medium' | 'hard';

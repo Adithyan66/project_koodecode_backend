@@ -2,52 +2,6 @@
 
 export class UserProfile {
 
-    // constructor(
-    //     public userId: string, 
-
-    //     // Profile Information
-    //     public bio?: string,
-    //     public location?: string,
-    //     public birthdate?: Date,
-    //     public gender?: 'male' | 'female' | 'other',
-    //     public githubUrl?: string,
-    //     public linkedinUrl?: string,
-
-    //     // Statistics
-    //     public ranking?: number,
-    //     public acceptanceRate: number = 0,
-    //     public contestRating: number = 0,
-    //     public coinBalance: number = 0,
-
-    //     // Problem Solving Stats
-    //     public totalProblems: number = 0,
-    //     public easyProblems: number = 0,
-    //     public mediumProblems: number = 0,
-    //     public hardProblems: number = 0,
-
-    //     // Streak Information
-    //     public streak: UserStreak = new UserStreak(),
-    //     public activeDays: number = 0,
-
-    //     // Premium & Status
-    //     public isPremium: boolean = false,
-    //     public isBlocked: boolean = false,
-
-    //     // Badges and Achievements
-    //     public badges: UserBadge[] = [],
-    //     public leaderboard?: LeaderboardData,
-    //     public hints: ProblemHint[] = [],
-
-    //     // Activity Calendar (embedded)
-    //     public activities: DailyActivity[] = [],
-
-    //     // Timestamps
-    //     public lastLogin?: Date,
-    //     public id?: string,
-    //     public createdAt?: Date,
-    //     public updatedAt?: Date,
-    // ) {}
-
     public userId: string;
     public bio?: string;
     public location?: string;

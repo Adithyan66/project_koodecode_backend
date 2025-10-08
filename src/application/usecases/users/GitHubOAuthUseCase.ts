@@ -61,6 +61,7 @@ export class GitHubOAuthUseCase {
     });
 
     const safeUser: SafeUser = {
+      id:user.id!,
       fullName: user.fullName,
       userName: user.userName,
       email: user.email,

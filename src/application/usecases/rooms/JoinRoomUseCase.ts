@@ -7,6 +7,7 @@ import { JoinRoomDto, JoinRoomResponseDto } from '../../dto/rooms/JoinRoomDto';
 import { ITokenService } from '../../../domain/interfaces/services/ITokenService';
 import { config } from '../../../infrastructure/config/config';
 import { ITestCaseRepository } from '../../../domain/interfaces/repositories/ITestCaseRepository';
+import { IPasswordService } from '../../../domain/interfaces/services/IPasswordService';
 
 export class JoinRoomUseCase {
   constructor(
@@ -15,7 +16,8 @@ export class JoinRoomUseCase {
     private userRepository: IUserRepository,
     private roomActivityRepository: IRoomActivityRepository,
     private tokenService: ITokenService,
-    private testCaseRepository: ITestCaseRepository
+    private testCaseRepository: ITestCaseRepository,
+    private passwordService: IPasswordService
   ) { }
 
   async execute(joinRoomDto: JoinRoomDto, userId: string): Promise<JoinRoomResponseDto> {
@@ -36,8 +38,19 @@ export class JoinRoomUseCase {
         return { success: false, error: 'Room creator will begin shortly' };
       }
 
-      if (room.isPrivate && room.password && room.password !== joinRoomDto.password) {
-        return { success: false, error: 'Invalid password' };
+      if (room.createdBy !== userId) {
+        if (room.isPrivate) {
+          if (!joinRoomDto.password) {
+            return { success: false, error: 'Password required' };
+          }
+          const isPasswordValid = await this.passwordService.verifyPassword(
+            joinRoomDto.password,
+            room.password!
+          );          
+          if (!isPasswordValid) {
+            return { success: false, error: 'Invalid password' };
+          }
+        }
       }
 
       const user = await this.userRepository.findById(userId);
@@ -113,7 +126,7 @@ export class JoinRoomUseCase {
           id: room.id,
           roomId: room.roomId,
           name: room.name,
-          createdBy:room.createdBy,
+          createdBy: room.createdBy,
           description: room.description,
           problem,
           sampleTestCases,

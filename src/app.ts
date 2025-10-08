@@ -4,6 +4,7 @@ import { json, urlencoded } from 'express';
 import cookieParser from "cookie-parser";
 import cors from "cors"
 
+import { cornjob } from './infrastructure/corn/cronJobs';
 
 import authRoutes from './presentation/routes/authRoutes';
 import adminProblemRoutes from './presentation/routes/admin/problemRoutes'
@@ -11,10 +12,10 @@ import userProblemRoutes from './presentation/routes/user/problemRoutes';
 import healthRoutes from "./presentation/routes/healthRoutes";
 import profileRoutes from "./presentation/routes/user/profileRoutes"
 import adminContestRoutes from "./presentation/routes/admin/contestRoutes"
-import userContestRoutes from './presentation/routes/user/contestRoutes'
-import { ContestTimerService } from './application/services/ContestTimerService';
-import { MongoContestRepository } from './infrastructure/db/MongoContestRepository';
-import { ContestCron } from './infrastructure/corn/ContestCron';
+import userContestRoutes from './presentation/routes/user/contestRoutes';
+import coinsRoute from './presentation/routes/user/coinRoutes'
+import roomRoutes from './presentation/routes/user/roomRoutes';
+import storeRoutes from "./presentation/routes/user/storeRoutes"
 import { errorMiddleware } from './presentation/middleware/errorMiddleware';
 
 
@@ -23,11 +24,6 @@ dotenv.config();
 const app = express();
 
 app.use(cookieParser());
-
-// app.use(cors({
-//   origin: ["http://localhost:5173", 'https://xyz789.ngrok.io'],
-//   credentials: true
-// }));
 
 app.use(cors({
   origin: [
@@ -41,10 +37,9 @@ app.use(cors({
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
-const cornjob = new ContestCron(new ContestTimerService(new MongoContestRepository()))
+
 cornjob.start()
 
-import roomRoutes from './presentation/routes/user/roomRoutes';
 
 
 
@@ -59,6 +54,10 @@ app.use('/api/user/problems', userProblemRoutes);
 app.use('/api/user/contests', userContestRoutes)
 
 app.use('/api/user/rooms', roomRoutes);
+
+app.use('/api/user/coins', coinsRoute);
+
+app.use('/api/user/store', storeRoutes);
 
 app.use('/api/admin/problems', adminProblemRoutes);
 

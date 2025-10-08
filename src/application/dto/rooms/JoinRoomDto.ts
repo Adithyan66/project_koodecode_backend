@@ -22,3 +22,15 @@ export interface JoinRoomResponseDto {
   };
   error?: string;
 }
+
+
+export interface VerifyPrivateRoomDto {
+  roomName: string;
+  password: string;
+}
+
+export interface VerifyPrivateRoomResponseDto {
+  success: boolean;
+  roomId?: string;
+  error?: string;
+}

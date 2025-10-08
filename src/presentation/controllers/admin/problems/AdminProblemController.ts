@@ -4,6 +4,7 @@ import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 import { diff } from 'util';
 import { CreateProblemDto } from '../../../../application/dto/problems/CreateProblemDto';
 import { GetProblemNamesUseCase } from '../../../../application/usecases/problems/GetProblemNamesUseCase';
+import { ProblemNamesRequestDto } from '../../../../application/dto/problems/ProblemNamesDto';
 // import { MESSAGES } from '../../../shared/constants/messages';
 
 // interface AuthenticatedRequest extends Request {
@@ -111,6 +112,7 @@ export class AdminProblemController {
 
 
         try {
+            console.log("worksssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss");
 
             if (!req.user || req.user.role !== 'admin') {
                 res.status(HTTP_STATUS.FORBIDDEN).json({
@@ -120,7 +122,29 @@ export class AdminProblemController {
                 return;
             }
 
-            let data = await this.getProblemNameUseCase.execute()
+            const requestDto: ProblemNamesRequestDto = {
+                page: req.query.page ? parseInt(req.query.page as string) : undefined,
+                limit: req.query.limit ? parseInt(req.query.limit as string) : undefined,
+                search: req.query.search as string,
+            };
+
+            if (requestDto.page && (isNaN(requestDto.page) || requestDto.page < 1)) {
+                res.status(HTTP_STATUS.BAD_REQUEST).json({
+                    success: false,
+                    message: 'Page must be a positive integer'
+                });
+                return;
+            }
+
+            if (requestDto.limit && (isNaN(requestDto.limit) || requestDto.limit < 1 || requestDto.limit > 50)) {
+                res.status(HTTP_STATUS.BAD_REQUEST).json({
+                    success: false,
+                    message: 'Limit must be between 1 and 50'
+                });
+                return;
+            }
+
+            let data = await this.getProblemNameUseCase.execute(requestDto)
 
             res.status(HTTP_STATUS.OK).json({
                 success: true,

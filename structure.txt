@@ -1,11 +1,17 @@
 tree  -I 'node_modules' > structure.txt
 
+
+
+
+
 ├── package.json
 ├── package-lock.json
 ├── replacements.txt
 ├── src
 │   ├── application
 │   │   ├── dto
+│   │   │   ├── coins
+│   │   │   │   └── CoinTransactionDto.ts
 │   │   │   ├── contests
 │   │   │   │   ├── ContestDetailDto.ts
 │   │   │   │   ├── ContestLeaderboardDto.ts
@@ -19,9 +25,16 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   │   ├── CreateProblemDto.ts
 │   │   │   │   ├── CreateTestCaseDto.ts
 │   │   │   │   ├── ProblemListDto.ts
+│   │   │   │   ├── ProblemNamesDto.ts
 │   │   │   │   ├── ProblemResponseDto.ts
 │   │   │   │   ├── TestCaseResponseDto.ts
 │   │   │   │   └── UpdateProblemDto.ts
+│   │   │   ├── rooms
+│   │   │   │   ├── CreateRoomDto.ts
+│   │   │   │   ├── JoinRoomDto.ts
+│   │   │   │   ├── PublicRoomsDto.ts
+│   │   │   │   ├── RoomListDto.ts
+│   │   │   │   └── UpdateRoomPermissionsDto.ts
 │   │   │   ├── submissions
 │   │   │   │   ├── CreateSubmissionDto.ts
 │   │   │   │   ├── ExecuteCodeDto.ts
@@ -51,8 +64,20 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   ├── PasswordService.ts
 │   │   │   └── userMapper.ts
 │   │   └── usecases
+│   │       ├── auth
+│   │       │   └── ChangePasswordUseCase.ts
+│   │       ├── coins
+│   │       │   ├── AwardCoinsUseCase.ts
+│   │       │   ├── CheckSufficientBalanceUseCase.ts
+│   │       │   ├── DailyLoginRewardUseCase.ts
+│   │       │   ├── GetCoinBalanceUseCase.ts
+│   │       │   ├── GetCoinStatsUseCase.ts
+│   │       │   ├── GetCoinTransactionsUseCase.ts
+│   │       │   ├── SpendCoinsUseCase.ts
+│   │       │   └── TransferCoinsUseCase.ts
 │   │       ├── contests
 │   │       │   ├── CreateContestUseCase.ts
+│   │       │   ├── DistributeContestRewardsUseCase.ts
 │   │       │   ├── GetContestDetailUseCase.ts
 │   │       │   ├── GetContestLeaderboardUseCase.ts
 │   │       │   ├── GetContestsListUseCase.ts
@@ -67,6 +92,13 @@ tree  -I 'node_modules' > structure.txt
 │   │       │   ├── GetProblemsListUseCase.ts
 │   │       │   ├── GetProblemTestCasesUseCase.ts
 │   │       │   └── GetSubmissionTestCasesUseCase.ts
+│   │       ├── rooms
+│   │       │   ├── CreateRoomUseCase.ts
+│   │       │   ├── GetPublicRoomsUseCase.ts
+│   │       │   ├── JoinRoomUseCase.ts
+│   │       │   ├── KickUserUseCase.ts
+│   │       │   ├── UpdateRoomPermissionsUseCase.ts
+│   │       │   └── VerifyPrivateRoomUseCase.ts
 │   │       ├── submissions
 │   │       │   ├── CreateSubmissionUseCase.ts
 │   │       │   ├── GetLanguagesUseCase.ts
@@ -94,6 +126,7 @@ tree  -I 'node_modules' > structure.txt
 │   ├── domain
 │   │   ├── entities
 │   │   │   ├── Badge.ts
+│   │   │   ├── CoinTransaction.ts
 │   │   │   ├── ContestLeaderboard.ts
 │   │   │   ├── ContestParticipant.ts
 │   │   │   ├── Contest.ts
@@ -101,6 +134,8 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   ├── Judge0Submission.ts
 │   │   │   ├── Otp.ts
 │   │   │   ├── Problem.ts
+│   │   │   ├── RoomActivity.ts
+│   │   │   ├── Room.ts
 │   │   │   ├── Submission.ts
 │   │   │   ├── TestCase.ts
 │   │   │   ├── UserConnection.ts
@@ -109,11 +144,14 @@ tree  -I 'node_modules' > structure.txt
 │   │   └── interfaces
 │   │       ├── repositories
 │   │       │   ├── IBadgeRepository.ts
+│   │       │   ├── ICoinTransactionRepository.ts
 │   │       │   ├── IContestParticipantRepository.ts
 │   │       │   ├── IContestRepository.ts
 │   │       │   ├── ICounterRepository.ts
 │   │       │   ├── IOtpRepository.ts
 │   │       │   ├── IProblemRepository.ts
+│   │       │   ├── IRoomActivityRepository.ts
+│   │       │   ├── IRoomRepository.ts
 │   │       │   ├── ISubmissionRepository.ts
 │   │       │   ├── ITestCaseRepository.ts
 │   │       │   ├── IUserConnectionRepository.ts
@@ -124,33 +162,42 @@ tree  -I 'node_modules' > structure.txt
 │   │           ├── IEmailService.ts
 │   │           ├── IJudge0Service.ts
 │   │           ├── IOAuthService.ts
+│   │           ├── IPasswordService.ts
 │   │           ├── ITokenService.ts
 │   │           └── IUserStatsService.ts
 │   ├── infrastructure
 │   │   ├── config
 │   │   │   └── config.ts
 │   │   ├── corn
-│   │   │   └── ContestCron.ts
+│   │   │   ├── ContestCron.ts
+│   │   │   └── cronJobs.ts
 │   │   ├── db
 │   │   │   ├── models
 │   │   │   │   ├── BadgeModel.ts
+│   │   │   │   ├── CoinTransactionModel.ts
 │   │   │   │   ├── ContestModel.ts
 │   │   │   │   ├── ContestParticipantModel.ts
 │   │   │   │   ├── CounterModel.ts
 │   │   │   │   ├── Judge0SubmissionModel.ts
 │   │   │   │   ├── ProblemModel.ts
+│   │   │   │   ├── RoomActivityModel.ts
+│   │   │   │   ├── RoomCodeModel.ts
+│   │   │   │   ├── RoomModel.ts
 │   │   │   │   ├── SubmissionModel.ts
 │   │   │   │   ├── TestCaseModel.ts
 │   │   │   │   ├── UserConnectionModel.ts
 │   │   │   │   ├── UserModel.ts
 │   │   │   │   └── UserProfileModel.ts
 │   │   │   ├── MongoBadgeRepository.ts
+│   │   │   ├── MongoCoinTransactionRepository.ts
 │   │   │   ├── mongoConnection.ts
 │   │   │   ├── MongoContestParticipantRepository.ts
 │   │   │   ├── MongoContestRepository.ts
 │   │   │   ├── MongoCounterRepository.ts
 │   │   │   ├── MongoJudge0Repository.ts
 │   │   │   ├── MongoProblemRepository.ts
+│   │   │   ├── MongoRoomActivityRepository.ts
+│   │   │   ├── MongoRoomRepository.ts
 │   │   │   ├── MongoSubmissionRepository.ts
 │   │   │   ├── MongoTestCaseRepository.ts
 │   │   │   ├── MongoUserConnectionRepository.ts
@@ -171,6 +218,7 @@ tree  -I 'node_modules' > structure.txt
 │   │       ├── NodemailerEmailService.ts
 │   │       ├── OAuthService.ts
 │   │       ├── S3Service.ts
+│   │       ├── SocketService.ts
 │   │       └── UserStatsService.ts
 │   ├── presentation
 │   │   ├── controllers
@@ -180,6 +228,7 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   │   └── problems
 │   │   │   │       └── AdminProblemController.ts
 │   │   │   ├── auth
+│   │   │   │   ├── ChangePasswordController.ts
 │   │   │   │   ├── ForgotPasswordController.ts
 │   │   │   │   ├── LoginController.ts
 │   │   │   │   ├── LogoutController.ts
@@ -189,16 +238,21 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   │   └── UserController.ts
 │   │   │   ├── HealthController.ts
 │   │   │   └── users
+│   │   │       ├── CoinController.ts
 │   │   │       ├── contests
 │   │   │       │   └── UserContestController.ts
 │   │   │       ├── problems
+│   │   │       │   ├── ProblemNamesController.ts
 │   │   │       │   ├── ProblemSolvingController.ts
 │   │   │       │   └── UserProblemController.ts
 │   │   │       ├── ProfileImageController.ts
+│   │   │       ├── rooms
+│   │   │       │   └── RoomController.ts
 │   │   │       ├── UserProfileController.ts
 │   │   │       └── UserSocialController.ts
 │   │   ├── middleware
-│   │   │   └── authMiddleware.ts
+│   │   │   ├── authMiddleware.ts
+│   │   │   └── errorMiddleware.ts
 │   │   └── routes
 │   │       ├── admin
 │   │       │   ├── contestRoutes.ts
@@ -206,15 +260,18 @@ tree  -I 'node_modules' > structure.txt
 │   │       ├── authRoutes.ts
 │   │       ├── healthRoutes.ts
 │   │       └── user
+│   │           ├── coinRoutes.ts
 │   │           ├── contestRoutes.ts
 │   │           ├── problemRoutes.ts
-│   │           └── profileRoutes.ts
+│   │           ├── profileRoutes.ts
+│   │           └── roomRoutes.ts
 │   ├── server.ts
 │   └── shared
 │       ├── constants
 │       │   ├── httpStatus.ts
 │       │   └── messages.ts
 │       ├── exceptions
+│       │   └── AppError.ts
 │       ├── types
 │       │   ├── AuthenticatedRequest.ts
 │       │   └── TokenPayload.ts
@@ -224,4 +281,4 @@ tree  -I 'node_modules' > structure.txt
 ├── test-presigned-url.js
 └── tsconfig.json
 
-47 directories, 177 files
+53 directories, 224 files

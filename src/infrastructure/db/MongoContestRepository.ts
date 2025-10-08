@@ -45,12 +45,6 @@ export class MongoContestRepository implements IContestRepository {
     return contest ? this.mapToEntity(contest) : null;
   }
 
-  // async findByNumber(contestNumber: number): Promise<Contest | null> {
-  //   const contest = await ContestModel.findOne({ contestNumber })
-  //     .populate('problems', 'title difficulty')
-  //     .populate('createdBy', 'username');
-  //   return contest ? this.mapToEntity(contest) : null;
-  // }
 
   async findByNumber(contestNumber: number): Promise<Contest | null> {
     const contest = await ContestModel.findOne({ contestNumber }).exec();

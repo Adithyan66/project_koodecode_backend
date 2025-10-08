@@ -6,13 +6,15 @@ import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRe
 import { CreateRoomDto, CreateRoomResponseDto } from '../../dto/rooms/CreateRoomDto';
 import { Room } from '../../../domain/entities/Room';
 import { config } from '../../../infrastructure/config/config';
+import { IPasswordService } from '../../../domain/interfaces/services/IPasswordService';
 
 export class CreateRoomUseCase {
     constructor(
         private roomRepository: IRoomRepository,
         private counterRepository: ICounterRepository,
         private problemRepository: IProblemRepository,
-        private userRepository: IUserRepository
+        private userRepository: IUserRepository,
+        private passwordService: IPasswordService
     ) { }
 
     async execute(createRoomDto: CreateRoomDto, userId: string): Promise<CreateRoomResponseDto> {
@@ -42,9 +44,13 @@ export class CreateRoomUseCase {
 
             const scheduledTime = createRoomDto.scheduledTime ? new Date(createRoomDto.scheduledTime) : undefined;
 
-            // const status = scheduledTime && scheduledTime > new Date() ? 'waiting' : 'inactive';
-
             const status = scheduledTime && scheduledTime > new Date() ? 'waiting' : 'active';
+            
+            let password
+
+            if(createRoomDto.isPrivate && createRoomDto.password){
+                password = await this.passwordService.hashPassword(createRoomDto.password)
+            }
 
 
             const room: Omit<Room, 'id' | 'createdAt' | 'updatedAt'> = {
@@ -55,9 +61,9 @@ export class CreateRoomUseCase {
                 thumbnail: createRoomDto.thumbnail,
                 createdBy: userId,
                 isPrivate: createRoomDto.isPrivate,
-                password: createRoomDto.isPrivate ? createRoomDto.password : undefined,
+                password: createRoomDto.isPrivate ? password : undefined,
                 scheduledTime,
-                problemNumber: createRoomDto.problemNumber,
+                problemNumber: createRoomDto.problemNumber || 1,
                 status,
                 participants: [],
                 permissions: {

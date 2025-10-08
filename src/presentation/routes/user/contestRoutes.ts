@@ -20,6 +20,9 @@ import { CreateSubmissionUseCase } from '../../../application/usecases/submissio
 import { ContestScoringService } from '../../../application/services/ContestScoringService';
 import { Judge0Service } from '../../../infrastructure/services/Judge0Service';
 import { CodeExecutionHelperService } from '../../../application/services/CodeExecutionHelperService';
+import { DistributeContestRewardsUseCase } from '../../../application/usecases/contests/DistributeContestRewardsUseCase';
+import { MongoCoinTransactionRepository } from '../../../infrastructure/db/MongoCoinTransactionRepository';
+import { MongoUserProfileRepository } from '../../../infrastructure/db/MongoUserProfileRepository';
 
 
 
@@ -31,9 +34,16 @@ const problemRepository = new MongoProblemRepository()
 const testCaseRepository = new MongoTestCaseRepository()
 const submissionRepository = new MongoSubmissionRepository()
 const scoringService = new ContestScoringService()
-const timerService = new ContestTimerService(contestRepository)
 const userRepository = new MongoUserRepository()
 const judge0Service = new Judge0Service()
+const coinTransactionRepository = new MongoCoinTransactionRepository()
+const userProfileRepository = new MongoUserProfileRepository()
+const contestParticipantRepository = new MongoContestParticipantRepository()
+
+
+
+const distributeContestRewardsUseCase = new DistributeContestRewardsUseCase(coinTransactionRepository, userProfileRepository, contestRepository, contestParticipantRepository)
+const timerService = new ContestTimerService(contestRepository, distributeContestRewardsUseCase)
 const codeExecutionHelperService = new CodeExecutionHelperService(judge0Service)
 const createSubmissionUseCase = new CreateSubmissionUseCase(judge0Service, submissionRepository, problemRepository, testCaseRepository, codeExecutionHelperService)
 const registerForContestUseCase = new RegisterForContestUseCase(contestRepository, participantRepository, problemRepository)

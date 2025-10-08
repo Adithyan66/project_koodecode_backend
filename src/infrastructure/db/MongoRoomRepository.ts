@@ -28,19 +28,14 @@ export class MongoRoomRepository implements IRoomRepository {
     const room = await RoomModel.findOne({ roomNumber }).populate('participants.userId', 'username');
     return room ? this.mapToRoom(room) : null;
   }
+  async findByName(name: string): Promise<Room | null> {
+    const room = await RoomModel.findOne({
+      name: { $regex: new RegExp(`^${name}$`, 'i') } // Case-insensitive search
+    }).lean();
+    return room as Room | null;
+  }
 
-  // async findPublicRooms(limit: number = 20): Promise<Room[]> {
-  //   const rooms = await RoomModel.find({
-  //     isPrivate: false,
-  //     status: { $in: ['active', 'waiting'] }
-  //   })
-  //     .populate('participants.userId', 'username')
-  //     .sort({ lastActivity: -1 })
-  //     .limit(limit);
-
-  //   return rooms.map(room => this.mapToRoom(room));
-  // }
-
+  
   async findPublicRooms(params: {
     status?: 'active' | 'waiting';
     page: number;
@@ -80,13 +75,19 @@ export class MongoRoomRepository implements IRoomRepository {
             foreignField: '_id',
             as: 'createdBy',
             pipeline: [
-              { $project: { username: 1, avatar: 1 } }
+              {
+                $project: {
+                  _id: 1,
+                  userName: 1,
+                  fullName: 1,
+                  profilePicUrl: 1,
+                  email: 1
+                }
+              }
             ]
           }
         },
-        {
-          $unwind: '$createdBy'
-        },
+        { $unwind: '$createdBy' },
         {
           $addFields: {
             id: '$_id',

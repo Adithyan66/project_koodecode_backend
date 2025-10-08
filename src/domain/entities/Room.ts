@@ -1,7 +1,7 @@
 export interface Room {
   id: string;
   roomNumber: number;
-  roomId: string; // Unique identifier for Jitsi/Socket
+  roomId: string; 
   name: string;
   description: string;
   thumbnail?: string;

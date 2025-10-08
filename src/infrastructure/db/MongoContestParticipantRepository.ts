@@ -25,15 +25,6 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
     return this.mapToEntity(savedParticipant);
   }
 
-  // async findById(id: string): Promise<ContestParticipant | null> {
-  //   const participant = await ContestParticipantModel.findById(id)
-  //     .populate('contestId', 'title contestNumber')
-  //     .populate('userId', 'username profileImage')
-  //     .populate('assignedProblemId', 'title difficulty');
-
-  //   return participant ? this.mapToEntity(participant) : null;
-  // }
-
   async findByContestAndUser(contestId: string, userId: string): Promise<ContestParticipant | null> {
     const participant = await ContestParticipantModel.findOne({
       contestId,
@@ -129,8 +120,8 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
       .populate('userId', 'username profileImage')
       .populate('assignedProblemId', 'title difficulty')
       .sort({
-        totalScore: -1,  // Higher score first
-        updatedAt: 1     // Earlier completion time first for ties
+        totalScore: -1, 
+        updatedAt: 1   
       });
 
     return participants.map(participant => this.mapToEntity(participant));

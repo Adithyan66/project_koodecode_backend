@@ -15,4 +15,5 @@ export interface ContestSubmissionResponseDto {
   totalScore: number;
   rank?: number;
   message: string;
+  result:any
 }

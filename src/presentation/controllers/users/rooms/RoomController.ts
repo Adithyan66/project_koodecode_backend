@@ -8,6 +8,7 @@ import { CreateRoomDto } from '../../../../application/dto/rooms/CreateRoomDto';
 import { JoinRoomDto } from '../../../../application/dto/rooms/JoinRoomDto';
 import { UpdateRoomPermissionsDto, KickUserDto } from '../../../../application/dto/rooms/UpdateRoomPermissionsDto';
 import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
+import { VerifyPrivateRoomUseCase } from '../../../../application/usecases/rooms/VerifyPrivateRoomUseCase';
 
 
 
@@ -18,14 +19,13 @@ export class RoomController {
         private joinRoomUseCase: JoinRoomUseCase,
         private getPublicRoomsUseCase: GetPublicRoomsUseCase,
         private updateRoomPermissionsUseCase: UpdateRoomPermissionsUseCase,
-        private kickUserUseCase: KickUserUseCase
+        private kickUserUseCase: KickUserUseCase,
+        private verifyPrivateRoomUseCase: VerifyPrivateRoomUseCase
     ) { }
 
     async createRoom(req: Request, res: Response): Promise<void> {
 
         try {
-
-
             const createRoomDto: CreateRoomDto = req.body;
             console.log(createRoomDto);
 
@@ -121,33 +121,6 @@ export class RoomController {
     }
 
 
-
-    // async getPublicRooms(req: Request, res: Response): Promise<void> {
-
-    //     try {
-    //         console.log("workingggggggggggggggggg");
-
-    //         const limit = parseInt(req.query.limit as string) || 20;
-    //         const result = await this.getPublicRoomsUseCase.execute(limit);
-
-    //         res.status(HTTP_STATUS.OK).json({
-    //             success: true,
-    //             message: "active rooms fetched succesfully ",
-    //             result
-    //         });
-
-    //     } catch (error: any) {
-
-    //         res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
-    //             success: false,
-    //             error: 'Failed to fetch public rooms',
-    //             rooms: [],
-    //             total: 0
-    //         });
-    //     }
-    // }
-
-
     getPublicRooms = async (req: Request, res: Response): Promise<void> => {
         try {
             const {
@@ -192,6 +165,7 @@ export class RoomController {
             });
 
             res.status(HTTP_STATUS.OK).json(result);
+
         } catch (error) {
             console.error('Get public rooms error:', error);
             res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
@@ -268,5 +242,54 @@ export class RoomController {
             });
         }
     }
+
+    async validateRoom(req: Request, res: Response) {
+
+        try {
+
+            const { roomName, password } = req.body;
+
+            if (!roomName || !password) {
+                res.status(HTTP_STATUS.BAD_REQUEST).json({
+                    success: false,
+                    error: 'Room name and password are required'
+                });
+                return;
+            }
+
+            const result = await this.verifyPrivateRoomUseCase.execute({
+                roomName,
+                password
+            });
+
+            if (result.success) {
+                res.status(HTTP_STATUS.OK).json({
+                    success: true,
+                    message: "room credentials verified",
+                    roomId:result.roomId
+                });
+            } else {
+
+                let statusCode = HTTP_STATUS.BAD_REQUEST
+
+                if (result.error?.includes('Room not found')) {
+                    statusCode = HTTP_STATUS.NOT_FOUND
+                } else if (result.error?.includes('Invalid password')) {
+                    statusCode = HTTP_STATUS.UNAUTHORIZED
+                } else if (result.error?.includes('inactive')) {
+                    statusCode = HTTP_STATUS.FORBIDDEN
+                }
+
+                res.status(statusCode).json(result);
+            }
+        } catch (error) {
+            console.error('Error in verifyPrivateRoom controller:', error);
+            res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+                success: false,
+                error: 'Internal server error'
+            });
+        }
+    };
+
 
 }

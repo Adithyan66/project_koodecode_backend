@@ -4,6 +4,7 @@ import { IProblemRepository } from '../../../domain/interfaces/repositories/IPro
 import { ProblemNamesRequestDto, ProblemNamesResponseDto, ProblemNameDto } from '../../dto/problems/ProblemNamesDto';
 
 export class GetProblemNamesUseCase {
+  
   constructor(private problemRepository: IProblemRepository) {}
 
   async execute(request: ProblemNamesRequestDto): Promise<ProblemNamesResponseDto> {
@@ -23,6 +24,7 @@ export class GetProblemNamesUseCase {
       const hasMore = page < totalPages;
 
       const problemDtos: ProblemNameDto[] = result.problems.map(problem => ({
+        id:problem.id,
         problemNumber: problem.problemNumber,
         title: problem.title,
         difficulty: problem.difficulty

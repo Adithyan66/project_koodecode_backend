@@ -51,29 +51,31 @@ export class GoogleOAuthUseCase {
         user = await this.userRepository.saveUser(newUser);
       }
     }
-
+    
     if (!user) {
       throw new Error("user creration failed")
     }
-
+    
     const accessToken = this.jwtService.generateAccessToken({
       userId: user.id!,
       role: user.role
     });
-
+    
     const refreshToken = this.jwtService.generateRefreshToken({
       userId: user.id!,
       role: user.role
     });
-
+    
     const safeUser: SafeUser = {
+      id:user.id!,
       fullName: user.fullName,
       userName: user.userName,
       email: user.email,
       isAdmin: user.role === "admin",
       profilePicUrl: user.profilePicUrl,
     };
-
+    // console.log("gogleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",user);
+    
     const tokens = {
       accessToken,
       refreshToken
@@ -81,7 +83,7 @@ export class GoogleOAuthUseCase {
 
     const response = toLoginUserResponse(safeUser, tokens)
 
-    console.log("response is inside user",response);
+    // console.log("response is inside user",response);
     
 
     return response

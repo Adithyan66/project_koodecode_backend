@@ -212,6 +212,7 @@ export class MongoProblemRepository implements IProblemRepository {
         search?: string;
     }): Promise<{
         problems: Array<{
+            id: string
             problemNumber: number;
             title: string;
             difficulty: 'easy' | 'medium' | 'hard';
@@ -238,12 +239,11 @@ export class MongoProblemRepository implements IProblemRepository {
                 query.title = { $regex: searchTerm, $options: 'i' };
             }
         }
-
-        // Execute aggregation pipeline for better performance
         const pipeline = [
             { $match: query },
             {
                 $project: {
+                    id: { $toString: "$_id" },
                     problemNumber: 1,
                     title: 1,
                     difficulty: 1
@@ -272,8 +272,5 @@ export class MongoProblemRepository implements IProblemRepository {
             totalCount
         };
     }
-
-
-
 
 }
