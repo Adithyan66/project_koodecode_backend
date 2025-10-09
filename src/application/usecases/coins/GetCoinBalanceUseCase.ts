@@ -1,6 +1,5 @@
 
 
-// src/application/usecases/coins/GetCoinBalanceUseCase.ts
 import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
 
 export class GetCoinBalanceUseCase {

@@ -49,7 +49,7 @@ export const config = {
   },
 
   jitsi: {
-    domain: process.env.JITSI_DOMAIN ,
+    domain: process.env.JITSI_DOMAIN,
     apiSecret: process.env.JITSI_API_SECRET || 'your-secret'
   },
 
@@ -58,6 +58,11 @@ export const config = {
       origin: process.env.FRONTEND_URL || 'http://localhost:5173',
       methods: ['GET', 'POST']
     }
-  }
+  },
+  
+
+  RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID || 'rzp_test_RRHkLeStNJBD5F',
+  RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET || "22iHcFu7sZHrYLEHP9a6Uh8m",
+
 };
 

@@ -11,6 +11,7 @@ export class GetStoreItemsUseCase {
     ) {}
 
     async execute(userId?: string): Promise<StoreItemResponseDto[]> {
+        
         const storeItems = await this.storeItemRepository.findActiveItems();
         
         if (!userId) {

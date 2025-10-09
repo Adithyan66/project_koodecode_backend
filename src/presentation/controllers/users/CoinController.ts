@@ -14,21 +14,18 @@ export class CoinController {
         private getCoinBalanceUseCase: GetCoinBalanceUseCase,
         private getCoinTransactionsUseCase: GetCoinTransactionsUseCase,
         private getCoinStatsUseCase: GetCoinStatsUseCase
-    ) {}
+    ) { }
 
     async getBalance(req: Request, res: Response): Promise<void> {
         try {
 
             const userId = req.user?.userId;
-            
+
             const balance = await this.getCoinBalanceUseCase.execute(userId!);
-            
+
             res.status(HTTP_STATUS.OK).json({
                 success: true,
-                data: {
-                    success:true,
-                    balance,
-                }
+                balance,
             });
 
         } catch (error) {
@@ -45,9 +42,9 @@ export class CoinController {
             const userId = req.user!.userId;
             const limit = parseInt(req.query.limit as string) || 50;
             const offset = parseInt(req.query.offset as string) || 0;
-            
+
             const transactions = await this.getCoinTransactionsUseCase.execute(userId, limit, offset);
-            
+
             res.status(HTTP_STATUS.OK).json({
                 success: true,
                 data: {
@@ -81,7 +78,7 @@ export class CoinController {
         try {
             const userId = req.user!.userId;
             const stats = await this.getCoinStatsUseCase.execute(userId);
-            
+
             res.status(HTTP_STATUS.OK).json({
                 success: true,
                 data: stats
@@ -98,7 +95,7 @@ export class CoinController {
     async awardCoins(req: Request, res: Response): Promise<void> {
         try {
             const { userId, amount, source, description, metadata } = req.body;
-            
+
             if (!userId || !amount || !source || !description) {
                 res.status(HTTP_STATUS.BAD_REQUEST).json({
                     success: false,
@@ -122,7 +119,7 @@ export class CoinController {
                 description,
                 metadata
             );
-            
+
             res.status(HTTP_STATUS.CREATED).json({
                 success: true,
                 data: {

@@ -13,6 +13,7 @@ import healthRoutes from "./presentation/routes/healthRoutes";
 import profileRoutes from "./presentation/routes/user/profileRoutes"
 import adminContestRoutes from "./presentation/routes/admin/contestRoutes"
 import userContestRoutes from './presentation/routes/user/contestRoutes';
+import coinPurchaseRoutes from './presentation/routes/user/coinPurchaseRoutes';
 import coinsRoute from './presentation/routes/user/coinRoutes'
 import roomRoutes from './presentation/routes/user/roomRoutes';
 import storeRoutes from "./presentation/routes/user/storeRoutes"
@@ -58,6 +59,10 @@ app.use('/api/user/rooms', roomRoutes);
 app.use('/api/user/coins', coinsRoute);
 
 app.use('/api/user/store', storeRoutes);
+
+
+app.use('/api/user/payments', coinPurchaseRoutes);
+
 
 app.use('/api/admin/problems', adminProblemRoutes);
 
