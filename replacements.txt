@@ -1,4 +1,0 @@
-AKIA***=***REMOVED***
-wJalr***=***REMOVED***
-your_actual_access_key_id=***REMOVED***
-your_actual_secret_access_key=***REMOVED***
