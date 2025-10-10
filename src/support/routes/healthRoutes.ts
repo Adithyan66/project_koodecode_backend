@@ -1,7 +1,7 @@
 
 
 import { Router } from 'express';
-import { HealthController } from '../controllers/HealthController';
+import { HealthController } from '../../support/controllers/HealthController';
 
 import { Judge0HealthService } from '../../infrastructure/services/Judge0HealthService'; 
 

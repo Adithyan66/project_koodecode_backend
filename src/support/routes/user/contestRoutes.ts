@@ -1,8 +1,8 @@
 
 
 import { Router } from 'express';
-import { UserContestController } from '../../controllers/users/contests/UserContestController';
-import { authMiddleware } from '../../middleware/authMiddleware';
+import { UserContestController } from '../../../support/controllers/users/contests/UserContestController';
+import { authMiddleware } from '../../../support/middleware/authMiddleware';
 import { RegisterForContestUseCase } from '../../../application/usecases/contests/RegisterForContestUseCase';
 import { MongoContestRepository } from '../../../infrastructure/db/MongoContestRepository';
 import { MongoContestParticipantRepository } from '../../../infrastructure/db/MongoContestParticipantRepository';

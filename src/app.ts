@@ -6,26 +6,26 @@ import cors from "cors"
 
 import { cornjob } from './infrastructure/corn/cronJobs';
 
-import authRoutes from './presentation/routes/authRoutes';
-import adminProblemRoutes from './presentation/routes/admin/problemRoutes'
-import userProblemRoutes from './presentation/routes/user/problemRoutes';
-import healthRoutes from "./presentation/routes/healthRoutes";
-import profileRoutes from "./presentation/routes/user/profileRoutes"
-import adminContestRoutes from "./presentation/routes/admin/contestRoutes"
-import userContestRoutes from './presentation/routes/user/contestRoutes';
-import coinPurchaseRoutes from './presentation/routes/user/coinPurchaseRoutes';
-import coinsRoute from './presentation/routes/user/coinRoutes'
-import roomRoutes from './presentation/routes/user/roomRoutes';
-import storeRoutes from "./presentation/routes/user/storeRoutes"
-import { errorMiddleware } from './presentation/middleware/errorMiddleware';
+// import authRoutes from './presentation/routes/authRoutes';
+// import adminProblemRoutes from './presentation/routes/admin/problemRoutes'
+// import userProblemRoutes from './presentation/routes/user/problemRoutes';
+// import healthRoutes from "./presentation/routes/healthRoutes";
+// import profileRoutes from "./presentation/routes/user/profileRoutes"
+// import adminContestRoutes from "./presentation/routes/admin/contestRoutes"
+// import userContestRoutes from './presentation/routes/user/contestRoutes';
+// import coinPurchaseRoutes from './presentation/routes/user/coinPurchaseRoutes';
+// import coinsRoute from './presentation/routes/user/coinRoutes'
+// import roomRoutes from './presentation/routes/user/roomRoutes';
+// import storeRoutes from "./presentation/routes/user/storeRoutes"
+// import { errorMiddleware } from './support/middleware/errorMiddleware';
 
+
+import authRoutes from './presentation/express/routes/authRoutes'
+import { errorMiddleware } from './support/middleware/errorMiddleware';
 
 dotenv.config();
-
 const app = express();
-
 app.use(cookieParser());
-
 app.use(cors({
   origin: [
     "http://localhost:5173",
@@ -33,42 +33,34 @@ app.use(cors({
   ],
   credentials: true
 }))
-
-
 app.use(json());
 app.use(urlencoded({ extended: true }));
-
-
 cornjob.start()
 
 
 
-
-app.use('/api/health', healthRoutes);
-
-app.use('/api/auth', authRoutes);
-
-app.use('/api/user', profileRoutes);
-
-app.use('/api/user/problems', userProblemRoutes);
-
-app.use('/api/user/contests', userContestRoutes)
-
-app.use('/api/user/rooms', roomRoutes);
-
-app.use('/api/user/coins', coinsRoute);
-
-app.use('/api/user/store', storeRoutes);
+// app.use('/api/health', healthRoutes);
+// app.use('/api/auth', authRoutes);
+// app.use('/api/user', profileRoutes);
+// app.use('/api/user/problems', userProblemRoutes);
+// app.use('/api/user/contests', userContestRoutes)
+// app.use('/api/user/rooms', roomRoutes);
+// app.use('/api/user/coins', coinsRoute);
+// app.use('/api/user/store', storeRoutes);
+// app.use('/api/user/payments', coinPurchaseRoutes);
+// app.use('/api/admin/problems', adminProblemRoutes);
+// app.use('/api/admin/contests', adminContestRoutes)
 
 
-app.use('/api/user/payments', coinPurchaseRoutes);
+
+app.use("/api/auth", authRoutes);
+// app.use("/user", adminRoutes);
+// app.use("/admin", managerRoutes);
 
 
-app.use('/api/admin/problems', adminProblemRoutes);
 
-app.use('/api/admin/contests', adminContestRoutes)
 
-// app.use('/*',(req,res)=> res.send("no route match"))
+
 
 
 app.use(errorMiddleware);

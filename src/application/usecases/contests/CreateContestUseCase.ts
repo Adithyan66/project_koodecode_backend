@@ -16,7 +16,6 @@ export class CreateContestUseCase {
 
     async execute(createContestDto: CreateContestDto, adminUserId: string): Promise<Contest> {
 
-        console.log("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",createContestDto.problemIds);
         await this.validateProblems(createContestDto.problemIds);
 
         this.validateDates(createContestDto);

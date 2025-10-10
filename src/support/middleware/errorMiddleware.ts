@@ -1,7 +1,7 @@
 
 
 import { Request, Response, NextFunction } from "express";
-import { AppError } from "../../shared/exceptions/AppError";
+import { AppError } from "../../application/errors/AppError";
 
 export const errorMiddleware = (
   err: Error,

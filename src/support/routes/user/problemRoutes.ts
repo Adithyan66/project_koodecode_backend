@@ -1,10 +1,10 @@
 
 import { Router } from "express";
 
-import { UserProblemController } from "../../controllers/users/problems/UserProblemController";
+import { UserProblemController } from "../../../support/controllers/users/problems/UserProblemController";
 import { GetProblemsListUseCase } from "../../../application/usecases/problems/GetProblemsListUseCase";
 import { MongoProblemRepository } from "../../../infrastructure/db/MongoProblemRepository";
-import { ProblemSolvingController } from "../../controllers/users/problems/ProblemSolvingController";
+import { ProblemSolvingController } from "../../../support/controllers/users/problems/ProblemSolvingController";
 import { GetProblemByIdUseCase } from "../../../application/usecases/problems/GetProblemByIdUseCase";
 import { Judge0Service } from "../../../infrastructure/services/Judge0Service";
 import { MongoSubmissionRepository } from "../../../infrastructure/db/MongoSubmissionRepository";
@@ -14,9 +14,9 @@ import { RunCodeUseCase } from "../../../application/usecases/submissions/RunCod
 import { GetLanguagesUseCase } from "../../../application/usecases/submissions/GetLanguagesUseCase";
 
 import { MongoTestCaseRepository } from "../../../infrastructure/db/MongoTestCaseRepository";
-import { authMiddleware } from "../../middleware/authMiddleware";
+import { authMiddleware } from "../../../support/middleware/authMiddleware";
 import { CodeExecutionHelperService } from "../../../application/services/CodeExecutionHelperService";
-import { ProblemNamesController } from "../../controllers/users/problems/ProblemNamesController";
+import { ProblemNamesController } from "../../../support/controllers/users/problems/ProblemNamesController";
 import { GetProblemNamesUseCase } from "../../../application/usecases/problems/GetProblemNamesUseCase";
 
 const router = Router()

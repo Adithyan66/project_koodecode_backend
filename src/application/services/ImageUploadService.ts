@@ -4,6 +4,7 @@ import { IS3Service } from '../interfaces/IS3Service';
 import { IImageUploadService } from '../interfaces/IImageUploadService';
 
 export class ImageUploadService implements IImageUploadService {
+  
   constructor(private s3Service: IS3Service) {}
 
   async generateProfileImageUploadUrl(userId: string, fileExtension: string): Promise<{

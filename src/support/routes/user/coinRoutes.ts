@@ -1,6 +1,6 @@
 import express from 'express';
-import { CoinController } from '../../controllers/users/CoinController';
-import { authMiddleware } from '../../middleware/authMiddleware';
+import { CoinController } from '../../../support/controllers/users/CoinController';
+import { authMiddleware } from '../../../support/middleware/authMiddleware';
 
 import { MongoCoinTransactionRepository } from '../../../infrastructure/db/MongoCoinTransactionRepository';
 import { MongoUserProfileRepository } from '../../../infrastructure/db/MongoUserProfileRepository';

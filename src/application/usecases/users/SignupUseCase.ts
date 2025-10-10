@@ -4,13 +4,15 @@ import { toSignupUserResponse } from '../../services/userMapper';
 import { JwtService } from '../../../infrastructure/services/JwtService';
 import { OtpUseCase } from './OtpUseCase';
 import { IPasswordService } from '../../../domain/interfaces/services/IPasswordService';
+import { ISignupUseCase } from '../../interfaces/IAuthenticationUseCase';
+import { ITokenService } from '../../../domain/interfaces/services/ITokenService';
 
-export class SignupUseCase {
+export class SignupUseCase implements ISignupUseCase {
 
     constructor(
         private userRepository: IUserRepository,
         private otpService: OtpUseCase,
-        private tokenService: JwtService,
+        private tokenService: ITokenService,
         private passwordService: IPasswordService
     ) { }
 

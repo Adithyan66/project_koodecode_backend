@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { RoomController } from '../../controllers/users/rooms/RoomController';
-import { authMiddleware } from '../../middleware/authMiddleware';
+import { RoomController } from '../../../support/controllers/users/rooms/RoomController';
+import { authMiddleware } from '../../../support/middleware/authMiddleware';
 
 
 import { MongoRoomRepository } from '../../../infrastructure/db/MongoRoomRepository';

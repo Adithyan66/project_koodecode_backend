@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
 // import { UserProblemController } from '../../controllers/users/problems/UserProblemController';
-import { AdminProblemController } from '../../controllers/admin/problems/AdminProblemController';
-import { authMiddleware } from '../../middleware/authMiddleware';
+import { AdminProblemController } from '../../../support/controllers/admin/problems/AdminProblemController';
+import { authMiddleware } from '../../../support/middleware/authMiddleware';
 
 import { GetProblemsListUseCase } from '../../../application/usecases/problems/GetProblemsListUseCase';
 import { GetProblemByIdUseCase } from '../../../application/usecases/problems/GetProblemByIdUseCase';

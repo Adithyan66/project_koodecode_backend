@@ -57,8 +57,6 @@ export function authMiddleware(requiredRole?: string) {
                     message: 'Insufficient permissions',
                 });
             }
-
-            // Attach user info to request object
             req.user = payload;
             next();
             

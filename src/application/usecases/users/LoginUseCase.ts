@@ -5,8 +5,9 @@ import { LoginUserResponse } from '../../dto/users/loginUserResponse';
 import { SafeUser } from '../../dto/users/safeUser';
 import { JwtService } from '../../../infrastructure/services/JwtService';
 import { IPasswordService } from '../../../domain/interfaces/services/IPasswordService';
+import { ILoginUseCase } from '../../interfaces/IAuthenticationUseCase';
 
-export class LoginUseCase {
+export class LoginUseCase implements ILoginUseCase{
 
     constructor(
         private userRepository: IUserRepository,

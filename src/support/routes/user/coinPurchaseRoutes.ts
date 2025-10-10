@@ -1,8 +1,8 @@
 
 
 import express from 'express';
-import { CoinPurchaseController } from '../../controllers/users/CoinPurchaseController';
-import { authMiddleware } from '../../middleware/authMiddleware';
+import { CoinPurchaseController } from '../../../support/controllers/users/CoinPurchaseController';
+import { authMiddleware } from '../../../support/middleware/authMiddleware';
 
 import { RazorpayGatewayService } from '../../../infrastructure/services/RazorpayGatewayService';
 import { CoinPricingService } from '../../../infrastructure/services/CoinPricingService';

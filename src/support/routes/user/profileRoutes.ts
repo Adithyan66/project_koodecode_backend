@@ -1,10 +1,10 @@
 
 
 import { Router } from 'express';
-import { UserProfileController } from '../../controllers/users/UserProfileController';
+import { UserProfileController } from '../../../support/controllers/users/UserProfileController';
 
-import { UserSocialController } from '../../controllers/users/UserSocialController';
-import { authMiddleware } from '../../middleware/authMiddleware';
+import { UserSocialController } from '../../../support/controllers/users/UserSocialController';
+import { authMiddleware } from '../../../support/middleware/authMiddleware';
 import { GetUserProfileUseCase } from '../../../application/usecases/users/GetUserProfileUseCase';
 
 import { UpdateUserProfileUseCase } from '../../../application/usecases/users/UpdateUserProfileUseCase';
@@ -21,7 +21,7 @@ import { GenerateProfileImageUploadUrlUseCase } from '../../../application/useca
 import { ImageUploadService } from '../../../application/services/ImageUploadService';
 import { S3Service } from '../../../infrastructure/services/S3Service';
 import { UpdateProfileImageUseCase } from '../../../application/usecases/users/UpdateProfileImageUseCase';
-import { ProfileImageController } from '../../controllers/users/ProfileImageController';
+import { ProfileImageController } from '../../../support/controllers/users/ProfileImageController';
 
 
 

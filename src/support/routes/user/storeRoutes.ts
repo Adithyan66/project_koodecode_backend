@@ -1,8 +1,8 @@
 
 
 import express from 'express';
-import { StoreController } from '../../controllers/users/StoreController';
-import { authMiddleware } from '../../middleware/authMiddleware';
+import { StoreController } from '../../../support/controllers/users/StoreController';
+import { authMiddleware } from '../../../support/middleware/authMiddleware';
 
 import { MongoStoreItemRepository } from '../../../infrastructure/db/MongoStoreItemRepository';
 import { MongoUserInventoryRepository } from '../../../infrastructure/db/MongoUserInventoryRepository';

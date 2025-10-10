@@ -4,7 +4,7 @@ import { LoginUserResponse } from "../../dto/users/loginUserResponse";
 import { SafeUser } from "../../dto/users/safeUser";
 import { toLoginUserResponse } from "../../services/userMapper";
 import { OtpUseCase } from "./OtpUseCase";
-import { AppError } from "../../../shared/exceptions/AppError";
+import { AppError } from "../../errors/AppError";
 import { HTTP_STATUS } from "../../../shared/constants/httpStatus";
 import { IPasswordService } from "../../../domain/interfaces/services/IPasswordService";
 
