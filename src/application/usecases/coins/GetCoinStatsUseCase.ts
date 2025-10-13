@@ -1,12 +1,48 @@
 
 
-// src/application/usecases/coins/GetCoinStatsUseCase.ts
-import { ICoinTransactionRepository, UserCoinStats } from '../../../domain/interfaces/repositories/ICoinTransactionRepository';
+// import { inject, injectable } from 'tsyringe';
+// import { ICoinTransactionRepository, UserCoinStats } from '../../../domain/interfaces/repositories/ICoinTransactionRepository';
+// import { IGetCoinStatsUseCase } from '../../interfaces/ICoinUseCase';
 
-export class GetCoinStatsUseCase {
-    constructor(private coinTransactionRepository: ICoinTransactionRepository) {}
+
+// @injectable()
+// export class GetCoinStatsUseCase implements IGetCoinStatsUseCase{
+
+//     constructor(
+//         @inject("ICoinTransactionRepository") private coinTransactionRepository: ICoinTransactionRepository
+//     ) { }
+
+//     async execute(userId: string): Promise<UserCoinStats> {
+
+//         return await this.coinTransactionRepository.getUserTransactionStats(userId);
+//     }
+// }
+
+
+
+import { inject, injectable } from 'tsyringe';
+import { ICoinTransactionRepository, UserCoinStats } from '../../../domain/interfaces/repositories/ICoinTransactionRepository';
+import { IGetCoinStatsUseCase } from '../../interfaces/ICoinUseCase';
+import { CoinStatsRetrievalError } from '../../../domain/errors/CoinErrors';
+import { MissingFieldsError } from '../../../domain/errors/AuthErrors';
+
+@injectable()
+export class GetCoinStatsUseCase implements IGetCoinStatsUseCase {
+
+    constructor(
+        @inject("ICoinTransactionRepository") private coinTransactionRepository: ICoinTransactionRepository
+    ) { }
 
     async execute(userId: string): Promise<UserCoinStats> {
-        return await this.coinTransactionRepository.getUserTransactionStats(userId);
+
+        if (!userId) {
+            throw new MissingFieldsError(["userId"]);
+        }
+
+        try {
+            return await this.coinTransactionRepository.getUserTransactionStats(userId);
+        } catch (error) {
+            throw new CoinStatsRetrievalError(userId);
+        }
     }
 }

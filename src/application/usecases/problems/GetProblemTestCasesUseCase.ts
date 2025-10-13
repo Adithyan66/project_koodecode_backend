@@ -1,10 +1,17 @@
 
 
+import { inject, injectable } from 'tsyringe';
 import { TestCase } from '../../../domain/entities/TestCase';
-import { ITestCaseRepository } from '../../interfaces/ITestCaseRepository';
+import { ITestCaseRepository } from '../../../domain/interfaces/repositories/ITestCaseRepository';
 
+
+
+@injectable()
 export class GetProblemTestCasesUseCase {
-    constructor(private testCaseRepository: ITestCaseRepository) {}
+    
+    constructor(
+        @inject('ITestCaseRepository') private testCaseRepository: ITestCaseRepository
+    ) { }
 
     async execute(problemId: string, samplesOnly: boolean = false): Promise<TestCase[]> {
         if (samplesOnly) {

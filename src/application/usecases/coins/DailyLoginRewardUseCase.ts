@@ -1,14 +1,18 @@
-// src/application/usecases/coins/DailyLoginRewardUseCase.ts
+
+
 import mongoose from 'mongoose';
 import { CoinTransaction, CoinTransactionType, CoinTransactionSource } from '../../../domain/entities/CoinTransaction';
 import { ICoinTransactionRepository } from '../../../domain/interfaces/repositories/ICoinTransactionRepository';
 import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
+import { inject, injectable } from 'tsyringe';
 
+
+@injectable()
 export class DailyLoginRewardUseCase {
     constructor(
-        private coinTransactionRepository: ICoinTransactionRepository,
-        private userProfileRepository: IUserProfileRepository
-    ) {}
+        @inject("ICoinTransactionRepository") private coinTransactionRepository: ICoinTransactionRepository,
+        @inject("IUserProfileRepository") private userProfileRepository: IUserProfileRepository
+    ) { }
 
     async execute(userId: string): Promise<{ rewarded: boolean; transaction?: CoinTransaction; reason?: string }> {
         const today = new Date();
@@ -19,20 +23,20 @@ export class DailyLoginRewardUseCase {
         const endOfDay = new Date(today.setHours(23, 59, 59, 999));
 
         const existingReward = await this.coinTransactionRepository.findByUserIdAndDateRange(
-            userId, 
-            startOfDay, 
+            userId,
+            startOfDay,
             endOfDay
         );
 
-        const todayLoginReward = existingReward.find(t => 
-            t.source === CoinTransactionSource.DAILY_LOGIN && 
+        const todayLoginReward = existingReward.find(t =>
+            t.source === CoinTransactionSource.DAILY_LOGIN &&
             t.type === CoinTransactionType.EARN
         );
 
         if (todayLoginReward) {
-            return { 
-                rewarded: false, 
-                reason: 'Daily login reward already claimed today' 
+            return {
+                rewarded: false,
+                reason: 'Daily login reward already claimed today'
             };
         }
 
@@ -73,9 +77,9 @@ export class DailyLoginRewardUseCase {
             await this.userProfileRepository.update(userProfile);
 
             await session.commitTransaction();
-            return { 
-                rewarded: true, 
-                transaction: savedTransaction 
+            return {
+                rewarded: true,
+                transaction: savedTransaction
             };
         } catch (error) {
             await session.abortTransaction();

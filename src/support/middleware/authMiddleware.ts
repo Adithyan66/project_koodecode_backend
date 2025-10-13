@@ -41,7 +41,6 @@ export function authMiddleware(requiredRole?: string) {
                 });
             }
             
-            // Verify token
             const payload = jwtService.verifyAccessToken(token) as JwtPayload | null;
             
             if (!payload) {
@@ -57,7 +56,7 @@ export function authMiddleware(requiredRole?: string) {
                     message: 'Insufficient permissions',
                 });
             }
-            req.user = payload;
+            req.user = payload;            
             next();
             
         } catch (error: any) {

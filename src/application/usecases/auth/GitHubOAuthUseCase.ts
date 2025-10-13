@@ -1,18 +1,27 @@
+
+
+import { injectable, inject } from "tsyringe";
 import { User } from "../../../domain/entities/User";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository";
 import { IOAuthService } from "../../../domain/interfaces/services/IOAuthService";
+import { ITokenService } from "../../../domain/interfaces/services/ITokenService";
+import { IUsernameService } from "../../../domain/interfaces/services/IUsernameService";
 import { JwtService } from "../../../infrastructure/services/JwtService";
 import { LoginUserResponse } from "../../dto/users/loginUserResponse";
 import { OAuthUserResponse } from "../../dto/users/OAuthUserResponse";
 import { SafeUser } from "../../dto/users/safeUser";
 import { toLoginUserResponse } from "../../services/userMapper";
+import { IGitHubOAuthUseCase } from "../../interfaces/IAuthenticationUseCase";
 
 
-export class GitHubOAuthUseCase {
+
+@injectable()
+export class GitHubOAuthUseCase implements IGitHubOAuthUseCase{
   constructor(
-    private userRepository: IUserRepository,
-    private oauthService: IOAuthService,
-    private jwtService: JwtService
+    @inject("IUserRepository") private userRepository: IUserRepository,
+    @inject("IOAuthService") private oauthService: IOAuthService,
+    @inject("ITokenService") private jwtService: ITokenService,
+    @inject("IUsernameService") private usernameService: IUsernameService
   ) { }
 
   async execute(code: string): Promise<LoginUserResponse> {
@@ -36,7 +45,7 @@ export class GitHubOAuthUseCase {
         isNewUser = true;
         const newUser = new User({
           fullName: profile.name,
-          userName: this.generateUsername(profile.name, profile.email),
+          userName: this.usernameService.generate(profile.name, profile.email),
           email: profile.email,
           provider: "github",
           githubId: profile.id,
@@ -61,7 +70,7 @@ export class GitHubOAuthUseCase {
     });
 
     const safeUser: SafeUser = {
-      id:user.id!,
+      id: user.id!,
       fullName: user.fullName,
       userName: user.userName,
       email: user.email,
@@ -80,10 +89,10 @@ export class GitHubOAuthUseCase {
 
   }
 
-  private generateUsername(name: string, email: string): string {
-    const baseName = name.toLowerCase().replace(/\s+/g, '');
-    const emailPrefix = email.split('@');
-    const randomSuffix = Math.floor(Math.random() * 1000);
-    return `${baseName || emailPrefix}${randomSuffix}`;
-  }
+  // private generateUsername(name: string, email: string): string {
+  //   const baseName = name.toLowerCase().replace(/\s+/g, '');
+  //   const emailPrefix = email.split('@');
+  //   const randomSuffix = Math.floor(Math.random() * 1000);
+  //   return `${baseName || emailPrefix}${randomSuffix}`;
+  // }
 }

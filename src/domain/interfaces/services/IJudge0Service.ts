@@ -29,7 +29,7 @@ export interface Judge0SubmissionResponse {
   message?: string;
 }
 
-export interface IJudge0Service {
+export interface ICodeExecutionService {
   
   submitCode(request: Judge0SubmissionRequest): Promise<Judge0SubmissionResponse>;
   getSubmissionResult(token: string): Promise<Judge0SubmissionResponse>;

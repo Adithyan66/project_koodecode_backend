@@ -1,7 +1,7 @@
 
 
 
-export abstract class AppError extends Error {
+export  class AppError extends Error {
     public readonly isOperational: boolean; // true = expected, safe to show to client
     public readonly details?: Record<string, string>; // optional extra info
     public readonly statusCode: number; // HTTP status
@@ -17,7 +17,7 @@ export abstract class AppError extends Error {
         this.isOperational = isOperational;
         this.details = details;
 
-        Object.setPrototypeOf(this, new.target.prototype); // maintain instanceof
-        Error.captureStackTrace(this, this.constructor); // better stack trace
+        Object.setPrototypeOf(this, new.target.prototype); 
+        Error.captureStackTrace(this, this.constructor); 
     }
 }

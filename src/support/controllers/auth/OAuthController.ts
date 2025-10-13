@@ -2,8 +2,8 @@
 
 
 import { Request, Response } from 'express';
-import { GoogleOAuthUseCase } from '../../../application/usecases/users/GoogleOAuthUseCase';
-import { GitHubOAuthUseCase } from '../../../application/usecases/users/GitHubOAuthUseCase';
+import { GoogleOAuthUseCase } from '../../../application/usecases/auth/GoogleOAuthUseCase';
+import { GitHubOAuthUseCase } from '../../../application/usecases/auth/GitHubOAuthUseCase';
 import { config } from '../../../infrastructure/config/config';
 
 export class OAuthController {

@@ -1,4 +1,6 @@
-export interface IHttpRequest<B = any, H = any, P = any, Q = any, F = any> {
+export interface IHttpRequest<B = any, H = any, P = any, Q = any, F = any, C = any> {
+    user?: any;
+    cookies?: C;
     body?: B;
     headers?: H;
     params?: P;

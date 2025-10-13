@@ -47,7 +47,6 @@ const imageUploadService = new ImageUploadService(s3Service)
 
 const generateProfileImageUploadUrlUseCase = new GenerateProfileImageUploadUrlUseCase(imageUploadService)
 
-
 const updateProfileImageUseCase = new UpdateProfileImageUseCase(userRepository, imageUploadService)
 
 const profileImageController = new ProfileImageController(generateProfileImageUploadUrlUseCase, updateProfileImageUseCase)

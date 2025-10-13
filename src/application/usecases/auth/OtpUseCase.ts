@@ -1,10 +1,17 @@
+
+
+import { injectable, inject } from "tsyringe";
 import { IOtpRepository } from '../../../domain/interfaces/repositories/IOtpRepository';
 import { IEmailService } from '../../../domain/interfaces/services/IEmailService';
+import { IOtpUseCase } from '../../interfaces/IAuthenticationUseCase';
 
-export class OtpUseCase {
+
+
+@injectable()
+export class OtpUseCase implements IOtpUseCase {
     constructor(
-        private otpRepository: IOtpRepository,
-        private emailService: IEmailService
+        @inject("IOtpRepository") private otpRepository: IOtpRepository,
+        @inject("IEmailService") private emailService: IEmailService
     ) { }
 
     generateOtp(): string {
@@ -21,7 +28,7 @@ export class OtpUseCase {
 
         const otp = 11111
 
-        const ttlSeconds = 60; // 1 minutes
+        const ttlSeconds = 60; //1 mins
 
         const payload: Record<string, any> = { otp };
 
@@ -45,14 +52,11 @@ export class OtpUseCase {
         : Promise<{ userName?: string; fullName?: string; } | null> {
 
         const storedOtp = await this.otpRepository.getOtp(email);
-        
+
         if (!storedOtp) return null
-        console.log("stored otp",  storedOtp.isValid(otp));
 
         if (storedOtp.isValid(otp)) {
 
-            console.log("ivte vannit und");
-            
             if (context == "signup") {
                 return {
                     userName: storedOtp.meta.username,

@@ -1,14 +1,19 @@
-// src/application/usecases/coins/TransferCoinsUseCase.ts
+
+
 import mongoose from 'mongoose';
 import { CoinTransaction, CoinTransactionType, CoinTransactionSource } from '../../../domain/entities/CoinTransaction';
 import { ICoinTransactionRepository } from '../../../domain/interfaces/repositories/ICoinTransactionRepository';
 import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
+import { inject, injectable } from 'tsyringe';
 
+
+@injectable()
 export class TransferCoinsUseCase {
+
     constructor(
-        private coinTransactionRepository: ICoinTransactionRepository,
-        private userProfileRepository: IUserProfileRepository
-    ) {}
+        @inject("ICoinTransactionRepository") private coinTransactionRepository: ICoinTransactionRepository,
+        @inject("IUserProfileRepository") private userProfileRepository: IUserProfileRepository
+    ) { }
 
     async execute(
         fromUserId: string,
@@ -83,9 +88,9 @@ export class TransferCoinsUseCase {
             ]);
 
             await session.commitTransaction();
-            return { 
-                fromTransaction: savedFromTransaction, 
-                toTransaction: savedToTransaction 
+            return {
+                fromTransaction: savedFromTransaction,
+                toTransaction: savedToTransaction
             };
         } catch (error) {
             await session.abortTransaction();

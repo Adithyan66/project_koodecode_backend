@@ -3,19 +3,22 @@
 import { IContestRepository } from '../../../domain/interfaces/repositories/IContestRepository';
 import { IContestParticipantRepository } from '../../../domain/interfaces/repositories/IContestParticipantRepository';
 import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
-import { ContestState } from '../../../domain/entities/Contest';
 import { ParticipantStatus } from '../../../domain/entities/ContestParticipant';
 import { AssignedProblemDto } from '../../dto/contests/ContestResponseDto';
-import { ContestTimerService } from '../../services/ContestTimerService';
 import { ITestCaseRepository } from '../../../domain/interfaces/repositories/ITestCaseRepository';
+import { inject, injectable } from 'tsyringe';
+import { IContestTimerService } from '../../interfaces/IContestTimerService';
+import { IStartContestProblemUseCase } from '../../interfaces/IContestUseCase';
 
-export class StartContestProblemUseCase {
+
+@injectable()
+export class StartContestProblemUseCase implements IStartContestProblemUseCase{
   constructor(
-    private contestRepository: IContestRepository,
-    private participantRepository: IContestParticipantRepository,
-    private problemRepository: IProblemRepository,
-    private timerService: ContestTimerService,
-    private testCaseRepository: ITestCaseRepository
+    @inject('IContestRepository') private contestRepository: IContestRepository,
+    @inject('IContestParticipantRepository') private participantRepository: IContestParticipantRepository,
+    @inject('IProblemRepository') private problemRepository: IProblemRepository,
+    @inject('IContestTimerService') private timerService: IContestTimerService,
+    @inject('ITestCaseRepository') private testCaseRepository: ITestCaseRepository
   ) { }
 
   async execute(contestNumber: number, userId: string): Promise<AssignedProblemDto & { timeRemaining: number }> {
@@ -41,7 +44,7 @@ export class StartContestProblemUseCase {
 
     if (!participant.startTime && participant.status === ParticipantStatus.REGISTERED) {
       participant.startContest();
-      await this.participantRepository.update(participant.id, {
+      await this.participantRepository.update(participant.id!, {
         startTime: participant.startTime,
         status: participant.status
       });

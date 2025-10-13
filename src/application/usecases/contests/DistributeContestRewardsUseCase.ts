@@ -1,6 +1,5 @@
 
 
-// src/application/usecases/coins/DistributeContestRewardsUseCase.ts
 import mongoose from 'mongoose';
 import { CoinTransaction, CoinTransactionType, CoinTransactionSource } from '../../../domain/entities/CoinTransaction';
 import { Contest, ContestState } from '../../../domain/entities/Contest';
@@ -9,13 +8,17 @@ import { ICoinTransactionRepository } from '../../../domain/interfaces/repositor
 import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
 import { IContestRepository } from '../../../domain/interfaces/repositories/IContestRepository';
 import { IContestParticipantRepository } from '../../../domain/interfaces/repositories/IContestParticipantRepository';
+import { inject, injectable } from 'tsyringe';
+import { IDistributeContestRewardsUseCase } from '../../interfaces/IContestUseCase';
 
-export class DistributeContestRewardsUseCase {
+
+@injectable()
+export class DistributeContestRewardsUseCase implements IDistributeContestRewardsUseCase{
     constructor(
-        private coinTransactionRepository: ICoinTransactionRepository,
-        private userProfileRepository: IUserProfileRepository,
-        private contestRepository: IContestRepository,
-        private contestParticipantRepository: IContestParticipantRepository
+        @inject("ICoinTransactionRepository") private coinTransactionRepository: ICoinTransactionRepository,
+        @inject("IUserProfileRepository") private userProfileRepository: IUserProfileRepository,
+        @inject("IContestRepository") private contestRepository: IContestRepository,
+        @inject("IContestParticipantRepository") private contestParticipantRepository: IContestParticipantRepository
     ) { }
 
     async execute(contestId: string): Promise<{

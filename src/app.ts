@@ -3,14 +3,16 @@ import dotenv from 'dotenv';
 import { json, urlencoded } from 'express';
 import cookieParser from "cookie-parser";
 import cors from "cors"
+import "reflect-metadata";
+
 
 import { cornjob } from './infrastructure/corn/cronJobs';
 
-// import authRoutes from './presentation/routes/authRoutes';
+// import authRoutes from './support/routes/authRoutes';
 // import adminProblemRoutes from './presentation/routes/admin/problemRoutes'
 // import userProblemRoutes from './presentation/routes/user/problemRoutes';
 // import healthRoutes from "./presentation/routes/healthRoutes";
-// import profileRoutes from "./presentation/routes/user/profileRoutes"
+// import profileRoutes from "./support/routes/user/profileRoutes"
 // import adminContestRoutes from "./presentation/routes/admin/contestRoutes"
 // import userContestRoutes from './presentation/routes/user/contestRoutes';
 // import coinPurchaseRoutes from './presentation/routes/user/coinPurchaseRoutes';
@@ -21,7 +23,15 @@ import { cornjob } from './infrastructure/corn/cronJobs';
 
 
 import authRoutes from './presentation/express/routes/authRoutes'
-import { errorMiddleware } from './support/middleware/errorMiddleware';
+import userCoinsRoute from './presentation/express/routes/user/userCoinRoute'
+import adminCoinsRoute from './presentation/express/routes/admin/adminCoinRoute'
+import userContestRoute from './presentation/express/routes/user/userContestRoute'
+import userProblemRoute from './presentation/express/routes/user/userProblemRoute'
+import adminProblemRoute from './presentation/express/routes/admin/adminProblemRoute'
+import userPofileRoutes from './presentation/express/routes/user/userProfileRoute'
+import userRoomRoute from './presentation/express/routes/user/userRoomRoute'
+
+import { errorMiddleware } from './presentation/express/middlewares/errorHandler';
 
 dotenv.config();
 const app = express();
@@ -54,12 +64,15 @@ cornjob.start()
 
 
 app.use("/api/auth", authRoutes);
-// app.use("/user", adminRoutes);
-// app.use("/admin", managerRoutes);
+app.use('/api/user/coins', userCoinsRoute);
+app.use('/api/user/contests', userContestRoute)
+app.use('/api/user/problems', userProblemRoute)
+app.use('/api/admin/problems', adminProblemRoute);
+app.use('/api/user', userPofileRoutes);
+app.use('/api/user/rooms', userRoomRoute);
 
 
-
-
+// app.use('/api/admin/coins', adminCoinsRoute);
 
 
 

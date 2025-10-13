@@ -2,16 +2,21 @@
 import { IRoomRepository } from '../../../domain/interfaces/repositories/IRoomRepository';
 import { IRoomActivityRepository } from '../../../domain/interfaces/repositories/IRoomActivityRepository';
 import { KickUserDto } from '../../dto/rooms/UpdateRoomPermissionsDto';
+import { inject, injectable } from 'tsyringe';
+import { IKickUserUseCase } from '../../interfaces/IRoomUseCase';
 
-export class KickUserUseCase {
+
+@injectable()
+export class KickUserUseCase implements IKickUserUseCase{
+
   constructor(
-    private roomRepository: IRoomRepository,
-    private roomActivityRepository: IRoomActivityRepository
-  ) {}
+    @inject('IRoomRepository') private roomRepository: IRoomRepository,
+    @inject('IRoomActivityRepository') private roomActivityRepository: IRoomActivityRepository
+  ) { }
 
   async execute(
-    roomId: string, 
-    requesterId: string, 
+    roomId: string,
+    requesterId: string,
     kickDto: KickUserDto
   ): Promise<{ success: boolean; error?: string }> {
     try {

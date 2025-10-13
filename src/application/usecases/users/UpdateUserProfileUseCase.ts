@@ -2,15 +2,19 @@
 
 import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
 import { UpdateProfileDto, UserProfileResponseDto } from '../../dto/users/UserProfileDto';
-import { GetUserProfileUseCase } from './GetUserProfileUseCase';
-import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
 
-export class UpdateUserProfileUseCase {
+import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
+import { IGetUserProfileUseCase, IUpdateUserProfileUseCase } from '../../interfaces/IProfileUseCase';
+import { inject, injectable } from 'tsyringe';
+
+
+@injectable()
+export class UpdateUserProfileUseCase implements IUpdateUserProfileUseCase {
 
     constructor(
-        private profileRepository: IUserProfileRepository,
-        private getUserProfileUseCase: GetUserProfileUseCase,
-        private userRepository: IUserRepository
+        @inject('IUserProfileRepository') private profileRepository: IUserProfileRepository,
+        @inject('IGetUserProfileUseCase') private getUserProfileUseCase: IGetUserProfileUseCase,
+        @inject('IUserRepository') private userRepository: IUserRepository
     ) { }
 
 

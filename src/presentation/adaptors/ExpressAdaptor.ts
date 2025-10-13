@@ -8,18 +8,17 @@ export const expressAdapter = (controllerMethod: (httpRequest: IHttpRequest) => 
 
     async (req: Request, res: Response, next: NextFunction) => {
 
-        
-        
         try {
             const httpRequest: IHttpRequest = {
                 headers: req.headers,
                 body: req.body,
                 params: req.params,
                 query: req.query,
+                cookies: req.cookies,
+                user: req.user
             };
-            
+
             const httpResponse = await controllerMethod(httpRequest);
-            console.log("reqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq",httpResponse);
 
             const { accessToken, refreshToken } = httpResponse.body;
             const clearCookies = httpResponse.body.data?.clearCookies;
@@ -27,7 +26,7 @@ export const expressAdapter = (controllerMethod: (httpRequest: IHttpRequest) => 
             if (accessToken) {
                 res.cookie('accessToken', accessToken, {
                     httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
+                    secure: false,
                     sameSite: 'strict',
                     maxAge: 15 * 60 * 1000,
                 });
@@ -37,7 +36,7 @@ export const expressAdapter = (controllerMethod: (httpRequest: IHttpRequest) => 
             if (refreshToken) {
                 res.cookie('refreshToken', refreshToken, {
                     httpOnly: true,
-                    secure: process.env.NODE_ENV === 'production',
+                    secure: false,
                     sameSite: 'strict',
                     maxAge: 7 * 24 * 60 * 60 * 1000,
                 });

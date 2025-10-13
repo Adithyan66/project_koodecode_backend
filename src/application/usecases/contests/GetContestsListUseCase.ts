@@ -1,17 +1,24 @@
 
 
+import { inject, injectable } from 'tsyringe';
 import { Contest, ContestState } from '../../../domain/entities/Contest';
 import { IContestRepository } from '../../../domain/interfaces/repositories/IContestRepository';
 import { ContestResponseDto } from '../../dto/contests/ContestResponseDto';
+import { IGetContestsListUseCase } from '../../interfaces/IContestUseCase';
 
 export type ContestListType = 'active' | 'upcoming' | 'past';
 
-interface ContestListResponseDto extends ContestResponseDto{
+export interface ContestListResponseDto extends ContestResponseDto {
     maxReward: number
 }
 
-export class GetContestsListUseCase {
-    constructor(private contestRepository: IContestRepository) { }
+
+@injectable()
+export class GetContestsListUseCase implements IGetContestsListUseCase{
+
+    constructor(
+        @inject('IContestRepository') private contestRepository: IContestRepository
+    ) { }
 
     async execute(
         type: ContestListType,
@@ -34,7 +41,7 @@ export class GetContestsListUseCase {
                 throw new Error('Invalid contest list type');
         }
 
- 
+
         const contestListDtos: ContestListResponseDto[] = [];
 
         for (const contest of contests) {

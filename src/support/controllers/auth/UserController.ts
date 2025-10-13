@@ -1,6 +1,6 @@
 
 import { Request, Response } from 'express';
-import { ValidateUserUseCase } from '../../../application/usecases/users/ValidateUserUseCase'; 
+import { ValidateUserUseCase } from '../../../application/usecases/auth/ValidateUserUseCase'; 
 
 
 export class UserController {

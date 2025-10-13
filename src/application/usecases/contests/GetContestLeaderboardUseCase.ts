@@ -5,12 +5,16 @@ import { IContestParticipantRepository } from '../../../domain/interfaces/reposi
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
 import { ContestLeaderboardDto, LeaderboardEntryDto } from '../../dto/contests/ContestLeaderboardDto';
 import { ParticipantStatus } from '../../../domain/entities/ContestParticipant';
+import { inject, injectable } from 'tsyringe';
+import { IGetContestLeaderboardUseCase } from '../../interfaces/IContestUseCase';
 
-export class GetContestLeaderboardUseCase {
+
+@injectable()
+export class GetContestLeaderboardUseCase implements IGetContestLeaderboardUseCase {
   constructor(
-    private contestRepository: IContestRepository,
-    private participantRepository: IContestParticipantRepository,
-    private userRepository: IUserRepository
+    @inject("IContestRepository") private contestRepository: IContestRepository,
+    @inject("IContestParticipantRepository") private participantRepository: IContestParticipantRepository,
+    @inject("IUserRepository") private userRepository: IUserRepository
   ) { }
 
   async execute(contestNumber: number, currentUserId?: string): Promise<ContestLeaderboardDto> {
@@ -25,7 +29,7 @@ export class GetContestLeaderboardUseCase {
     const rankings: LeaderboardEntryDto[] = await Promise.all(
       participants.map(async (participant, index) => {
         const user = await this.userRepository.findById(participant.userId);
-        console.log("hiiiiiiiiii",participant);
+        console.log("hiiiiiiiiii", participant);
 
         return {
           rank: index + 1,
@@ -48,7 +52,7 @@ export class GetContestLeaderboardUseCase {
       }
     }
 
-    
+
 
     return {
       contestId: contest.id,

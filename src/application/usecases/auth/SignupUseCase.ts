@@ -1,35 +1,44 @@
+
+
+import { injectable, inject } from "tsyringe";
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
 import { PasswordService } from '../../services/PasswordService';
 import { toSignupUserResponse } from '../../services/userMapper';
 import { JwtService } from '../../../infrastructure/services/JwtService';
-import { OtpUseCase } from './OtpUseCase';
+import { OtpUseCase } from '../auth/OtpUseCase';
 import { IPasswordService } from '../../../domain/interfaces/services/IPasswordService';
-import { ISignupUseCase } from '../../interfaces/IAuthenticationUseCase';
+import { IOtpUseCase, ISignupUseCase } from '../../interfaces/IAuthenticationUseCase';
 import { ITokenService } from '../../../domain/interfaces/services/ITokenService';
+import { IOtpRepository } from "../../../domain/interfaces/repositories/IOtpRepository";
+import { BadRequestError } from "../../errors/AppErrors";
+import { EmailAlreadyExistsError, FullNameOrUsernameMissingError, MissingFieldsError, OtpInvalidOrExpiredError, UsernameAlreadyExistsError } from "../../../domain/errors/AuthErrors";
 
+
+
+@injectable()
 export class SignupUseCase implements ISignupUseCase {
 
     constructor(
-        private userRepository: IUserRepository,
-        private otpService: OtpUseCase,
-        private tokenService: ITokenService,
-        private passwordService: IPasswordService
+        @inject("IUserRepository") private userRepository: IUserRepository,
+        @inject("IOtpUseCase") private otpService: IOtpUseCase,
+        @inject("ITokenService") private tokenService: ITokenService,
+        @inject("IPasswordService") private passwordService: IPasswordService
     ) { }
 
     async otpRequestExecute(fullName: string, userName: string, email: string) {
 
         if (!fullName || !userName || !email) {
 
-            throw new Error("All fields are required");
+            throw new MissingFieldsError(["fullName", "userName", "email"]);
         }
 
         const existingEmailUser = await this.userRepository.findByEmail(email);
+        if (existingEmailUser) throw new EmailAlreadyExistsError(email);
+
 
         const existingUsernameUser = await this.userRepository.findByUsername(userName);
+        if (existingUsernameUser) throw new UsernameAlreadyExistsError(userName);
 
-        if (existingUsernameUser) throw new Error("Username already exists");
-
-        if (existingEmailUser) throw new Error("Email already exists");
 
         await this.otpService.sendOtp(email, "signup", { fullName, userName });
 
@@ -40,20 +49,20 @@ export class SignupUseCase implements ISignupUseCase {
     async verifyOtpAndSignupExecute(email: string, otp: number, password: string) {
 
         if (!email || !otp || !password) {
-
-            throw new Error("Email, OTP, and password are required")
+            throw new BadRequestError("Email, OTP, and password are required");
         }
 
-        const otpRecord = await this.otpService.verifyOtp(email, "signup", otp);        
+        const otpRecord = await this.otpService.verifyOtp(email, "signup", otp);
 
         if (!otpRecord) {
-            throw new Error("Invalid or Expired OTP")
+            throw new OtpInvalidOrExpiredError();
+
         }
 
         const { fullName, userName } = otpRecord
 
         if (fullName == undefined || userName == undefined) {
-            throw new Error("fullname and username missing")
+            throw new FullNameOrUsernameMissingError();
         }
 
         const passwordHash = await this.passwordService.hashPassword(password);
@@ -70,9 +79,7 @@ export class SignupUseCase implements ISignupUseCase {
 
 
         const accessToken = this.tokenService.generateAccessToken({ userId: user.id, role: user.role });
-
         const refreshToken = this.tokenService.generateRefreshToken({ userId: user.id, role: user.role })
-
 
         const tokens = {
             accessToken,

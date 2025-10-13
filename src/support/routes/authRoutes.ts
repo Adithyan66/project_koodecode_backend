@@ -3,25 +3,26 @@ import { SignupController } from '../../support/controllers/auth/SignupControlle
 import { LoginController } from '../../support/controllers/auth/LoginController';
 import { JwtService } from '../../infrastructure/services/JwtService';
 import { OAuthController } from '../../support/controllers/auth/OAuthController';
-import { LoginUseCase } from '../../application/usecases/users/LoginUseCase';
+import { LoginUseCase } from '../../application/usecases/auth/LoginUseCase';
 import { MongoUserRepository } from '../../infrastructure/db/MongoUserRepository';
-import { SignupUseCase } from '../../application/usecases/users/SignupUseCase';
-import { OtpUseCase } from '../../application/usecases/users/OtpUseCase';
+import { SignupUseCase } from '../../application/usecases/auth/SignupUseCase';
+import { OtpUseCase } from '../../application/usecases/auth/OtpUseCase';
 import { RedisOtpRepository } from '../../infrastructure/persistence/RedisOtpRepository';
 import { NodemailerEmailService } from '../../infrastructure/services/NodemailerEmailService';
-import { ValidateUserUseCase } from '../../application/usecases/users/ValidateUserUseCase';
+import { ValidateUserUseCase } from '../../application/usecases/auth/ValidateUserUseCase';
 import { UserController } from '../../support/controllers/auth/UserController';
 import { LogoutController } from '../../support/controllers/auth/LogoutController';
 import { RefreshTokenController } from '../../support/controllers/auth/RefreshTokenController';
 import { ForgotPasswordController } from '../../support/controllers/auth/ForgotPasswordController';
-import { ForgotPasswordUseCase } from '../../application/usecases/users/ForgotPasswordUseCase';
-import { GoogleOAuthUseCase } from '../../application/usecases/users/GoogleOAuthUseCase';
-import { GitHubOAuthUseCase } from '../../application/usecases/users/GitHubOAuthUseCase';
+import { ForgotPasswordUseCase } from '../../application/usecases/auth/ForgotPasswordUseCase';
+import { GoogleOAuthUseCase } from '../../application/usecases/auth/GoogleOAuthUseCase';
+import { GitHubOAuthUseCase } from '../../application/usecases/auth/GitHubOAuthUseCase';
 import { OAuthService } from '../../infrastructure/services/OAuthService';
 import { PasswordService } from '../../application/services/PasswordService';
 import { ChangePasswordController } from '../../support/controllers/auth/ChangePasswordController';
 import { ChangePasswordUseCase } from '../../application/usecases/auth/ChangePasswordUseCase';
 import { authMiddleware } from '../../support/middleware/authMiddleware';
+import { UsernameService } from '../../infrastructure/services/UsernameService';
 
 const router = Router();
 
@@ -38,8 +39,8 @@ const signupUseCase = new SignupUseCase(userRepository, otpService, jwtService, 
 const loginUseCase = new LoginUseCase(userRepository, jwtService, passwordService);
 const forgotPasswordUseCase = new ForgotPasswordUseCase(userRepository, otpService, jwtService, passwordService)
 
-const googleOAuthUseCase = new GoogleOAuthUseCase(userRepository, authServive, jwtService)
-const githubOAuthUseCase = new GitHubOAuthUseCase(userRepository, authServive, jwtService)
+const googleOAuthUseCase = new GoogleOAuthUseCase(userRepository, authServive, jwtService, new UsernameService())
+const githubOAuthUseCase = new GitHubOAuthUseCase(userRepository, authServive, jwtService,new UsernameService())
 const oauthController = new OAuthController(googleOAuthUseCase, githubOAuthUseCase);
 
 const forgotPasswordController = new ForgotPasswordController(forgotPasswordUseCase)

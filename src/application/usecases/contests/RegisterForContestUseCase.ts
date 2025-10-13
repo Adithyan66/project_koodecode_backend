@@ -4,15 +4,19 @@ import { IContestRepository } from '../../../domain/interfaces/repositories/ICon
 import { IContestParticipantRepository } from '../../../domain/interfaces/repositories/IContestParticipantRepository';
 import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
 import { ContestParticipant, ParticipantStatus } from '../../../domain/entities/ContestParticipant';
-import { ContestState } from '../../../domain/entities/Contest';
 import { ContestRegistrationResponseDto } from '../../dto/contests/ContestRegistrationDto';
+import { inject, injectable } from 'tsyringe';
+import { IRegisterForContestUseCase } from '../../interfaces/IContestUseCase';
 
-export class RegisterForContestUseCase {
+
+@injectable()
+export class RegisterForContestUseCase implements IRegisterForContestUseCase{
+  
   constructor(
-    private contestRepository: IContestRepository,
-    private participantRepository: IContestParticipantRepository,
-    private problemRepository: IProblemRepository
-  ) {}
+    @inject('IContestRepository') private contestRepository: IContestRepository,
+    @inject('IContestParticipantRepository') private participantRepository: IContestParticipantRepository,
+    @inject('IProblemRepository') private problemRepository: IProblemRepository
+  ) { }
 
   async execute(contestId: string, userId: string): Promise<ContestRegistrationResponseDto> {
 
@@ -52,7 +56,7 @@ export class RegisterForContestUseCase {
     await this.contestRepository.addParticipant(contestId, userId);
 
     return {
-      participantId: createdParticipant.id,
+      participantId: createdParticipant.id!,
       contestId,
       assignedProblemTitle: assignedProblem.title,
       registrationTime: createdParticipant.registrationTime,

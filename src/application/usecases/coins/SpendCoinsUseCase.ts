@@ -1,16 +1,18 @@
 
 
-// src/application/usecases/coins/SpendCoinsUseCase.ts
 import mongoose from 'mongoose';
 import { CoinTransaction, CoinTransactionType, CoinTransactionSource } from '../../../domain/entities/CoinTransaction';
 import { ICoinTransactionRepository } from '../../../domain/interfaces/repositories/ICoinTransactionRepository';
 import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
+import { inject, injectable } from 'tsyringe';
 
+
+@injectable()
 export class SpendCoinsUseCase {
     constructor(
-        private coinTransactionRepository: ICoinTransactionRepository,
-        private userProfileRepository: IUserProfileRepository
-    ) {}
+        @inject("ICoinTransactionRepository") private coinTransactionRepository: ICoinTransactionRepository,
+        @inject("IUserProfileRepository") private userProfileRepository: IUserProfileRepository
+    ) { }
 
     async execute(
         userId: string,

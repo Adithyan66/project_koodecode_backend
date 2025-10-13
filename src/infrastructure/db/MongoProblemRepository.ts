@@ -149,36 +149,52 @@ export class MongoProblemRepository implements IProblemRepository {
         });
     }
 
-
-
     async getFilteredProblems(
         filters: ProblemFilters,
         pagination: PaginationOptions
     ): Promise<{
         problems: Problem[];
         total: number;
-        currentPage: number;
-        totalPages: number;
-        hasNext: boolean;
-        hasPrev: boolean;
     }> {
         try {
-            console.log("query", filters);
+            console.log("query filters:", filters);
 
             const query: any = {};
 
+            // Handle search filter
             if (filters.search) {
                 const searchNum = Number(filters.search);
-
                 query.$or = [
                     { title: { $regex: filters.search, $options: 'i' } },
                     ...(isNaN(searchNum) ? [] : [{ problemNumber: searchNum }])
                 ];
             }
 
+            // Handle difficulty filter
             if (filters.difficulty) {
                 query.difficulty = filters.difficulty.toLowerCase();
             }
+
+            // Handle tags filter
+            if (filters.tags && filters.tags.length > 0) {
+                query.tags = { $in: filters.tags };
+            }
+
+            // Handle language filter
+            if (filters.languageId) {
+                query.supportedLanguages = { $in: [filters.languageId] };
+            }
+
+            // Handle status filter
+            if (filters.status) {
+                if (filters.status === "Published") {
+                    query.isActive = true;
+                } else if (filters.status === "Draft") {
+                    query.isActive = false;
+                }
+            }
+
+            query.isActive = true;
 
             const skip = (pagination.page - 1) * pagination.limit;
 
@@ -190,20 +206,47 @@ export class MongoProblemRepository implements IProblemRepository {
                 ProblemModel.countDocuments(query)
             ]);
 
-            const totalPages = Math.ceil(total / pagination.limit);
+            // Transform MongoDB documents to domain entities
+            const transformedProblems = problems.map((doc: any) => {
+                return new Problem({
+                    id: doc._id?.toString(),
+                    problemNumber: doc.problemNumber,
+                    title: doc.title,
+                    slug: doc.slug,
+                    difficulty: doc.difficulty,
+                    tags: doc.tags || [],
+                    description: doc.description,
+                    constraints: doc.constraints || [],
+                    examples: doc.examples || [],
+                    likes: doc.likes || [],
+                    totalSubmissions: doc.totalSubmissions || 0,
+                    acceptedSubmissions: doc.acceptedSubmissions || 0,
+                    hints: doc.hints || [],
+                    companies: doc.companies || [],
+                    isActive: doc.isActive !== undefined ? doc.isActive : true,
+                    createdBy: doc.createdBy,
+                    functionName: doc.functionName,
+                    returnType: doc.returnType,
+                    parameters: doc.parameters || [],
+                    supportedLanguages: doc.supportedLanguages || [],
+                    templates: doc.templates || {},
+                    createdAt: doc.createdAt,
+                    updatedAt: doc.updatedAt
+                });
+            });
 
             return {
-                problems: problems.map((p: unknown) => p as unknown as Problem),
-                total,
-                currentPage: pagination.page,
-                totalPages,
-                hasNext: pagination.page < totalPages,
-                hasPrev: pagination.page > 1
+                problems: transformedProblems,
+                total
             };
+
         } catch (error) {
-            throw new Error(`Failed to fetch filtered problems: `);
+            console.error('Repository error in getFilteredProblems:', error);
+            throw new Error(`Failed to fetch filtered problems: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
     }
+
+
 
 
     async getProblemNames(params: {

@@ -1,25 +1,52 @@
 
 
-
 import { Request, Response, NextFunction } from "express";
-import { AppError } from "../../application/errors/AppError";
-import { DomainError } from "../../domain/errors/DomainError";
-import { mapDomainErrorToHttpError } from "../../shared/errors/ErrorMapper";
+import { AppError } from "../../../application/errors/AppError";
+import { ErrorMapper } from "../../../application/errors/ErrorMapper";
+import { DomainError } from "../../../domain/errors/DomainError";
+import { HTTP_STATUS } from "../../../shared/constants/httpStatus";
 
-export function errorHandler(err: unknown, req: Request, res: Response, next: NextFunction) {
-  let handledError = err;
+export const errorMiddleware = (
+  err: unknown,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
 
-  if (err instanceof DomainError) {
-    handledError = mapDomainErrorToHttpError(err);
+  console.error(" Error:", err);
+
+  let appError: AppError;
+
+  if (err instanceof AppError) {
+
+    appError = err;
+
+  } else if (err instanceof DomainError) {
+
+    appError = ErrorMapper.toAppError(err);
+
+  } else if (err instanceof Error) {
+
+    appError = new AppError(
+      err.message || "Internal Server Error",
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      false
+    );
+  } else {
+
+    appError = new AppError("Unknown error", HTTP_STATUS.INTERNAL_SERVER_ERROR, false);
+  }
+  console.log("appError.statusCode", appError.statusCode);
+
+
+  if (!appError.isOperational) {
+    console.error("Unexpected Error:", err);
   }
 
-  if (handledError instanceof AppError) {
-    const statusCode = (handledError as any).statusCode || 500;
-    return res.status(statusCode).json({
-      message: handledError.message,
-      details: handledError.details || null,
-    });
-  }
+  res.status(appError.statusCode).json({
+    success: false,
+    message: appError.message,
+    ...(appError.details ? { details: appError.details } : {}),
+  });
+};
 
-  return res.status(500).json({ message: "Unexpected error" });
-}

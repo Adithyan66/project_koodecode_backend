@@ -1,12 +1,17 @@
 
 
-import { IUserRepository } from '../../interfaces/IUserRepository';
+import { inject, injectable } from 'tsyringe';
+import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
 import { IImageUploadService } from '../../interfaces/IImageUploadService';
+import { IUpdateProfileImageUseCase } from '../../interfaces/IProfileUseCase';
 
-export class UpdateProfileImageUseCase {
+
+@injectable()
+export class UpdateProfileImageUseCase implements IUpdateProfileImageUseCase {
+
     constructor(
-        private userRepository: IUserRepository,
-        private imageUploadService: IImageUploadService
+        @inject('IUserRepository') private userRepository: IUserRepository,
+        @inject('IImageUploadService') private imageUploadService: IImageUploadService
     ) { }
 
     async execute(userId: string, imageKey: string, publicUrl: string): Promise<void> {

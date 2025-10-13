@@ -1,19 +1,26 @@
 
 
+import { injectable, inject } from "tsyringe";
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
 import { IOAuthService } from '../../../domain/interfaces/services/IOAuthService';
-import { JwtService } from '../../../infrastructure/services/JwtService';
 import { User } from '../../../domain/entities/User';
 import { OAuthUserResponse } from '../../dto/users/OAuthUserResponse';
 import { SafeUser } from '../../dto/users/safeUser';
 import { toLoginUserResponse } from '../../services/userMapper';
 import { LoginUserResponse } from '../../dto/users/loginUserResponse';
+import { IGoogleOAuthUseCase } from '../../interfaces/IAuthenticationUseCase';
+import { IUsernameService } from '../../../domain/interfaces/services/IUsernameService';
+import { ITokenService } from '../../../domain/interfaces/services/ITokenService';
 
-export class GoogleOAuthUseCase {
+
+
+@injectable()
+export class GoogleOAuthUseCase implements IGoogleOAuthUseCase {
   constructor(
-    private userRepository: IUserRepository,
-    private oauthService: IOAuthService,
-    private jwtService: JwtService
+    @inject("IUserRepository") private userRepository: IUserRepository,
+    @inject("IOAuthService") private oauthService: IOAuthService,
+    @inject("ITokenService") private jwtService: ITokenService,
+    @inject("IUsernameService") private usernameService: IUsernameService
   ) { }
 
   async execute(token: string): Promise<LoginUserResponse> {
@@ -33,14 +40,14 @@ export class GoogleOAuthUseCase {
           googleId: profile.id,
           emailVerified: true
         });
-        
+
         user = await this.userRepository.updateUser(user.id!, updatedUser);
 
       } else {
         isNewUser = true;
         const newUser = new User({
           fullName: profile.name,
-          userName: this.generateUsername(profile.name, profile.email),
+          userName: this.usernameService.generate(profile.name, profile.email),
           email: profile.email,
           provider: "google",
           googleId: profile.id,
@@ -51,41 +58,35 @@ export class GoogleOAuthUseCase {
         user = await this.userRepository.saveUser(newUser);
       }
     }
-    
+
     if (!user) {
       throw new Error("user creration failed")
     }
-    
+
     const accessToken = this.jwtService.generateAccessToken({
       userId: user.id!,
       role: user.role
     });
-    
+
     const refreshToken = this.jwtService.generateRefreshToken({
       userId: user.id!,
       role: user.role
     });
-    
+
     const safeUser: SafeUser = {
-      id:user.id!,
+      id: user.id!,
       fullName: user.fullName,
       userName: user.userName,
       email: user.email,
       isAdmin: user.role === "admin",
       profilePicUrl: user.profilePicUrl,
     };
-    // console.log("gogleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",user);
-    
+
     const tokens = {
       accessToken,
       refreshToken
     }
-
     const response = toLoginUserResponse(safeUser, tokens)
-
-    // console.log("response is inside user",response);
-    
-
     return response
   }
 
@@ -93,10 +94,10 @@ export class GoogleOAuthUseCase {
 
 
 
-  private generateUsername(name: string, email: string): string {
-    const baseName = name.toLowerCase().replace(/\s+/g, '');
-    const emailPrefix = email.split('@');
-    const randomSuffix = Math.floor(Math.random() * 1000);
-    return `${baseName || emailPrefix}${randomSuffix}`;
-  }
+  // private generateUsername(name: string, email: string): string {
+  //   const baseName = name.toLowerCase().replace(/\s+/g, '');
+  //   const emailPrefix = email.split('@');
+  //   const randomSuffix = Math.floor(Math.random() * 1000);
+  //   return `${baseName || emailPrefix}${randomSuffix}`;
+  // }
 }

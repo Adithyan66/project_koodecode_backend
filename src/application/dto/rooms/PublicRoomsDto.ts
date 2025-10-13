@@ -1,10 +1,11 @@
 
 
-// src/application/dto/rooms/PublicRoomsDto.ts
 export interface PublicRoomCreator {
     id: string;
-    username: string;
-    avatar?: string;
+    fullName: string;
+    email: string;
+    userName: string;
+    profilePicUrl: string;
 }
 
 export interface PublicRoomDto {
@@ -15,14 +16,13 @@ export interface PublicRoomDto {
     description: string;
     thumbnail?: string;
     participantCount: number;
-    status: 'active' | 'waiting';
+    status: 'waiting' | 'active' | 'inactive';
     scheduledTime?: Date;
     createdBy: PublicRoomCreator;
     createdAt: Date;
 }
 
 export interface PublicRoomsResponseDto {
-    success: boolean;
     rooms: PublicRoomDto[];
     pagination: {
         currentPage: number;

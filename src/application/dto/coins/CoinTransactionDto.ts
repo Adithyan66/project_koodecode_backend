@@ -1,4 +1,3 @@
-// CoinTransactionDto.ts
 export interface CreateCoinTransactionDto {
     userId: string;
     amount: number;

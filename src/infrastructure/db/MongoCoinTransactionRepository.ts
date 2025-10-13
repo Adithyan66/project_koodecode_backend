@@ -92,6 +92,7 @@ export class MongoCoinTransactionRepository implements ICoinTransactionRepositor
     }
 
     async getUserTransactionStats(userId: string): Promise<UserCoinStats> {
+        
         const [earnedResult, spentResult, countResult, sourceBreakdown, lastTransaction] = await Promise.all([
             this.getTotalEarnedByUser(userId),
             this.getTotalSpentByUser(userId),

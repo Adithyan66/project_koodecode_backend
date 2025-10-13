@@ -20,6 +20,10 @@ export interface ProblemListResponseDto {
   page: number;
   limit: number;
   totalPages: number;
+  hasNextPage:boolean;
+  hasPreviousPage:boolean;
+  startIndex:number;
+  endIndex:number
 }
 
 

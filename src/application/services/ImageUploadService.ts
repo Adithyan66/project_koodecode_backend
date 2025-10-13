@@ -2,10 +2,15 @@
 
 import { IS3Service } from '../interfaces/IS3Service';
 import { IImageUploadService } from '../interfaces/IImageUploadService';
+import { inject, injectable } from 'tsyringe';
 
+
+@injectable()
 export class ImageUploadService implements IImageUploadService {
-  
-  constructor(private s3Service: IS3Service) {}
+
+  constructor(
+    @inject('IS3Service') private s3Service: IS3Service
+  ) { }
 
   async generateProfileImageUploadUrl(userId: string, fileExtension: string): Promise<{
     uploadUrl: string;
@@ -14,7 +19,7 @@ export class ImageUploadService implements IImageUploadService {
   }> {
     const imageKey = `profile-images/${userId}/${Date.now()}.${fileExtension}`;
     const contentType = this.getContentType(fileExtension);
-    
+
     const uploadUrl = await this.s3Service.generatePresignedUrl(imageKey, contentType);
     const publicUrl = this.s3Service.getPublicUrl(imageKey);
 

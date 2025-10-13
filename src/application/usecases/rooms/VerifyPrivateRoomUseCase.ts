@@ -4,12 +4,18 @@ import { IRoomRepository } from '../../../domain/interfaces/repositories/IRoomRe
 import { PasswordService } from '../../services/PasswordService';
 import { VerifyPrivateRoomDto } from '../../dto/rooms/JoinRoomDto';
 import { VerifyPrivateRoomResponseDto } from '../../dto/rooms/JoinRoomDto';
+import { IPasswordService } from '../../../domain/interfaces/services/IPasswordService';
+import { inject, injectable } from 'tsyringe';
+import { IVerifyPrivateRoomUseCase } from '../../interfaces/IRoomUseCase';
 
-export class VerifyPrivateRoomUseCase {
+
+@injectable()
+export class VerifyPrivateRoomUseCase implements IVerifyPrivateRoomUseCase{
+
   constructor(
-    private readonly roomRepository: IRoomRepository,
-    private readonly passwordService: PasswordService
-  ) {}
+    @inject('IRoomRepository') private readonly roomRepository: IRoomRepository,
+    @inject('IPasswordService') private readonly passwordService: IPasswordService
+  ) { }
 
   async execute(dto: VerifyPrivateRoomDto): Promise<VerifyPrivateRoomResponseDto> {
 
@@ -30,7 +36,7 @@ export class VerifyPrivateRoomUseCase {
       }
 
       const room = await this.roomRepository.findByName(dto.roomName.trim());
-      
+
       if (!room) {
         return {
           success: false,

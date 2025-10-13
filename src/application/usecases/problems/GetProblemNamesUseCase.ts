@@ -1,11 +1,18 @@
 
 
+
+import { inject, injectable } from 'tsyringe';
 import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
 import { ProblemNamesRequestDto, ProblemNamesResponseDto, ProblemNameDto } from '../../dto/problems/ProblemNamesDto';
+import { IGetProblemNamesUseCase } from '../../interfaces/IProblemUseCase';
 
-export class GetProblemNamesUseCase {
-  
-  constructor(private problemRepository: IProblemRepository) {}
+
+@injectable()
+export class GetProblemNamesUseCase implements  IGetProblemNamesUseCase{
+
+  constructor(
+    @inject('IProblemRepository') private problemRepository: IProblemRepository
+  ) { }
 
   async execute(request: ProblemNamesRequestDto): Promise<ProblemNamesResponseDto> {
 
@@ -24,7 +31,7 @@ export class GetProblemNamesUseCase {
       const hasMore = page < totalPages;
 
       const problemDtos: ProblemNameDto[] = result.problems.map(problem => ({
-        id:problem.id,
+        id: problem.id,
         problemNumber: problem.problemNumber,
         title: problem.title,
         difficulty: problem.difficulty
@@ -41,7 +48,7 @@ export class GetProblemNamesUseCase {
         }
       };
     } catch (error) {
-        console.log(error)
+      console.log(error)
       throw new Error(`Failed to get problem names: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }

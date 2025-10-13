@@ -1,18 +1,22 @@
-import { IUserProfileRepository } from "../../interfaces/IUserProfileRepository";
-import { IUserRepository } from "../../interfaces/IUserRepository";
+import { inject, injectable } from "tsyringe"
+import { IUserProfileRepository } from "../../../domain/interfaces/repositories/IUserProfileRepository"
+import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository"
+import { IGetUserEditableProfile } from "../../interfaces/IProfileUseCase"
 
 
-export class GetUserEditableProfile {
+@injectable()
+export class GetUserEditableProfile implements IGetUserEditableProfile {
 
     constructor(
-        private userRepository: IUserRepository,
-        private profileRepository: IUserProfileRepository) { }
+        @inject('IUserRepository') private userRepository: IUserRepository,
+        @inject('IUserProfileRepository') private profileRepository: IUserProfileRepository
+    ) { }
 
     async execute(id: string) {
 
         const primaryData = await this.userRepository.findById(id)
 
-        if(!primaryData){
+        if (!primaryData) {
             throw new Error("user not found ")
         }
 
@@ -20,12 +24,12 @@ export class GetUserEditableProfile {
 
         return {
             username: primaryData?.userName,
-            fullname:primaryData?.fullName,
+            fullname: primaryData?.fullName,
             email: primaryData?.email,
-            profileImageKey:primaryData.profilePicKey,
+            profileImageKey: primaryData.profilePicKey,
             bio: secondaryData?.bio,
             location: secondaryData?.location,
-            birthdate: secondaryData?.birthdate  ,
+            birthdate: secondaryData?.birthdate,
             gender: secondaryData?.gender,
             githubUrl: secondaryData?.githubUrl,
             linkedinUrl: secondaryData?.linkedinUrl,
@@ -33,4 +37,3 @@ export class GetUserEditableProfile {
     }
 }
 
-  

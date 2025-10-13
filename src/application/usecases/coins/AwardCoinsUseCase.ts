@@ -1,14 +1,19 @@
-// src/application/usecases/coins/AwardCoinsUseCase.ts
+
+
+import { injectable, inject } from 'tsyringe';
+
 import mongoose from 'mongoose';
 import { CoinTransaction, CoinTransactionType, CoinTransactionSource } from '../../../domain/entities/CoinTransaction';
 import { ICoinTransactionRepository } from '../../../domain/interfaces/repositories/ICoinTransactionRepository';
 import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
 
+
+@injectable()
 export class AwardCoinsUseCase {
     constructor(
-        private coinTransactionRepository: ICoinTransactionRepository,
-        private userProfileRepository: IUserProfileRepository
-    ) {}
+        @inject("ICoinTransactionRepository") private coinTransactionRepository: ICoinTransactionRepository,
+        @inject("IUserProfileRepository") private userProfileRepository: IUserProfileRepository
+    ) { }
 
     async execute(
         userId: string,
@@ -25,7 +30,6 @@ export class AwardCoinsUseCase {
         session.startTransaction();
 
         try {
-            // Create transaction record
             const transaction = new CoinTransaction({
                 userId,
                 amount,

@@ -1,7 +1,7 @@
 
 
-import { IUserConnectionRepository } from '../../interfaces/IUserConnectionRepository';
-import { IUserRepository } from '../../interfaces/IUserRepository';
+import { IUserConnectionRepository } from '../../../domain/interfaces/repositories/IUserConnectionRepository';
+import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
 import { UserConnection, ConnectionStatus } from '../../../domain/entities/UserConnection';
 import { FollowUserResponseDto } from '../../dto/users/FollowUserDto';
 

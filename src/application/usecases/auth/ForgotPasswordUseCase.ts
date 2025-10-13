@@ -1,21 +1,23 @@
+
+import { injectable, inject } from "tsyringe";
 import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRepository";
-import { JwtService } from "../../../infrastructure/services/JwtService";
 import { LoginUserResponse } from "../../dto/users/loginUserResponse";
 import { SafeUser } from "../../dto/users/safeUser";
 import { toLoginUserResponse } from "../../services/userMapper";
-import { OtpUseCase } from "./OtpUseCase";
 import { AppError } from "../../errors/AppError";
 import { HTTP_STATUS } from "../../../shared/constants/httpStatus";
 import { IPasswordService } from "../../../domain/interfaces/services/IPasswordService";
+import { IForgotPasswordUseCase, IOtpUseCase } from "../../interfaces/IAuthenticationUseCase";
+import { ITokenService } from "../../../domain/interfaces/services/ITokenService";
 
-
-export class ForgotPasswordUseCase {
+@injectable()
+export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
 
     constructor(
-        private userRepository: IUserRepository,
-        private otpService: OtpUseCase,
-        private jwtService: JwtService,
-        private passwordService: IPasswordService
+        @inject("IUserRepository") private userRepository: IUserRepository,
+        @inject("IOtpUseCase") private otpService: IOtpUseCase,
+        @inject("ITokenService") private jwtService: ITokenService,
+        @inject("IPasswordService") private passwordService: IPasswordService
     ) { }
 
     async otpRequestExecute(email: string) {
@@ -31,6 +33,8 @@ export class ForgotPasswordUseCase {
         }
 
         await this.otpService.sendOtp(email, "forgot")
+
+        return { message: "otp sented to mail id" }
     }
 
     async verifyOtp(email: string, otp: number) {
@@ -54,7 +58,7 @@ export class ForgotPasswordUseCase {
             throw new AppError("Invalid or Expired OTP", HTTP_STATUS.BAD_REQUEST)
         }
 
-        return true
+        return { message: "otp verified succesfully" }
     }
 
 

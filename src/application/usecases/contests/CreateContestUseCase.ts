@@ -1,17 +1,20 @@
 
 
 
+import { inject, injectable } from 'tsyringe';
 import { Contest, ContestState, ContestReward } from '../../../domain/entities/Contest';
 import { IContestRepository } from '../../../domain/interfaces/repositories/IContestRepository';
 import { ICounterRepository } from '../../../domain/interfaces/repositories/ICounterRepository';
 import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
 import { CreateContestDto } from '../../dto/contests/CreateContestDto';
+import { ICreateContestUseCase } from '../../interfaces/IContestUseCase';
 
-export class CreateContestUseCase {
+@injectable()
+export class CreateContestUseCase implements ICreateContestUseCase{
     constructor(
-        private contestRepository: IContestRepository,
-        private counterRepository: ICounterRepository,
-        private problemRepository: IProblemRepository
+        @inject('IContestRepository') private contestRepository: IContestRepository,
+        @inject('ICounterRepository') private counterRepository: ICounterRepository,
+        @inject('IProblemRepository') private problemRepository: IProblemRepository
     ) { }
 
     async execute(createContestDto: CreateContestDto, adminUserId: string): Promise<Contest> {
@@ -25,7 +28,7 @@ export class CreateContestUseCase {
         const coinRewards = createContestDto.coinRewards.map(reward =>
             new ContestReward({ rank: reward.rank, coins: reward.coins })
         );
-        
+
         const contest = new Contest({
             id: '',
             contestNumber,
@@ -111,7 +114,7 @@ export class CreateContestUseCase {
             return ContestState.ENDED;
         }
 
-        return ContestState.UPCOMING; 
+        return ContestState.UPCOMING;
     }
 
 }

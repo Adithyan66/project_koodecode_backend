@@ -1,7 +1,9 @@
+import { inject, injectable } from "tsyringe";
 import { TestCaseResult } from "../../domain/entities/Submission";
-import { IJudge0Service } from "../../domain/interfaces/services/IJudge0Service";
+import { ICodeExecutionService } from "../../domain/interfaces/services/IJudge0Service";
+import { ICodeExecutionHelperService } from "../interfaces/ICodeExecutionHelperService";
 
-type SubmissionStatus =
+export type SubmissionStatus =
   | "pending"
   | "processing"
   | "accepted"
@@ -13,20 +15,17 @@ type SubmissionStatus =
   | "partially_accepted";
 
 
+@injectable()
+export class CodeExecutionHelperService implements ICodeExecutionHelperService {
 
-export class CodeExecutionHelperService {
 
-  constructor(private judge0Service: IJudge0Service) { }
-
+  constructor(
+    @inject("ICodeExecutionService") private judge0Service: ICodeExecutionService
+  ) { }
 
 
   CombineCodeUseCase(template: any, userCode: string): string {
-
     const combinedCode = template.templateCode.replace(template.placeholder, userCode);
-    console.log("combineddd");
-
-
-
     return combinedCode;
   }
 
@@ -53,22 +52,6 @@ export class CodeExecutionHelperService {
 
     throw new Error(`Submission ${token} timed out after ${maxAttempts} attempts`);
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   determineTestCaseStatus(
@@ -108,34 +91,6 @@ export class CodeExecutionHelperService {
     }
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  //  compareOutputs(actualOutput: string | null, expectedOutput: string): boolean {
-
-  //   if (!actualOutput) return !expectedOutput || expectedOutput.trim() === '';
-
-  //   const normalizeOutput = (output: string) =>
-
-  //     output.replace(/\r\n/g, '\n').replace(/\r/g, '\n').trim();
-
-  //   return normalizeOutput(actualOutput) === normalizeOutput(expectedOutput);
-
-  // }
-
-
-
   compareOutputs(actualOutput: string | null, expectedOutput: string): boolean {
     if (!actualOutput) return !expectedOutput || expectedOutput.trim() === '';
 
@@ -148,20 +103,6 @@ export class CodeExecutionHelperService {
 
     return normalizeOutput(actualOutput) === normalizeOutput(expectedOutput);
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   formatTestCaseInput(inputs: any): string {
 
@@ -192,11 +133,6 @@ export class CodeExecutionHelperService {
 
     return String(inputs);
   }
-
-
-
-
-
 
   formatExpectedOutput(expectedOutput: any): string {
 

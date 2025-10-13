@@ -1,17 +1,19 @@
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
 import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
 import { IUserConnectionRepository } from '../../../domain/interfaces/repositories/IUserConnectionRepository';
-import { User } from '../../../domain/entities/User';
 import { UserProfile } from '../../../domain/entities/UserProfile';
 import { UserProfileResponseDto } from '../../dto/users/UserProfileDto';
-import { log } from 'node:console';
+import { IGetUserProfileUseCase } from '../../interfaces/IProfileUseCase';
+import { inject, injectable } from 'tsyringe';
 
 
-export class GetUserProfileUseCase {
+@injectable()
+export class GetUserProfileUseCase implements IGetUserProfileUseCase {
+    
     constructor(
-        private userRepository: IUserRepository,
-        private profileRepository: IUserProfileRepository,
-        private connectionRepository: IUserConnectionRepository
+        @inject('IUserRepository') private userRepository: IUserRepository,
+        @inject('IUserProfileRepository') private profileRepository: IUserProfileRepository,
+        @inject('IUserConnectionRepository') private connectionRepository: IUserConnectionRepository
     ) { }
 
     async execute(userId: string, year: number = new Date().getFullYear()): Promise<UserProfileResponseDto> {
@@ -26,7 +28,7 @@ export class GetUserProfileUseCase {
         let profile = await this.profileRepository.findByUserId(userId);
 
         if (!profile) {
-            profile = new UserProfile({userId});
+            profile = new UserProfile({ userId });
             await this.profileRepository.create(profile);
         }
 
@@ -44,7 +46,6 @@ export class GetUserProfileUseCase {
                 activities[activity.date] = activity.count;
             });
 
-        // Get recent badges (last 5)
         const recentBadges = profile.badges
             .sort((a, b) => b.awardedAt.getTime() - a.awardedAt.getTime())
             .slice(0, 5)

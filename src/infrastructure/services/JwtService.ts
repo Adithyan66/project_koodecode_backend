@@ -45,7 +45,6 @@ export class JwtService implements ITokenService {
     }
 
     async blacklistToken(token: string, exp: number) {
-        // store in Redis until it naturally expires
         await redis.setex(`bl_${token}`, exp, 'blacklisted');
     }
 

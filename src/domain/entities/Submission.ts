@@ -13,6 +13,7 @@ export interface TestCaseResult {
 }
 
 export interface Submission {
+  judge0Token: string;
   id: string;
   userId: string;
   problemId: string;
@@ -23,10 +24,15 @@ export interface Submission {
   testCaseResults: TestCaseResult[];
   testCasesPassed: number;
   totalTestCases: number;
+  output: any;
   score: number;
+  executionTime: any;
   totalExecutionTime: number;
   maxMemoryUsage: number;
   submissionType: 'problem' | 'contest';
   createdAt: Date;
   updatedAt: Date;
+  memoryUsage: any,
+  judge0Status: any,
+  verdict:any;
 }

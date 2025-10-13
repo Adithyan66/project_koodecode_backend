@@ -7,14 +7,20 @@ import { CreateRoomDto, CreateRoomResponseDto } from '../../dto/rooms/CreateRoom
 import { Room } from '../../../domain/entities/Room';
 import { config } from '../../../infrastructure/config/config';
 import { IPasswordService } from '../../../domain/interfaces/services/IPasswordService';
+import { inject, injectable } from 'tsyringe';
+import { ICreateRoomUseCase } from '../../interfaces/IRoomUseCase';
 
-export class CreateRoomUseCase {
+
+
+@injectable()
+export class CreateRoomUseCase implements ICreateRoomUseCase{
+
     constructor(
-        private roomRepository: IRoomRepository,
-        private counterRepository: ICounterRepository,
-        private problemRepository: IProblemRepository,
-        private userRepository: IUserRepository,
-        private passwordService: IPasswordService
+        @inject('IRoomRepository') private roomRepository: IRoomRepository,
+        @inject('ICounterRepository') private counterRepository: ICounterRepository,
+        @inject('IProblemRepository') private problemRepository: IProblemRepository,
+        @inject('IUserRepository') private userRepository: IUserRepository,
+        @inject('IPasswordService') private passwordService: IPasswordService
     ) { }
 
     async execute(createRoomDto: CreateRoomDto, userId: string): Promise<CreateRoomResponseDto> {
@@ -39,16 +45,16 @@ export class CreateRoomUseCase {
             }
 
             const roomNumber = await this.counterRepository.getNextSequenceValue('room');
-            
+
             const roomId = `koodecode_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
             const scheduledTime = createRoomDto.scheduledTime ? new Date(createRoomDto.scheduledTime) : undefined;
 
             const status = scheduledTime && scheduledTime > new Date() ? 'waiting' : 'active';
-            
+
             let password
 
-            if(createRoomDto.isPrivate && createRoomDto.password){
+            if (createRoomDto.isPrivate && createRoomDto.password) {
                 password = await this.passwordService.hashPassword(createRoomDto.password)
             }
 

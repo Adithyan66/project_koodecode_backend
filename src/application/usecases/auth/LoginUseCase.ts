@@ -1,3 +1,7 @@
+
+
+
+import { injectable, inject } from "tsyringe";
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
 import { PasswordService } from '../../services/PasswordService';
 import { toLoginUserResponse } from '../../services/userMapper';
@@ -6,22 +10,26 @@ import { SafeUser } from '../../dto/users/safeUser';
 import { JwtService } from '../../../infrastructure/services/JwtService';
 import { IPasswordService } from '../../../domain/interfaces/services/IPasswordService';
 import { ILoginUseCase } from '../../interfaces/IAuthenticationUseCase';
+import { InvalidCredentials, WrongPasswordError } from '../../../domain/errors/AuthErrors';
+import { ITokenService } from '../../../domain/interfaces/services/ITokenService';
 
-export class LoginUseCase implements ILoginUseCase{
+
+
+@injectable()
+export class LoginUseCase implements ILoginUseCase {
 
     constructor(
-        private userRepository: IUserRepository,
-        private jwtService: JwtService,
-        private passwordService: IPasswordService
+        @inject("IUserRepository") private userRepository: IUserRepository,
+        @inject("ITokenService") private jwtService: ITokenService,
+        @inject("IPasswordService") private passwordService: IPasswordService
     ) { }
 
     async execute(email: string, password: string): Promise<LoginUserResponse> {
 
         const user = await this.userRepository.findByEmail(email);
 
-
         if (!user) {
-            throw new Error('Invalid credentials');
+            throw new InvalidCredentials();
         }
 
         let passwordValid
@@ -33,7 +41,7 @@ export class LoginUseCase implements ILoginUseCase{
 
         if (!passwordValid) {
 
-            throw new Error('Invalid credentials');
+            throw new WrongPasswordError();
         }
 
         const accessToken = this.jwtService.generateAccessToken({ userId: user.id, role: user.role });
@@ -54,8 +62,6 @@ export class LoginUseCase implements ILoginUseCase{
             refreshToken
         }
 
-        const response = toLoginUserResponse(safeUser, tokens)
-
-        return response
+        return toLoginUserResponse(safeUser, tokens)
     }
 }

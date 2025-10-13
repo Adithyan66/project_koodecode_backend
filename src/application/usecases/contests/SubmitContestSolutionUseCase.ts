@@ -7,19 +7,23 @@ import { IContestParticipantRepository } from '../../../domain/interfaces/reposi
 import { ISubmissionRepository } from '../../../domain/interfaces/repositories/ISubmissionRepository';
 import { ContestSubmission, ParticipantStatus } from '../../../domain/entities/ContestParticipant';
 import { ContestSubmissionDto, ContestSubmissionResponseDto } from '../../dto/contests/ContestSubmissionDto';
-import { ContestScoringService } from '../../services/ContestScoringService';
-import { ContestTimerService } from '../../services/ContestTimerService';
-import { CreateSubmissionUseCase } from '../submissions/CreateSubmissionUseCase';
 import { ExecuteCodeDto } from '../../dto/submissions/ExecuteCodeDto';
+import { inject, injectable } from 'tsyringe';
+import { IContestScoringService } from '../../interfaces/IContestScoringService';
+import { IContestTimerService } from '../../interfaces/IContestTimerService';
+import { ICreateSubmissionUseCase } from '../../interfaces/ISubmissionUseCase';
+import { ISubmitContestSolutionUseCase } from '../../interfaces/IContestUseCase';
 
-export class SubmitContestSolutionUseCase {
+
+@injectable()
+export class SubmitContestSolutionUseCase implements ISubmitContestSolutionUseCase{
   constructor(
-    private contestRepository: IContestRepository,
-    private participantRepository: IContestParticipantRepository,
-    private submissionRepository: ISubmissionRepository,
-    private createSubmissionUseCase: CreateSubmissionUseCase,
-    private scoringService: ContestScoringService,
-    private timerService: ContestTimerService
+    @inject('IContestRepository') private contestRepository: IContestRepository,
+    @inject('IContestParticipantRepository') private participantRepository: IContestParticipantRepository,
+    @inject('ISubmissionRepository') private submissionRepository: ISubmissionRepository,
+    @inject('ICreateSubmissionUseCase') private createSubmissionUseCase: ICreateSubmissionUseCase,
+    @inject('IContestScoringService') private scoringService: IContestScoringService,
+    @inject('IContestTimerService') private timerService: IContestTimerService
   ) { }
 
   async execute(dto: ContestSubmissionDto, userId: string): Promise<ContestSubmissionResponseDto> {
@@ -79,7 +83,7 @@ export class SubmitContestSolutionUseCase {
         sourceCode: dto.sourceCode,
         languageId: dto.languageId,
         userId: userId,
-        submissionType:'contest'
+        submissionType: 'contest'
       };
 
       const executionResult = await this.createSubmissionUseCase.execute(executeCodeDto);
@@ -124,7 +128,7 @@ export class SubmitContestSolutionUseCase {
 
       return {
         submissionId: executionResult.id,
-        result :executionResult,
+        result: executionResult,
         isCorrect,
         timeTaken,
         attemptNumber,

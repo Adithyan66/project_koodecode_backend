@@ -8,16 +8,22 @@ import { ITokenService } from '../../../domain/interfaces/services/ITokenService
 import { config } from '../../../infrastructure/config/config';
 import { ITestCaseRepository } from '../../../domain/interfaces/repositories/ITestCaseRepository';
 import { IPasswordService } from '../../../domain/interfaces/services/IPasswordService';
+import { inject, injectable } from 'tsyringe';
+import { IJoinRoomUseCase } from '../../interfaces/IRoomUseCase';
 
-export class JoinRoomUseCase {
+
+
+@injectable()
+export class JoinRoomUseCase implements IJoinRoomUseCase {
+
   constructor(
-    private roomRepository: IRoomRepository,
-    private problemRepository: IProblemRepository,
-    private userRepository: IUserRepository,
-    private roomActivityRepository: IRoomActivityRepository,
-    private tokenService: ITokenService,
-    private testCaseRepository: ITestCaseRepository,
-    private passwordService: IPasswordService
+    @inject('IRoomRepository') private roomRepository: IRoomRepository,
+    @inject('IProblemRepository') private problemRepository: IProblemRepository,
+    @inject('IUserRepository') private userRepository: IUserRepository,
+    @inject('IRoomActivityRepository') private roomActivityRepository: IRoomActivityRepository,
+    @inject('ITokenService') private tokenService: ITokenService,
+    @inject('ITestCaseRepository') private testCaseRepository: ITestCaseRepository,
+    @inject('IPasswordService') private passwordService: IPasswordService
   ) { }
 
   async execute(joinRoomDto: JoinRoomDto, userId: string): Promise<JoinRoomResponseDto> {
@@ -46,7 +52,7 @@ export class JoinRoomUseCase {
           const isPasswordValid = await this.passwordService.verifyPassword(
             joinRoomDto.password,
             room.password!
-          );          
+          );
           if (!isPasswordValid) {
             return { success: false, error: 'Invalid password' };
           }
