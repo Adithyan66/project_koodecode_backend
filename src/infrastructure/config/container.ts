@@ -80,7 +80,29 @@ import { KickUserUseCase } from "../../application/usecases/rooms/KickUserUseCas
 import { VerifyPrivateRoomUseCase } from "../../application/usecases/rooms/VerifyPrivateRoomUseCase";
 import { MongoRoomRepository } from "../db/MongoRoomRepository";
 import { MongoRoomActivityRepository } from "../db/MongoRoomActivityRepository";
+import { UserStoreController } from "../../presentation/http/controllers/user/UserStoreController";
+import { GetStoreItemsUseCase } from "../../application/usecases/store/GetStoreItemsUseCase";
+import { PurchaseStoreItemUseCase } from "../../application/usecases/store/PurchaseStoreItemUseCase";
+import { GetUserInventoryUseCase } from "../../application/usecases/store/GetUserInventoryUseCase";
+import { CheckItemOwnershipUseCase } from "../../application/usecases/store/CheckItemOwnershipUseCase";
+import { MongoStoreItemRepository } from "../db/MongoStoreItemRepository";
+import { MongoUserInventoryRepository } from "../db/MongoUserInventoryRepository";
+import { Judge0HealthService } from "../services/Judge0HealthService";
+import { HealthController } from "../../presentation/http/controllers/health/HealthController";
+import { CreateContestUseCase } from "../../application/usecases/contests/CreateContestUseCase";
+import { AdminContestController } from "../../presentation/http/controllers/admin/AdminContestController";
 
+import { createServer } from 'http';
+import { SocketService } from "../services/SocketService";
+
+
+
+
+
+
+
+const httpServer = createServer();
+container.registerInstance('HttpServer', httpServer);
 
 //  Register Dependencies  //
 // ----------------------- //
@@ -97,7 +119,9 @@ container.registerSingleton("IContestTimerService", ContestTimerService)
 container.registerSingleton("IContestScoringService", ContestScoringService)
 container.registerSingleton("ICodeExecutionHelperService", CodeExecutionHelperService)
 container.registerSingleton("IImageUploadService", ImageUploadService)
+container.registerSingleton("IJudge0HealthService", Judge0HealthService)
 
+container.registerSingleton("IJudge0HealthService", Judge0HealthService)
 
 
 container.registerSingleton("ICoinTransactionRepository", MongoCoinTransactionRepository)
@@ -120,6 +144,12 @@ container.registerSingleton("IUserConnectionRepository", MongoUserConnectionRepo
 container.registerSingleton('IRoomRepository', MongoRoomRepository)
 
 container.registerSingleton('IRoomActivityRepository', MongoRoomActivityRepository)
+
+container.registerSingleton('IStoreItemRepository', MongoStoreItemRepository)
+container.registerSingleton('IUserInventoryRepository', MongoUserInventoryRepository)
+
+container.registerSingleton('IRealtimeService', SocketService)
+
 
 //   Register Use Cases  //
 // --------------------- //
@@ -150,21 +180,17 @@ container.registerSingleton("ISubmitContestSolutionUseCase", SubmitContestSoluti
 container.registerSingleton("ICreateSubmissionUseCase", CreateSubmissionUseCase)
 container.registerSingleton("IDistributeContestRewardsUseCase", DistributeContestRewardsUseCase)
 
-
 container.registerSingleton("ICreateCoinPurchaseOrderUseCase", CreateCoinPurchaseOrderUseCase)
 container.registerSingleton("ICompleteCoinPurchaseUseCase", CompleteCoinPurchaseUseCase)
 container.registerSingleton("IGetCoinBalanceUseCase", GetCoinBalanceUseCase)
 container.registerSingleton("IGetCoinTransactionsUseCase", GetCoinTransactionsUseCase)
 container.registerSingleton("IGetCoinStatsUseCase", GetCoinStatsUseCase)
 
-
 container.registerSingleton("IGetUserProfileUseCase", GetUserProfileUseCase)
 container.registerSingleton("IUpdateUserProfileUseCase", UpdateUserProfileUseCase)
 container.registerSingleton("IGetUserEditableProfile", GetUserEditableProfile)
 container.registerSingleton("IGenerateProfileImageUploadUrlUseCase", GenerateProfileImageUploadUrlUseCase)
 container.registerSingleton("IUpdateProfileImageUseCase", UpdateProfileImageUseCase)
-
-
 
 container.registerSingleton('ICreateRoomUseCase', CreateRoomUseCase)
 container.registerSingleton('IJoinRoomUseCase', JoinRoomUseCase)
@@ -173,7 +199,11 @@ container.registerSingleton('IUpdateRoomPermissionsUseCase', UpdateRoomPermissio
 container.registerSingleton('IKickUserUseCase', KickUserUseCase)
 container.registerSingleton('IVerifyPrivateRoomUseCase', VerifyPrivateRoomUseCase)
 
-
+container.registerSingleton('IGetStoreItemsUseCase', GetStoreItemsUseCase)
+container.registerSingleton('IPurchaseStoreItemUseCase', PurchaseStoreItemUseCase)
+container.registerSingleton('IGetUserInventoryUseCase', GetUserInventoryUseCase)
+container.registerSingleton('ICheckItemOwnershipUseCase', CheckItemOwnershipUseCase)
+container.registerSingleton('ICreateContestUseCase', CreateContestUseCase)
 
 
 
@@ -185,5 +215,8 @@ container.registerSingleton(UserCoinController)
 container.registerSingleton(UserContestController)
 container.registerSingleton(AdminProblemController)
 container.registerSingleton(UserProfileController)
+container.registerSingleton(UserStoreController)
+container.registerSingleton(HealthController)
+container.registerSingleton(AdminContestController)
 
 export { container };

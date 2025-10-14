@@ -2,9 +2,14 @@
 
 import axios from 'axios';
 import { config } from '../config/config';
+import { IJudge0HealthService } from '../../domain/interfaces/services/IJudge0HealthService';
 
-export class Judge0HealthService {
+
+
+export class Judge0HealthService implements IJudge0HealthService{
+
   async checkHealth(): Promise<{ status: string; version?: string; languages?: number }> {
+  
     try {
       const headers: any = {};
 

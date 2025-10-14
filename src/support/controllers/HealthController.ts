@@ -1,18 +1,21 @@
 
 
 import { Request, Response } from 'express';
-import { Judge0HealthService } from '../../infrastructure/services/Judge0HealthService'; 
+import { Judge0HealthService } from '../../infrastructure/services/Judge0HealthService';
 import { HTTP_STATUS } from '../../shared/constants/httpStatus';
 
 export class HealthController {
-  constructor(private judge0HealthService: Judge0HealthService) {}
+
+  constructor(
+    private judge0HealthService: Judge0HealthService
+  ) { }
 
   async checkJudge0Health(req: Request, res: Response): Promise<void> {
     try {
       const health = await this.judge0HealthService.checkHealth();
-      
+
       const statusCode = health.status === 'healthy' ? HTTP_STATUS.OK : HTTP_STATUS.SERVICE_UNAVAILABLE;
-      
+
       res.status(statusCode).json({
         success: true,
         data: {
@@ -32,7 +35,7 @@ export class HealthController {
   async getSystemHealth(req: Request, res: Response): Promise<void> {
     try {
       const judge0Health = await this.judge0HealthService.checkHealth();
-      
+
       res.status(HTTP_STATUS.OK).json({
         success: true,
         data: {

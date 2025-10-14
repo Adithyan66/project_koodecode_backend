@@ -1,4 +1,5 @@
 export interface Room {
+  _id: string | undefined;
   id: string;
   roomNumber: number;
   roomId: string; 

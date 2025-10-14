@@ -6,17 +6,26 @@ import { IProblemRepository } from '../../domain/interfaces/repositories/IProble
 import { IRoomActivityRepository } from '../../domain/interfaces/repositories/IRoomActivityRepository';
 import { config } from '../config/config';
 import { ITestCaseRepository } from '../../domain/interfaces/repositories/ITestCaseRepository';
+import { IRealtimeService } from '../../domain/interfaces/services/IRealtimeService';
+import { inject, injectable } from 'tsyringe';
 
-export class SocketService {
-    private io: SocketIOServer;
+
+
+@injectable()
+export class SocketService implements IRealtimeService {
+
+    private io!: SocketIOServer;
 
     constructor(
-        server: HttpServer,
-        private roomRepository: IRoomRepository,
-        private problemRepository: IProblemRepository,
-        private roomActivityRepository: IRoomActivityRepository,
-        private testCaseRepository: ITestCaseRepository
+        @inject('IRoomRepository') private roomRepository: IRoomRepository,
+        @inject('IProblemRepository') private problemRepository: IProblemRepository,
+        @inject('IRoomActivityRepository') private roomActivityRepository: IRoomActivityRepository,
+        @inject('ITestCaseRepository') private testCaseRepository: ITestCaseRepository
     ) {
+       
+    }
+
+    initialize(server: HttpServer): void {
         this.io = new SocketIOServer(server, {
             cors: {
                 origin: config.socket.cors.origin,
@@ -27,6 +36,7 @@ export class SocketService {
         this.setupMiddleware();
         this.setupEventHandlers();
     }
+
 
     private setupMiddleware(): void {
         this.io.use(async (socket, next) => {

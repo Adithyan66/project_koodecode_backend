@@ -1,18 +1,24 @@
 import { IUserInventoryRepository } from '../../../domain/interfaces/repositories/IUserInventoryRepository';
 import { IStoreItemRepository } from '../../../domain/interfaces/repositories/IStoreItemRepository';
 import { UserInventoryResponseDto, UserInventoryItemDto } from '../../dto/store/UserInventoryResponseDto';
+import { IGetUserInventoryUseCase } from '../../interfaces/IStoreUseCase';
+import { inject, injectable } from 'tsyringe';
 
-export class GetUserInventoryUseCase {
+
+@injectable()
+export class GetUserInventoryUseCase implements IGetUserInventoryUseCase {
+
     constructor(
-        private userInventoryRepository: IUserInventoryRepository,
-        private storeItemRepository: IStoreItemRepository
-    ) {}
+        @inject('IUserInventoryRepository') private userInventoryRepository: IUserInventoryRepository,
+        @inject('IStoreItemRepository') private storeItemRepository: IStoreItemRepository
+    ) { }
 
     async execute(userId: string): Promise<UserInventoryResponseDto> {
+
         const userInventory = await this.userInventoryRepository.findByUserId(userId);
-        
+
         const inventoryItems: UserInventoryItemDto[] = [];
-        
+
         for (const inventoryItem of userInventory) {
             const storeItem = await this.storeItemRepository.findById(inventoryItem.itemId);
             if (storeItem) {

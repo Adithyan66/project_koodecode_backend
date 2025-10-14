@@ -1,16 +1,17 @@
 
 
+
 import { Router } from 'express';
 import { expressAdapter } from '../../../adaptors/ExpressAdaptor';
-import { authMiddleware } from '../../../../support/middleware/authMiddleware';
 import { container } from "../../../../infrastructure/config/container";
+import { AdminContestController } from '../../../http/controllers/admin/AdminContestController';
 import { adminOnly } from '../../middlewares';
 
 
 
 const router = Router();
+const adminContestController = container.resolve(AdminContestController);
 
-router.post('/award', adminOnly, (req, res) => coinController.awardCoins(req, res));
-
+router.post('/create', adminOnly, expressAdapter(adminContestController.createContest));
 
 export default router;

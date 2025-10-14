@@ -2,24 +2,23 @@
 
 import { Router } from 'express';
 import { expressAdapter } from '../../../adaptors/ExpressAdaptor';
-import { authMiddleware } from '../../../../support/middleware/authMiddleware';
 import { container } from "../../../../infrastructure/config/container";
 import { UserCoinController } from '../../../http/controllers/user/UserCoinController';
+import { authenticate } from '../../middlewares';
 
 
 
 const router = Router();
 const userCoinController = container.resolve(UserCoinController);
 
-router.post('/create-order', authMiddleware(), expressAdapter(userCoinController.createOrder));
 
-router.post('/complete', authMiddleware(), expressAdapter(userCoinController.completePurchase));
 
-router.get('/balance', authMiddleware(), expressAdapter(userCoinController.getBalance));
 
-router.get('/transactions', authMiddleware(), expressAdapter(userCoinController.getTransactions));
-
-router.get('/stats', authMiddleware(), expressAdapter(userCoinController.getStats));
+router.post('/create-order', authenticate, expressAdapter(userCoinController.createOrder));
+router.post('/complete', authenticate, expressAdapter(userCoinController.completePurchase));
+router.get('/balance', authenticate, expressAdapter(userCoinController.getBalance));
+router.get('/transactions', authenticate, expressAdapter(userCoinController.getTransactions));
+router.get('/stats', authenticate, expressAdapter(userCoinController.getStats));
 
 
 

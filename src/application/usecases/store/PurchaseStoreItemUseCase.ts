@@ -4,18 +4,23 @@ import { IUserInventoryRepository } from '../../../domain/interfaces/repositorie
 import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
 import { ICoinTransactionRepository } from '../../../domain/interfaces/repositories/ICoinTransactionRepository';
 import { PurchaseItemDto } from '../../dto/store/PurchaseItemDto';
-import { AppError } from '../../../shared/exceptions/AppError';
+import { AppError } from '../../errors/AppError';
 import { HTTP_STATUS } from '../../../shared/constants/httpStatus';
 import { UserInventory } from '../../../domain/entities/UserInventory';
 import { CoinTransaction, CoinTransactionType, CoinTransactionSource } from '../../../domain/entities/CoinTransaction';
+import { IPurchaseStoreItemUseCase } from '../../interfaces/IStoreUseCase';
+import { inject, injectable } from 'tsyringe';
 
-export class PurchaseStoreItemUseCase {
+
+@injectable()
+export class PurchaseStoreItemUseCase implements IPurchaseStoreItemUseCase {
+
     constructor(
-        private storeItemRepository: IStoreItemRepository,
-        private userInventoryRepository: IUserInventoryRepository,
-        private userProfileRepository: IUserProfileRepository,
-        private coinTransactionRepository: ICoinTransactionRepository
-    ) {}
+        @inject('IStoreItemRepository') private storeItemRepository: IStoreItemRepository,
+        @inject('IUserInventoryRepository') private userInventoryRepository: IUserInventoryRepository,
+        @inject('IUserProfileRepository') private userProfileRepository: IUserProfileRepository,
+        @inject('ICoinTransactionRepository') private coinTransactionRepository: ICoinTransactionRepository
+    ) { }
 
     async execute(userId: string, purchaseData: PurchaseItemDto): Promise<{ success: boolean; message: string }> {
         // Get store item
@@ -67,7 +72,7 @@ export class PurchaseStoreItemUseCase {
 
         // Add item to user inventory
         const existingInventoryItem = await this.userInventoryRepository.findByUserIdAndItemId(userId, storeItem.id!);
-        
+
         if (existingInventoryItem) {
             // Update quantity for consumable items
             await this.userInventoryRepository.updateQuantity(userId, storeItem.id!, existingInventoryItem.quantity + quantity);

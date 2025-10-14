@@ -1,19 +1,24 @@
 
 
+import { inject, injectable } from 'tsyringe';
 import { IStoreItemRepository } from '../../../domain/interfaces/repositories/IStoreItemRepository';
 import { IUserInventoryRepository } from '../../../domain/interfaces/repositories/IUserInventoryRepository';
 import { StoreItemResponseDto } from '../../dto/store/StoreItemResponseDto';
+import { IGetStoreItemsUseCase } from '../../interfaces/IStoreUseCase';
 
-export class GetStoreItemsUseCase {
+
+@injectable()
+export class GetStoreItemsUseCase implements IGetStoreItemsUseCase {
+
     constructor(
-        private storeItemRepository: IStoreItemRepository,
-        private userInventoryRepository: IUserInventoryRepository
-    ) {}
+        @inject('IStoreItemRepository') private storeItemRepository: IStoreItemRepository,
+        @inject('IUserInventoryRepository') private userInventoryRepository: IUserInventoryRepository
+    ) { }
 
     async execute(userId?: string): Promise<StoreItemResponseDto[]> {
-        
+
         const storeItems = await this.storeItemRepository.findActiveItems();
-        
+
         if (!userId) {
             return storeItems.map(item => new StoreItemResponseDto({
                 id: item.id!,

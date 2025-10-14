@@ -1,7 +1,7 @@
 
 
 
-';
+
 
 import { CreateRoomDto, CreateRoomResponseDto } from "../dto/rooms/CreateRoomDto";
 import { JoinRoomDto, JoinRoomResponseDto, VerifyPrivateRoomDto, VerifyPrivateRoomResponseDto } from "../dto/rooms/JoinRoomDto";
