@@ -10,6 +10,14 @@ import { inject, injectable } from 'tsyringe';
 import { CreateProblemDto } from '../../../../application/dto/problems/CreateProblemDto';
 import { IAdminProblemController } from '../../interfaces/IAdminProblemController';
 import { AdminProblemsListRequestDto } from '../../../../application/dto/problems/AdminProblemListDto';
+import { IGetProblemTestCasesForAdminUseCase } from '../../../../application/interfaces/ITestCaseUseCase';
+import { TestCaseListRequestDto } from '../../../../application/dto/problems/TestCaseListDto';
+import { IUpdateProblemUseCase } from '../../../../application/interfaces/IProblemUseCase';
+import { UpdateProblemPayload } from '../../../../application/dto/problems/UpdateProblemDto';
+import { IUpdateTestCaseUseCase } from '../../../../application/interfaces/ITestCaseUseCase';
+import { UpdateTestCasePayload } from '../../../../application/dto/problems/UpdateTestCaseDto';
+import { AddTestCasePayload } from '../../../../application/dto/problems/AddTestCaseDto';
+import { IAddTestCaseUseCase } from '../../../../application/interfaces/ITestCaseUseCase';
 
 
 
@@ -21,7 +29,11 @@ export class AdminProblemController implements IAdminProblemController {
         @inject('ICreateProblemUseCase') private _createProblemUseCase: ICreateProblemUseCase,
         @inject('IGetAllProblemsForAdminUseCase') private _getAllProblemsForAdminUseCase: IGetAllProblemsForAdminUseCase,
         @inject('IGetAllProgrammingLanguages') private _getAllProgrammingLanguages: IGetAllProgrammingLanguages,
-       @inject('IGetProblemDetailForAdminUseCase') private getProblemDetailForAdminUseCase : IGetProblemDetailForAdminUseCase
+       @inject('IGetProblemDetailForAdminUseCase') private _getProblemDetailForAdminUseCase : IGetProblemDetailForAdminUseCase,
+       @inject('IGetProblemTestCasesForAdminUseCase') private _getProblemTestCasesForAdminUseCase: IGetProblemTestCasesForAdminUseCase,
+       @inject('IUpdateProblemUseCase') private _updateProblemUseCase: IUpdateProblemUseCase,
+       @inject('IUpdateTestCaseUseCase') private _updateTestCaseUseCase: IUpdateTestCaseUseCase,
+       @inject('IAddTestCaseUseCase') private _addTestCaseUseCase: IAddTestCaseUseCase
     ) { }
 
     createProblem = async (httpRequest: IHttpRequest) => {
@@ -156,13 +168,13 @@ export class AdminProblemController implements IAdminProblemController {
 
     getProblemDetail = async (httpRequest: IHttpRequest) => {
 
-        const { problemId } = httpRequest.params;
+        const { slug } = httpRequest.params;
 
-        if (!problemId) {
-            throw new BadRequestError('Problem ID is required');
+        if (!slug) {
+            throw new BadRequestError('Problem slug is required');
         }
 
-        const result = await this.getProblemDetailForAdminUseCase.execute(problemId);
+        const result = await this._getProblemDetailForAdminUseCase.execute(slug);
 
 
         return new HttpResponse(HTTP_STATUS.OK, {
@@ -171,9 +183,99 @@ export class AdminProblemController implements IAdminProblemController {
 
     }
 
+    getProblemTestCases = async (httpRequest: IHttpRequest) => {
 
+        const { slug } = httpRequest.params;
+        const { page, limit, isSample } = httpRequest.query;
 
+        if (!slug) {
+            throw new BadRequestError('Problem slug is required');
+        }
 
+        const request: TestCaseListRequestDto = {
+            slug,
+            page: page ? parseInt(page as string) : 1,
+            limit: limit ? parseInt(limit as string) : 10,
+            isSample: isSample !== undefined ? isSample === 'true' : undefined
+        };
+
+        if (request.page && request.page < 1) {
+            throw new BadRequestError('Page must be greater than 0');
+        }
+
+        if (request.limit && (request.limit < 1 || request.limit > 100)) {
+            throw new BadRequestError('Limit must be between 1 and 100');
+        }
+
+        const result = await this._getProblemTestCasesForAdminUseCase.execute(request);
+
+        return new HttpResponse(HTTP_STATUS.OK, {
+            ...buildResponse(true, 'Test cases retrieved successfully', result),
+        });
+    }
+
+    updateProblem = async (httpRequest: IHttpRequest) => {
+
+        if (!httpRequest.user || httpRequest.user.role !== 'admin') {
+            throw new UnauthorizedError('Admin access required')
+        }
+
+        const { slug } = httpRequest.params;
+        const updateData: UpdateProblemPayload = httpRequest.body;
+
+        if (!slug) {
+            throw new BadRequestError('Problem slug is required');
+        }
+
+        const result = await this._updateProblemUseCase.execute(slug, updateData, httpRequest.user.userId);
+
+        return new HttpResponse(HTTP_STATUS.OK, {
+            ...buildResponse(true, 'Problem updated successfully', result),
+        });
+    }
+
+    updateTestCase = async (httpRequest: IHttpRequest) => {
+        
+        if (!httpRequest.user || httpRequest.user.role !== 'admin') {
+            throw new UnauthorizedError('Admin access required')
+        }
+
+        const { slug, testCaseId } = httpRequest.params;
+        const updateData: UpdateTestCasePayload = httpRequest.body;
+
+        if (!slug) {
+            throw new BadRequestError('Problem slug is required');
+        }
+
+        if (!testCaseId) {
+            throw new BadRequestError('Test case ID is required');
+        }
+
+        await this._updateTestCaseUseCase.execute(slug, testCaseId, updateData, httpRequest.user.userId);
+
+        return new HttpResponse(HTTP_STATUS.OK, {
+            ...buildResponse(true, 'Test case updated successfully'),
+        });
+    }
+
+    addTestCase = async (httpRequest: IHttpRequest) => {
+        if (!httpRequest.user || httpRequest.user.role !== 'admin') {
+            throw new UnauthorizedError('Admin access required')
+        }
+
+        const { slug } = httpRequest.params;
+        const testCaseData: AddTestCasePayload = httpRequest.body;
+
+        if (!slug) {
+            throw new BadRequestError('Problem slug is required');
+        }
+
+        await this._addTestCaseUseCase.execute(slug, testCaseData, httpRequest.user.userId);
+
+        return new HttpResponse(HTTP_STATUS.CREATED, {
+            ...buildResponse(true, 'Test case added successfully'),
+        });
+    }
 
 
 }

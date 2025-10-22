@@ -97,6 +97,11 @@ import { SocketService } from "../services/SocketService";
 import { GetAllProblemsForAdminUseCase } from "../../application/usecases/problems/GetAllProblemsForAdminUseCase";
 import { GetAllProgrammingLanguages } from "../../application/usecases/problems/GetAllProgrammingLanguages";
 import { GetProblemDetailForAdminUseCase } from "../../application/usecases/problems/GetProblemDetailForAdminUseCase";
+import { GetProblemTestCasesForAdminUseCase } from '../../application/usecases/problems/GetProblemTestCasesForAdminUseCase';
+import { IGetProblemTestCasesForAdminUseCase } from '../../application/interfaces/ITestCaseUseCase';
+import { UpdateProblemUseCase } from '../../application/usecases/problems/UpdateProblemUseCase';
+import { UpdateTestCaseUseCase } from '../../application/usecases/problems/UpdateTestCaseUseCase';
+import { AddTestCaseUseCase } from '../../application/usecases/problems/AddTestCaseUseCase';
 
 
 
@@ -210,8 +215,12 @@ container.registerSingleton('ICreateContestUseCase', CreateContestUseCase)
 container.registerSingleton('IGetAllProblemsForAdminUseCase', GetAllProblemsForAdminUseCase)
 container.registerSingleton('IGetAllProgrammingLanguages', GetAllProgrammingLanguages)
 container.registerSingleton('IGetProblemDetailForAdminUseCase', GetProblemDetailForAdminUseCase)
-
-
+container.register<IGetProblemTestCasesForAdminUseCase>('IGetProblemTestCasesForAdminUseCase', {
+    useClass: GetProblemTestCasesForAdminUseCase,
+});
+container.registerSingleton("IUpdateProblemUseCase", UpdateProblemUseCase);
+container.registerSingleton("IUpdateTestCaseUseCase", UpdateTestCaseUseCase);
+container.registerSingleton("IAddTestCaseUseCase", AddTestCaseUseCase);
 
 
 //   Register Controllers  //

@@ -96,7 +96,6 @@ export class AuthController implements IAuthController {
 
     verifyToken = async (httpRequest: IHttpRequest) => {
 
-        console.log("tokennnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn",httpRequest.cookies.refreshToken);
         const token = httpRequest.cookies.refreshToken
 
         if (!token) {

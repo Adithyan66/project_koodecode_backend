@@ -15,14 +15,14 @@ export class GetProblemDetailForAdminUseCase implements IGetProblemDetailForAdmi
         @inject('ISubmissionRepository') private submissionRepository: ISubmissionRepository
     ) { }
 
-    async execute(problemId: string): Promise<AdminProblemDetailResponse> {
+    async execute(slug: string): Promise<AdminProblemDetailResponse> {
 
-        const problem = await this.problemRepository.findById(problemId);
+        const problem = await this.problemRepository.findBySlug(slug);
         if (!problem) {
             throw new NotFoundError('Problem Not found');
         }
 
-        const submissionStats = await this.problemRepository.getSubmissionStatsByProblemId(problemId);
+        const submissionStats = await this.problemRepository.getSubmissionStatsByProblemId(problem.id!);
 
         const acceptanceRate = submissionStats.totalSubmissions > 0
             ? Math.round((submissionStats.acceptedSubmissions / submissionStats.totalSubmissions) * 100)
