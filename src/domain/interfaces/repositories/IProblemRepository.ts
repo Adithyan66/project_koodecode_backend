@@ -101,6 +101,9 @@ export interface IProblemRepository {
         hardCount: number;
     }>;
 
+    // Soft delete methods
+    softDelete(id: string): Promise<boolean>;
+    softDeleteBySlug(slug: string): Promise<boolean>;
 
 }
 

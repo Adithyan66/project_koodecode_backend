@@ -102,6 +102,8 @@ import { IGetProblemTestCasesForAdminUseCase } from '../../application/interface
 import { UpdateProblemUseCase } from '../../application/usecases/problems/UpdateProblemUseCase';
 import { UpdateTestCaseUseCase } from '../../application/usecases/problems/UpdateTestCaseUseCase';
 import { AddTestCaseUseCase } from '../../application/usecases/problems/AddTestCaseUseCase';
+import { DeleteTestCaseUseCase } from '../../application/usecases/problems/DeleteTestCaseUseCase';
+import { DeleteProblemUseCase } from '../../application/usecases/problems/DeleteProblemUseCase';
 
 
 
@@ -221,6 +223,8 @@ container.register<IGetProblemTestCasesForAdminUseCase>('IGetProblemTestCasesFor
 container.registerSingleton("IUpdateProblemUseCase", UpdateProblemUseCase);
 container.registerSingleton("IUpdateTestCaseUseCase", UpdateTestCaseUseCase);
 container.registerSingleton("IAddTestCaseUseCase", AddTestCaseUseCase);
+container.registerSingleton("IDeleteTestCaseUseCase", DeleteTestCaseUseCase);
+container.registerSingleton("IDeleteProblemUseCase", DeleteProblemUseCase);
 
 
 //   Register Controllers  //

@@ -17,5 +17,7 @@ router.get('/:slug/testcases', adminOnly, expressAdapter(adminProblemController.
 router.put('/:slug', adminOnly, expressAdapter(adminProblemController.updateProblem));
 router.put('/:slug/testcases/:testCaseId', adminOnly, expressAdapter(adminProblemController.updateTestCase));
 router.post('/:slug/testcases', adminOnly, expressAdapter(adminProblemController.addTestCase));
+router.delete('/:slug/testcases/:testCaseId', adminOnly, expressAdapter(adminProblemController.deleteTestCase));
+router.delete('/:slug', adminOnly, expressAdapter(adminProblemController.deleteProblem));
 
 export default router;

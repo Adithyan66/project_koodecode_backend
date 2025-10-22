@@ -16,10 +16,10 @@ export class MongoTestCaseRepository implements ITestCaseRepository {
             inputs: testCase.inputs,
             expectedOutput: testCase.expectedOutput,
             isSample: testCase.isSample,
+            isDeleted: testCase.isDeleted,
         });
         
         const savedTestCase = await testCaseDoc.save();
-        console.log("alsoooooooooooooooooooooooooooooooooooooo works" , savedTestCase);
         return this.mapToEntity(savedTestCase);
     }
 
@@ -30,6 +30,7 @@ export class MongoTestCaseRepository implements ITestCaseRepository {
             inputs: tc.inputs,
             expectedOutput: tc.expectedOutput,
             isSample: tc.isSample,
+            isDeleted: tc.isDeleted,
         }));
 
         const savedTestCases = await TestCaseModel.insertMany(testCaseDocs);
@@ -38,7 +39,7 @@ export class MongoTestCaseRepository implements ITestCaseRepository {
     }
 
     async findByProblemId(problemId: string): Promise<TestCase[]> {
-        const testCases = await TestCaseModel.find({ problemId }).sort({ createdAt: 1 });
+        const testCases = await TestCaseModel.find({ problemId, isDeleted: false }).sort({ createdAt: 1 });
         return testCases.map(tc => this.mapToEntity(tc));
     }
 
@@ -46,7 +47,8 @@ export class MongoTestCaseRepository implements ITestCaseRepository {
 
         const testCases = await TestCaseModel.find({
             problemId,
-            isSample: true
+            isSample: true,
+            isDeleted: false
         }).sort({ createdAt: 1 });
 
         return testCases.map(tc => this.mapToEntity(tc));
@@ -55,13 +57,14 @@ export class MongoTestCaseRepository implements ITestCaseRepository {
     async findNonSampleByProblemId(problemId: string): Promise<TestCase[]> {
         const testCases = await TestCaseModel.find({
             problemId,
-            isSample: false
+            isSample: false,
+            isDeleted: false
         }).sort({ createdAt: 1 });
         return testCases.map(tc => this.mapToEntity(tc));
     }
 
     async findById(id: string): Promise<TestCase | null> {
-        const testCase = await TestCaseModel.findById(id);
+        const testCase = await TestCaseModel.findOne({ _id: id, isDeleted: false });
         return testCase ? this.mapToEntity(testCase) : null;
     }
 
@@ -85,7 +88,7 @@ export class MongoTestCaseRepository implements ITestCaseRepository {
     }
 
     async countByProblemId(problemId: string): Promise<number> {
-        return await TestCaseModel.countDocuments({ problemId });
+        return await TestCaseModel.countDocuments({ problemId, isDeleted: false });
     }
 
     async findByProblemIdPaginated(
@@ -97,7 +100,7 @@ export class MongoTestCaseRepository implements ITestCaseRepository {
         const skip = (page - 1) * limit;
         
         // Build the filter
-        const filter: any = { problemId };
+        const filter: any = { problemId, isDeleted: false };
         if (isSample !== undefined) {
             filter.isSample = isSample;
         }
@@ -129,10 +132,28 @@ export class MongoTestCaseRepository implements ITestCaseRepository {
             doc.inputs,
             doc.expectedOutput,
             doc.isSample,
+            doc.isDeleted,
             doc._id.toString(),
             doc.createdAt,
             doc.updatedAt
         );
+    }
+
+    async softDelete(id: string): Promise<boolean> {
+        const result = await TestCaseModel.findByIdAndUpdate(
+            id,
+            { isDeleted: true, updatedAt: new Date() },
+            { new: true }
+        );
+        return !!result;
+    }
+
+    async softDeleteByProblemId(problemId: string): Promise<boolean> {
+        const result = await TestCaseModel.updateMany(
+            { problemId },
+            { isDeleted: true, updatedAt: new Date() }
+        );
+        return result.modifiedCount > 0;
     }
 
 

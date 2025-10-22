@@ -34,6 +34,7 @@ export interface IProblemModel extends Document {
     hints: string[];
     companies: string[];
     isActive: boolean;
+    isDeleted: boolean;
     createdBy: string;
     createdAt: Date;
     updatedAt: Date;
@@ -87,6 +88,7 @@ const ProblemSchema: Schema = new Schema({
     hints: [{ type: String }],
     companies: [{ type: String }],
     isActive: { type: Boolean, default: true },
+    isDeleted: { type: Boolean, default: false, index: true },
     createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
     functionName: { type: String, required: true },
     returnType: { type: String, required: true },

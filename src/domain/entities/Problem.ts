@@ -44,6 +44,7 @@ export interface ProblemProps {
   hints?: string[];
   companies?: string[];
   isActive?: boolean;
+  isDeleted?: boolean;
   createdBy: string;
   functionName: string;
   returnType: string;
@@ -71,6 +72,7 @@ export class Problem {
   public hints: string[];
   public companies: string[];
   public isActive: boolean;
+  public isDeleted: boolean;
   public createdBy: string;
   public functionName: string;
   public returnType: string;
@@ -97,6 +99,7 @@ export class Problem {
     hints = [],
     companies = [],
     isActive = true,
+    isDeleted = false,
     createdBy,
     functionName,
     returnType,
@@ -121,6 +124,7 @@ export class Problem {
     this.hints = hints;
     this.companies = companies;
     this.isActive = isActive;
+    this.isDeleted = isDeleted;
     this.createdBy = createdBy;
     this.functionName = functionName;
     this.returnType = returnType;
@@ -179,6 +183,11 @@ export class Problem {
 
   getTemplate(languageId: number): Template | undefined {
     return this.templates[languageId.toString()];
+  }
+
+  softDelete(): void {
+    this.isDeleted = true;
+    this.updatedAt = new Date();
   }
 }
 

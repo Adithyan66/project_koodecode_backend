@@ -27,6 +27,7 @@ export class MongoProblemRepository implements IProblemRepository {
             hints: problem.hints,
             companies: problem.companies,
             isActive: problem.isActive,
+            isDeleted: problem.isDeleted,
             createdBy: problem.createdBy,
             functionName: problem.functionName,
             returnType: problem.returnType,
@@ -41,17 +42,17 @@ export class MongoProblemRepository implements IProblemRepository {
     }
 
     async findById(id: string): Promise<Problem | null> {
-        const problem = await ProblemModel.findById(id).populate('createdBy');
+        const problem = await ProblemModel.findOne({ _id: id, isDeleted: false }).populate('createdBy');
         return problem ? this.mapToDomain(problem) : null;
     }
 
     async findBySlug(slug: string): Promise<Problem | null> {
-        const problem = await ProblemModel.findOne({ slug });
+        const problem = await ProblemModel.findOne({ slug, isDeleted: false });
         return problem ? this.mapToDomain(problem) : null;
     }
 
     async findByProblemNumber(problemNumber: number): Promise<Problem | null> {
-        const problem = await ProblemModel.findOne({ problemNumber });
+        const problem = await ProblemModel.findOne({ problemNumber, isDeleted: false });
         return problem ? this.mapToDomain(problem) : null;
     }
 
@@ -72,7 +73,7 @@ export class MongoProblemRepository implements IProblemRepository {
         const limit = filters.limit || 20;
         const skip = (page - 1) * limit;
 
-        const query: any = {};
+        const query: any = { isDeleted: false };
 
         if (filters.difficulty) {
             query.difficulty = filters.difficulty;
@@ -138,6 +139,7 @@ export class MongoProblemRepository implements IProblemRepository {
             hints: doc.hints,
             companies: doc.companies,
             isActive: doc.isActive,
+            isDeleted: doc.isDeleted,
             createdBy: doc.createdBy,
             functionName: doc.functionName,
             returnType: doc.returnType,
@@ -160,7 +162,7 @@ export class MongoProblemRepository implements IProblemRepository {
         try {
             console.log("query filters:", filters);
 
-            const query: any = {};
+            const query: any = { isDeleted: false };
 
             // Handle search filter
             if (filters.search) {
@@ -319,7 +321,7 @@ export class MongoProblemRepository implements IProblemRepository {
       const { search, difficulty, status, page, limit, sortBy, sortOrder } = filters;
       
       // Build MongoDB query
-      const query: any = {};
+      const query: any = { isDeleted: false };
       
       // Search by problem number or title
       if (search) {
@@ -489,5 +491,22 @@ export class MongoProblemRepository implements IProblemRepository {
     }
   }
 
+  async softDelete(id: string): Promise<boolean> {
+    const result = await ProblemModel.findByIdAndUpdate(
+      id,
+      { isDeleted: true, updatedAt: new Date() },
+      { new: true }
+    );
+    return !!result;
+  }
+
+  async softDeleteBySlug(slug: string): Promise<boolean> {
+    const result = await ProblemModel.findOneAndUpdate(
+      { slug },
+      { isDeleted: true, updatedAt: new Date() },
+      { new: true }
+    );
+    return !!result;
+  }
 
 }

@@ -17,7 +17,8 @@ import { UpdateProblemPayload } from '../../../../application/dto/problems/Updat
 import { IUpdateTestCaseUseCase } from '../../../../application/interfaces/ITestCaseUseCase';
 import { UpdateTestCasePayload } from '../../../../application/dto/problems/UpdateTestCaseDto';
 import { AddTestCasePayload } from '../../../../application/dto/problems/AddTestCaseDto';
-import { IAddTestCaseUseCase } from '../../../../application/interfaces/ITestCaseUseCase';
+import { IAddTestCaseUseCase, IDeleteTestCaseUseCase } from '../../../../application/interfaces/ITestCaseUseCase';
+import { IDeleteProblemUseCase } from '../../../../application/interfaces/IProblemUseCase';
 
 
 
@@ -33,7 +34,9 @@ export class AdminProblemController implements IAdminProblemController {
        @inject('IGetProblemTestCasesForAdminUseCase') private _getProblemTestCasesForAdminUseCase: IGetProblemTestCasesForAdminUseCase,
        @inject('IUpdateProblemUseCase') private _updateProblemUseCase: IUpdateProblemUseCase,
        @inject('IUpdateTestCaseUseCase') private _updateTestCaseUseCase: IUpdateTestCaseUseCase,
-       @inject('IAddTestCaseUseCase') private _addTestCaseUseCase: IAddTestCaseUseCase
+        @inject('IAddTestCaseUseCase') private _addTestCaseUseCase: IAddTestCaseUseCase,
+        @inject('IDeleteTestCaseUseCase') private _deleteTestCaseUseCase: IDeleteTestCaseUseCase,
+        @inject('IDeleteProblemUseCase') private _deleteProblemUseCase: IDeleteProblemUseCase
     ) { }
 
     createProblem = async (httpRequest: IHttpRequest) => {
@@ -274,6 +277,46 @@ export class AdminProblemController implements IAdminProblemController {
 
         return new HttpResponse(HTTP_STATUS.CREATED, {
             ...buildResponse(true, 'Test case added successfully'),
+        });
+    }
+
+    deleteTestCase = async (httpRequest: IHttpRequest) => {
+        if (!httpRequest.user || httpRequest.user.role !== 'admin') {
+            throw new UnauthorizedError('Admin access required')
+        }
+
+        const { slug, testCaseId } = httpRequest.params;
+
+        if (!slug) {
+            throw new BadRequestError('Problem slug is required');
+        }
+
+        if (!testCaseId) {
+            throw new BadRequestError('Test case ID is required');
+        }
+
+        await this._deleteTestCaseUseCase.execute(slug, testCaseId, httpRequest.user.userId);
+
+        return new HttpResponse(HTTP_STATUS.OK, {
+            ...buildResponse(true, 'Test case deleted successfully'),
+        });
+    }
+
+    deleteProblem = async (httpRequest: IHttpRequest) => {
+        if (!httpRequest.user || httpRequest.user.role !== 'admin') {
+            throw new UnauthorizedError('Admin access required')
+        }
+
+        const { slug } = httpRequest.params;
+
+        if (!slug) {
+            throw new BadRequestError('Problem slug is required');
+        }
+
+        await this._deleteProblemUseCase.execute(slug, httpRequest.user.userId);
+
+        return new HttpResponse(HTTP_STATUS.OK, {
+            ...buildResponse(true, 'Problem deleted successfully'),
         });
     }
 

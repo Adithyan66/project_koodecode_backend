@@ -13,3 +13,7 @@ export interface IUpdateTestCaseUseCase {
 export interface IAddTestCaseUseCase {
     execute(slug: string, testCaseData: AddTestCasePayload, adminId: string): Promise<void>;
 }
+
+export interface IDeleteTestCaseUseCase {
+    execute(slug: string, testCaseId: string, adminId: string): Promise<void>;
+}

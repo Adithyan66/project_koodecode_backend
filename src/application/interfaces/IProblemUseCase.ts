@@ -58,6 +58,10 @@ export interface IUpdateProblemUseCase {
   execute(slug: string, updateData: UpdateProblemPayload, adminId: string): Promise<AdminProblemDetailResponse>;
 }
 
+export interface IDeleteProblemUseCase {
+  execute(slug: string, adminId: string): Promise<void>;
+}
+
 
 export interface IGetAllProblemsForAdminUseCase {
   execute(request: AdminProblemsListRequestDto): Promise<AdminProblemsListResponseDto>;

@@ -6,6 +6,7 @@ export class TestCase {
         public inputs: any,
         public expectedOutput: any,
         public isSample: boolean,
+        public isDeleted: boolean = false,
         public id?: string,
         public createdAt?: Date,
         public updatedAt?: Date,
@@ -23,6 +24,7 @@ export class TestCase {
             inputs,
             expectedOutput,
             isSample,
+            false, // isDeleted
             undefined,
             new Date(),
             new Date()
@@ -32,6 +34,11 @@ export class TestCase {
     updateTestCase(input?: any, expectedOutput?: any, explanation?: string): void {
         if (input !== undefined) this.inputs = input;
         if (expectedOutput !== undefined) this.expectedOutput = expectedOutput;
+        this.updatedAt = new Date();
+    }
+
+    softDelete(): void {
+        this.isDeleted = true;
         this.updatedAt = new Date();
     }
 }

@@ -56,4 +56,8 @@ export interface ITestCaseRepository {
         limit: number, 
         isSample?: boolean
     ): Promise<PaginatedTestCases>;
+
+    // Soft delete methods
+    softDelete(id: string): Promise<boolean>;
+    softDeleteByProblemId(problemId: string): Promise<boolean>;
 }

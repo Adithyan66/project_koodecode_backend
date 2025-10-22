@@ -12,4 +12,6 @@ export interface IAdminProblemController {
   updateProblem(httpRequest: IHttpRequest): Promise<IHttpResponse>;
   updateTestCase(httpRequest: IHttpRequest): Promise<IHttpResponse>;
   addTestCase(httpRequest: IHttpRequest): Promise<IHttpResponse>;
+  deleteTestCase(httpRequest: IHttpRequest): Promise<IHttpResponse>;
+  deleteProblem(httpRequest: IHttpRequest): Promise<IHttpResponse>;
 }
