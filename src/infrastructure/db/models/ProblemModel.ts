@@ -11,7 +11,7 @@ export interface IProblemModel extends Document {
     problemNumber: number;
     title: string;
     slug: string;
-    difficulty: 'easy' | 'medium' | 'hard';
+    difficulty: 'easy' | 'medium' | 'hard'; 
     tags: string[];
     description: string;
     constraints: {
@@ -81,7 +81,7 @@ const ProblemSchema: Schema = new Schema({
         }
     ],
     examples: { type: Schema.Types.Mixed, required: true },
-    likes: [{ type: String }],
+   likes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     totalSubmissions: { type: Number, default: 0 },
     acceptedSubmissions: { type: Number, default: 0 },
     hints: [{ type: String }],
@@ -95,7 +95,7 @@ const ProblemSchema: Schema = new Schema({
         type: { type: String },
         description: { type: String }
     }],
-    supportedLanguages: [{ type: Number, required: true }], // Judge0 language IDs
+    supportedLanguages: [{ type: Number, required: true }], 
     templates: {
         type: Object,
         of: {

@@ -53,6 +53,7 @@ export class CreateSubmissionUseCase implements ICreateSubmissionUseCase {
   ) { }
 
   async execute(params: ExecuteCodeDto): Promise<SubmissionResponseDto> {
+
     let submissionId: string | null = null;
 
     try {
@@ -66,7 +67,7 @@ export class CreateSubmissionUseCase implements ICreateSubmissionUseCase {
 
       const combinedCode = this.validateAndCombineCode(template, params.sourceCode);
 
-      const submission = await this.createInitialSubmission(params, allTestCases.length, combinedCode);
+      const submission = await this.createInitialSubmission(params, allTestCases.length, params.sourceCode);
       submissionId = submission.id;
 
       const testCaseResults = await this.executeCodeAgainstTestCases(

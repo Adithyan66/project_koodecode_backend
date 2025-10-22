@@ -13,4 +13,7 @@ export interface ITestCaseRepository {
     delete(id: string): Promise<boolean>;
     deleteByProblemId(problemId: string): Promise<boolean>;
     countByProblemId(problemId: string): Promise<number>;
+
+    countByProblemId(problemId: string): Promise<number>;
+
 }

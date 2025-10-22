@@ -1,17 +1,6 @@
 
 
 
-import { CreateSubmissionUseCase } from '../../../../application/usecases/submissions/CreateSubmissionUseCase';
-import { GetSubmissionResultUseCase } from '../../../../application/usecases/submissions/GetSubmissionResultUseCase';
-import { RunCodeUseCase } from '../../../../application/usecases/submissions/RunCodeUseCase';
-import { GetLanguagesUseCase } from '../../../../application/usecases/submissions/GetLanguagesUseCase';
-
-
-
-
-import { Request, Response } from 'express';
-import { GetProblemsListUseCase } from '../../../../application/usecases/problems/GetProblemsListUseCase';
-import { GetProblemByIdUseCase } from '../../../../application/usecases/problems/GetProblemByIdUseCase';
 import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 import { IHttpRequest } from '../../interfaces/IHttpRequest';
 import { HttpResponse } from '../../helper/HttpResponse';
@@ -19,7 +8,6 @@ import { buildResponse } from '../../../../infrastructure/utils/responseBuilder'
 import { BadRequestError, UnauthorizedError } from '../../../../application/errors/AppErrors';
 import { MESSAGES } from '../../../../shared/constants/messages';
 import { ProblemNamesRequestDto } from '../../../../application/dto/problems/ProblemNamesDto';
-import { GetProblemNamesUseCase } from '../../../../application/usecases/problems/GetProblemNamesUseCase';
 import { IUserProblemController } from '../../interfaces/IUserProblemController';
 import { ICreateSubmissionUseCase, IGetLanguagesUseCase, IGetProblemByIdUseCase, IGetProblemNamesUseCase, IGetProblemsListUseCase, IGetSubmissionResultUseCase, IRunCodeUseCase } from '../../../../application/interfaces/IProblemUseCase';
 import { inject, injectable } from 'tsyringe';
@@ -203,6 +191,10 @@ export class UserProblemController implements IUserProblemController {
                 limit: result.pagination.limit
             }),
         });
+    }
+
+    likeProblem = async (HttpRequest: IHttpRequest) => {
+
     }
 
 

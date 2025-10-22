@@ -1,7 +1,8 @@
-import { SortOrder } from 'mongoose';
+import mongoose, { SortOrder } from 'mongoose';
 import { Problem } from '../../domain/entities/Problem';
 import ProblemModel from './models/ProblemModel';
-import { IProblemRepository, PaginationOptions, ProblemFilters } from '../../domain/interfaces/repositories/IProblemRepository';
+import { IProblemRepository, PaginatedProblems, PaginationOptions, ProblemFilters, ProblemSearchFilters } from '../../domain/interfaces/repositories/IProblemRepository';
+import { SubmissionModel } from './models/SubmissionModel';
 
 
 
@@ -315,5 +316,182 @@ export class MongoProblemRepository implements IProblemRepository {
             totalCount
         };
     }
+
+    async findAllForAdminWithFilters(filters: ProblemSearchFilters): Promise<PaginatedProblems> {
+    try {
+      const { search, difficulty, status, page, limit, sortBy, sortOrder } = filters;
+      
+      // Build MongoDB query
+      const query: any = {};
+      
+      // Search by problem number or title
+      if (search) {
+        const searchNumber = parseInt(search);
+        if (!isNaN(searchNumber)) {
+          // If search is a number, search by problem number
+          query.problemNumber = searchNumber;
+        } else {
+          // If search is text, search by title (case-insensitive)
+          query.title = { $regex: search, $options: 'i' };
+        }
+      }
+      
+      // Filter by difficulty
+      if (difficulty) {
+        query.difficulty = difficulty;
+      }
+      
+      // Filter by status (active/inactive)
+      if (status) {
+        query.isActive = status === 'active';
+      }
+      
+      // Calculate pagination
+      const skip = (page - 1) * limit;
+      
+      // Build sort object
+      const sort: any = {};
+      if (sortBy === 'acceptanceRate' || sortBy === 'totalSubmissions') {
+        // These fields need to be calculated, so we'll sort in application layer
+        sort.problemNumber = sortOrder === 'desc' ? -1 : 1;
+      } else {
+        sort[sortBy] = sortOrder === 'desc' ? -1 : 1;
+      }
+      
+      // Execute queries in parallel
+      const [problems, totalCount] = await Promise.all([
+        ProblemModel
+          .find(query)
+          .sort(sort)
+          .skip(skip)
+          .limit(limit)
+          .lean(),
+        ProblemModel.countDocuments(query)
+      ]);
+      
+      // Convert to domain entities
+      const domainProblems = problems.map(p => new Problem({
+        problemNumber: p.problemNumber,
+        title: p.title,
+        slug: p.slug,
+        difficulty: p.difficulty,
+        tags: p.tags,
+        description: p.description,
+        constraints: p.constraints,
+        examples: p.examples,
+        likes: p.likes || [],
+        totalSubmissions: p.totalSubmissions || 0,
+        acceptedSubmissions: p.acceptedSubmissions || 0,
+        hints: p.hints || [],
+        companies: p.companies || [],
+        isActive: p.isActive,
+        createdBy: p.createdBy,
+        functionName: p.functionName,
+        returnType: p.returnType,
+        parameters: p.parameters,
+        supportedLanguages: p.supportedLanguages,
+        templates: p.templates,
+        id: p._id?.toString(),
+        createdAt: p.createdAt,
+        updatedAt: p.updatedAt,
+      }));
+      
+      const totalPages = Math.ceil(totalCount / limit);
+      const hasNextPage = page < totalPages;
+      const hasPreviousPage = page > 1;
+      
+      return {
+        problems: domainProblems,
+        totalCount,
+        currentPage: page,
+        totalPages,
+        hasNextPage,
+        hasPreviousPage
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getSubmissionStatsByProblemId(problemId: string): Promise<{
+    totalSubmissions: number;
+    acceptedSubmissions: number;
+  }> {
+    try {
+      console.log("id",problemId);
+      
+      const stats = await SubmissionModel.aggregate([
+        { 
+          $match: { 
+            problemId: new mongoose.Types.ObjectId(problemId) 
+          } 
+        },
+        {
+          $group: {
+            _id: null,
+            totalSubmissions: { $sum: 1 },
+            acceptedSubmissions: {
+              $sum: {
+                $cond: [{ $eq: ["$status", "accepted"] }, 1, 0]
+              }
+            }
+          }
+        }
+      ]);
+      console.log("stats",stats);
+      
+
+      return stats[0] || { totalSubmissions: 0, acceptedSubmissions: 0 };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getOverallStats(): Promise<{
+    totalProblems: number;
+    activeCount: number;
+    inactiveCount: number;
+    easyCount: number;
+    mediumCount: number;
+    hardCount: number;
+  }> {
+    try {
+      const stats = await ProblemModel.aggregate([
+        {
+          $group: {
+            _id: null,
+            totalProblems: { $sum: 1 },
+            activeCount: {
+              $sum: { $cond: [{ $eq: ["$isActive", true] }, 1, 0] }
+            },
+            inactiveCount: {
+              $sum: { $cond: [{ $eq: ["$isActive", false] }, 1, 0] }
+            },
+            easyCount: {
+              $sum: { $cond: [{ $eq: ["$difficulty", "easy"] }, 1, 0] }
+            },
+            mediumCount: {
+              $sum: { $cond: [{ $eq: ["$difficulty", "medium"] }, 1, 0] }
+            },
+            hardCount: {
+              $sum: { $cond: [{ $eq: ["$difficulty", "hard"] }, 1, 0] }
+            }
+          }
+        }
+      ]);
+
+      return stats[0] || {
+        totalProblems: 0,
+        activeCount: 0,
+        inactiveCount: 0,
+        easyCount: 0,
+        mediumCount: 0,
+        hardCount: 0
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
 
 }

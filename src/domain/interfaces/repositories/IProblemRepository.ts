@@ -5,22 +5,40 @@ import { Problem } from '../../entities/Problem';
 
 
 export interface ProblemFilters {
-  difficulty?: 'easy' | 'medium' | 'hard';
-  search?: string;
-  tags?: string[];
-  languageId?: number;
-  status?: "Draft" | "Published";
-  isActive?: boolean;
+    difficulty?: 'easy' | 'medium' | 'hard';
+    search?: string;
+    tags?: string[];
+    languageId?: number;
+    status?: "Draft" | "Published";
+    isActive?: boolean;
 }
 
 
 
 export interface PaginationOptions {
-  page: number;
-  limit: number;
+    page: number;
+    limit: number;
 }
 
 
+export interface ProblemSearchFilters {
+    search?: string;
+    difficulty?: 'easy' | 'medium' | 'hard';
+    status?: 'active' | 'inactive';
+    page: number;
+    limit: number;
+    sortBy: 'problemNumber' | 'title' | 'difficulty' | 'createdAt' | 'acceptanceRate' | 'totalSubmissions';
+    sortOrder: 'asc' | 'desc';
+}
+
+export interface PaginatedProblems {
+    problems: Problem[];
+    totalCount: number;
+    currentPage: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+}
 
 
 export interface IProblemRepository {
@@ -43,17 +61,6 @@ export interface IProblemRepository {
     delete(id: string): Promise<boolean>;
     findBySlug(slug: string): Promise<Problem | null>;
 
-    // getFilteredProblems(
-    //     filters: ProblemFilters,
-    //     pagination: PaginationOptions
-    // ): Promise<{
-    //     problems: Problem[];
-    //     total: number;
-    //     currentPage: number;
-    //     totalPages: number;
-    //     hasNext: boolean;
-    //     hasPrev: boolean;
-    // }>;
 
     getFilteredProblems(
         filters: ProblemFilters,
@@ -75,6 +82,23 @@ export interface IProblemRepository {
             difficulty: 'easy' | 'medium' | 'hard';
         }>;
         totalCount: number;
+    }>;
+
+
+
+
+    findAllForAdminWithFilters(filters: ProblemSearchFilters): Promise<PaginatedProblems>;
+    getSubmissionStatsByProblemId(problemId: string): Promise<{
+        totalSubmissions: number;
+        acceptedSubmissions: number;
+    }>;
+    getOverallStats(): Promise<{
+        totalProblems: number;
+        activeCount: number;
+        inactiveCount: number;
+        easyCount: number;
+        mediumCount: number;
+        hardCount: number;
     }>;
 
 

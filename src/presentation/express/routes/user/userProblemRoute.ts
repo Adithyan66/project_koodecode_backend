@@ -22,7 +22,7 @@ router.post('/submit', authenticate, expressAdapter(userProblemController.submit
 router.get('/submissions/:submissionId', expressAdapter(userProblemController.getSubmissionResult));
 router.get('/languages', expressAdapter(userProblemController.getLanguages));
 router.get('/problem-names', authenticate, expressAdapter(userProblemController.getProblemNames));
-
+router.patch('/problem-like',authenticate ,expressAdapter(userProblemController.likeProblem))
 
 export default router;
 

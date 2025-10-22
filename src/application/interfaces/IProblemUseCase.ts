@@ -3,6 +3,7 @@
 
 import { Judge0Language } from "../../domain/entities/Judge0Submission";
 import { Problem } from "../../domain/entities/Problem";
+import { AdminProblemsListRequestDto, AdminProblemsListResponseDto } from "../dto/problems/AdminProblemListDto";
 import { CreateProblemDto } from "../dto/problems/CreateProblemDto";
 import { ProblemListResponseDto } from "../dto/problems/ProblemListDto";
 import { ProblemNamesRequestDto, ProblemNamesResponseDto } from "../dto/problems/ProblemNamesDto";
@@ -50,4 +51,13 @@ export interface IGetProblemNamesUseCase {
 
 export interface ICreateProblemUseCase {
   execute(data: CreateProblemDto, adminId: string): Promise<Problem>;
+}
+
+
+export interface IGetAllProblemsForAdminUseCase {
+  execute(request: AdminProblemsListRequestDto): Promise<AdminProblemsListResponseDto>;
+}
+
+export interface IGetAllProgrammingLanguages {
+  execute(): Promise<any>
 }

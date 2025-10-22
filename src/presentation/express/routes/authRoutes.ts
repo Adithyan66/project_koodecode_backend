@@ -1,8 +1,10 @@
+
+
 import { Router } from 'express';
 import { expressAdapter } from '../../adaptors/ExpressAdaptor';
-import { authMiddleware } from '../../../support/middleware/authMiddleware';
 import { container } from "../../../infrastructure/config/container";
 import { AuthController } from '../../http/controllers/authentication/AuthController';
+import { userOnly } from '../middlewares';
 
 
 
@@ -19,13 +21,13 @@ router.post('/signup/verify-otp', expressAdapter(authControllers.verifyOtpAndSig
 router.post('/login', expressAdapter(authControllers.login));
 router.get('/validate', expressAdapter(authControllers.validateUser));
 router.get('/refresh-token', expressAdapter(authControllers.verifyToken));
-router.post('/logout', expressAdapter(authControllers.logoutUser))
+router.post('/logout', expressAdapter(authControllers.logoutUser));
 router.post('/forgot/request-otp', expressAdapter(authControllers.forgotRequestOtp))
 router.post('/verify-otp', expressAdapter(authControllers.verifyOtp))
 router.post('/forgot/change-password', expressAdapter(authControllers.forgotChangePassword))
 router.post('/google/callback', expressAdapter(authControllers.googleLogin))
 router.post('/github/callback', expressAdapter(authControllers.githubLogin))
-router.patch('/change-password', authMiddleware(), expressAdapter(authControllers.changePassword))
+router.patch('/change-password', userOnly, expressAdapter(authControllers.changePassword))
 
 
 export default router;

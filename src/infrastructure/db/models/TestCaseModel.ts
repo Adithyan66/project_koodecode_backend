@@ -17,7 +17,6 @@ const TestCaseSchema = new Schema<ITestCaseDocument>({
         type: Schema.Types.ObjectId,
         ref: 'Problem',
         required: true,
-        // index: true
     },
     inputs: {
         type: Schema.Types.Mixed,

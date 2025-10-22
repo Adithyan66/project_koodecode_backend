@@ -1,7 +1,7 @@
 
 
 import { TestCase } from '../../domain/entities/TestCase';
-import { ITestCaseRepository } from '../../domain/interfaces/repositories/ITestCaseRepository'; 
+import { ITestCaseRepository } from '../../domain/interfaces/repositories/ITestCaseRepository';
 import { TestCaseModel, ITestCaseDocument } from './models/TestCaseModel';
 import { Types } from 'mongoose';
 
@@ -28,7 +28,7 @@ export class MongoTestCaseRepository implements ITestCaseRepository {
             inputs: tc.inputs,
             expectedOutput: tc.expectedOutput,
             isSample: tc.isSample,
-        }));        
+        }));
 
         const savedTestCases = await TestCaseModel.insertMany(testCaseDocs);
 
@@ -46,7 +46,7 @@ export class MongoTestCaseRepository implements ITestCaseRepository {
             problemId,
             isSample: true
         }).sort({ createdAt: 1 });
-        
+
         return testCases.map(tc => this.mapToEntity(tc));
     }
 
@@ -97,4 +97,6 @@ export class MongoTestCaseRepository implements ITestCaseRepository {
             doc.updatedAt
         );
     }
+
+
 }

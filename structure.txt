@@ -3,12 +3,18 @@ tree  -I 'node_modules' > structure.txt
 
 
 
+
+
+
+
+
+
 ├── package.json
 ├── package-lock.json
-├── replacements.txt
 ├── src
 │   ├── application
 │   │   ├── dto
+│   │   │   ├── ApiResponse.ts
 │   │   │   ├── coins
 │   │   │   │   ├── CoinPurchaseDto.ts
 │   │   │   │   └── CoinTransactionDto.ts
@@ -55,11 +61,26 @@ tree  -I 'node_modules' > structure.txt
 │   │   │       ├── safeUser.ts
 │   │   │       ├── signupUserResponse.ts
 │   │   │       ├── UploadUrlResponseDto.ts
-│   │   │       └── UserProfileDto.ts
+│   │   │       ├── UserProfileDto.ts
+│   │   │       └── ValidateUserResponse.ts
+│   │   ├── errors
+│   │   │   ├── AppErrors.ts
+│   │   │   ├── AppError.ts
+│   │   │   └── ErrorMapper.ts
 │   │   ├── interfaces
+│   │   │   ├── IAuthenticationUseCase.ts
+│   │   │   ├── ICodeExecutionHelperService.ts
+│   │   │   ├── ICoinUseCase.ts
+│   │   │   ├── IContestScoringService.ts
+│   │   │   ├── IContestTimerService.ts
+│   │   │   ├── IContestUseCase.ts
 │   │   │   ├── IImageUploadService.ts
 │   │   │   ├── IJudge0Repository.ts
-│   │   │   └── IS3Service.ts
+│   │   │   ├── IProblemUseCase.ts
+│   │   │   ├── IProfileUseCase.ts
+│   │   │   ├── IRoomUseCase.ts
+│   │   │   ├── IS3Service.ts
+│   │   │   └── IStoreUseCase.ts
 │   │   ├── services
 │   │   │   ├── CodeExecutionHelperService.ts
 │   │   │   ├── ContestScoringService.ts
@@ -67,72 +88,73 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   ├── ImageUploadService.ts
 │   │   │   ├── PasswordService.ts
 │   │   │   └── userMapper.ts
-│   │   └── usecases
-│   │       ├── auth
-│   │       │   └── ChangePasswordUseCase.ts
-│   │       ├── coins
-│   │       │   ├── AwardCoinsUseCase.ts
-│   │       │   ├── CheckSufficientBalanceUseCase.ts
-│   │       │   ├── CompleteCoinPurchaseUseCase.ts
-│   │       │   ├── CreateCoinPurchaseOrderUseCase.ts
-│   │       │   ├── DailyLoginRewardUseCase.ts
-│   │       │   ├── GetCoinBalanceUseCase.ts
-│   │       │   ├── GetCoinStatsUseCase.ts
-│   │       │   ├── GetCoinTransactionsUseCase.ts
-│   │       │   ├── SpendCoinsUseCase.ts
-│   │       │   └── TransferCoinsUseCase.ts
-│   │       ├── contests
-│   │       │   ├── CreateContestUseCase.ts
-│   │       │   ├── DistributeContestRewardsUseCase.ts
-│   │       │   ├── GetContestDetailUseCase.ts
-│   │       │   ├── GetContestLeaderboardUseCase.ts
-│   │       │   ├── GetContestsListUseCase.ts
-│   │       │   ├── RegisterForContestUseCase.ts
-│   │       │   ├── StartContestProblemUseCase.ts
-│   │       │   └── SubmitContestSolutionUseCase.ts
-│   │       ├── problems
-│   │       │   ├── CreateProblemUseCase.ts
-│   │       │   ├── GetProblemByIdUseCase.ts
-│   │       │   ├── GetProblemByNumberUseCase.ts
-│   │       │   ├── GetProblemNamesUseCase.ts
-│   │       │   ├── GetProblemsListUseCase.ts
-│   │       │   ├── GetProblemTestCasesUseCase.ts
-│   │       │   └── GetSubmissionTestCasesUseCase.ts
-│   │       ├── rooms
-│   │       │   ├── CreateRoomUseCase.ts
-│   │       │   ├── GetPublicRoomsUseCase.ts
-│   │       │   ├── JoinRoomUseCase.ts
-│   │       │   ├── KickUserUseCase.ts
-│   │       │   ├── UpdateRoomPermissionsUseCase.ts
-│   │       │   └── VerifyPrivateRoomUseCase.ts
-│   │       ├── store
-│   │       │   ├── CheckItemOwnershipUseCase.ts
-│   │       │   ├── GetStoreItemsUseCase.ts
-│   │       │   ├── GetUserInventoryUseCase.ts
-│   │       │   └── PurchaseStoreItemUseCase.ts
-│   │       ├── submissions
-│   │       │   ├── CreateSubmissionUseCase.ts
-│   │       │   ├── GetLanguagesUseCase.ts
-│   │       │   ├── GetSubmissionResultUseCase.ts
-│   │       │   └── RunCodeUseCase.ts
-│   │       └── users
-│   │           ├── FollowUserUseCase.ts
-│   │           ├── ForgotPasswordUseCase.ts
-│   │           ├── GenerateProfileImageUploadUrlUseCase.ts
-│   │           ├── GetUserEditableProfile.ts
-│   │           ├── GetUserFollowersUseCase.ts
-│   │           ├── GetUserFollowingUseCase.ts
-│   │           ├── GetUserProfileUseCase.ts
-│   │           ├── GitHubOAuthUseCase.ts
-│   │           ├── GoogleOAuthUseCase.ts
-│   │           ├── LoginUseCase.ts
-│   │           ├── LogoutUseCase.ts
-│   │           ├── OtpUseCase.ts
-│   │           ├── SignupUseCase.ts
-│   │           ├── UnfollowUserUseCase.ts
-│   │           ├── UpdateProfileImageUseCase.ts
-│   │           ├── UpdateUserProfileUseCase.ts
-│   │           └── ValidateUserUseCase.ts
+│   │   ├── usecases
+│   │   │   ├── auth
+│   │   │   │   ├── ChangePasswordUseCase.ts
+│   │   │   │   ├── ForgotPasswordUseCase.ts
+│   │   │   │   ├── GitHubOAuthUseCase.ts
+│   │   │   │   ├── GoogleOAuthUseCase.ts
+│   │   │   │   ├── LoginUseCase.ts
+│   │   │   │   ├── LogoutUseCase.ts
+│   │   │   │   ├── OtpUseCase.ts
+│   │   │   │   ├── SignupUseCase.ts
+│   │   │   │   └── ValidateUserUseCase.ts
+│   │   │   ├── coins
+│   │   │   │   ├── AwardCoinsUseCase.ts
+│   │   │   │   ├── CheckSufficientBalanceUseCase.ts
+│   │   │   │   ├── CompleteCoinPurchaseUseCase.ts
+│   │   │   │   ├── CreateCoinPurchaseOrderUseCase.ts
+│   │   │   │   ├── DailyLoginRewardUseCase.ts
+│   │   │   │   ├── GetCoinBalanceUseCase.ts
+│   │   │   │   ├── GetCoinStatsUseCase.ts
+│   │   │   │   ├── GetCoinTransactionsUseCase.ts
+│   │   │   │   ├── SpendCoinsUseCase.ts
+│   │   │   │   └── TransferCoinsUseCase.ts
+│   │   │   ├── contests
+│   │   │   │   ├── CreateContestUseCase.ts
+│   │   │   │   ├── DistributeContestRewardsUseCase.ts
+│   │   │   │   ├── GetContestDetailUseCase.ts
+│   │   │   │   ├── GetContestLeaderboardUseCase.ts
+│   │   │   │   ├── GetContestsListUseCase.ts
+│   │   │   │   ├── RegisterForContestUseCase.ts
+│   │   │   │   ├── StartContestProblemUseCase.ts
+│   │   │   │   └── SubmitContestSolutionUseCase.ts
+│   │   │   ├── problems
+│   │   │   │   ├── CreateProblemUseCase.ts
+│   │   │   │   ├── GetProblemByIdUseCase.ts
+│   │   │   │   ├── GetProblemByNumberUseCase.ts
+│   │   │   │   ├── GetProblemNamesUseCase.ts
+│   │   │   │   ├── GetProblemsListUseCase.ts
+│   │   │   │   ├── GetProblemTestCasesUseCase.ts
+│   │   │   │   └── GetSubmissionTestCasesUseCase.ts
+│   │   │   ├── rooms
+│   │   │   │   ├── CreateRoomUseCase.ts
+│   │   │   │   ├── GetPublicRoomsUseCase.ts
+│   │   │   │   ├── JoinRoomUseCase.ts
+│   │   │   │   ├── KickUserUseCase.ts
+│   │   │   │   ├── UpdateRoomPermissionsUseCase.ts
+│   │   │   │   └── VerifyPrivateRoomUseCase.ts
+│   │   │   ├── store
+│   │   │   │   ├── CheckItemOwnershipUseCase.ts
+│   │   │   │   ├── GetStoreItemsUseCase.ts
+│   │   │   │   ├── GetUserInventoryUseCase.ts
+│   │   │   │   └── PurchaseStoreItemUseCase.ts
+│   │   │   ├── submissions
+│   │   │   │   ├── CreateSubmissionUseCase.ts
+│   │   │   │   ├── GetLanguagesUseCase.ts
+│   │   │   │   ├── GetSubmissionResultUseCase.ts
+│   │   │   │   └── RunCodeUseCase.ts
+│   │   │   └── users
+│   │   │       ├── FollowUserUseCase.ts
+│   │   │       ├── GenerateProfileImageUploadUrlUseCase.ts
+│   │   │       ├── GetUserEditableProfile.ts
+│   │   │       ├── GetUserFollowersUseCase.ts
+│   │   │       ├── GetUserFollowingUseCase.ts
+│   │   │       ├── GetUserProfileUseCase.ts
+│   │   │       ├── UnfollowUserUseCase.ts
+│   │   │       ├── UpdateProfileImageUseCase.ts
+│   │   │       └── UpdateUserProfileUseCase.ts
+│   │   └── utils
 │   ├── app.ts
 │   ├── domain
 │   │   ├── entities
@@ -156,40 +178,53 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   ├── UserInventory.ts
 │   │   │   ├── UserProfile.ts
 │   │   │   └── User.ts
-│   │   └── interfaces
-│   │       ├── repositories
-│   │       │   ├── IBadgeRepository.ts
-│   │       │   ├── ICoinPurchaseRepository.ts
-│   │       │   ├── ICoinService.ts
-│   │       │   ├── ICoinTransactionRepository.ts
-│   │       │   ├── IContestParticipantRepository.ts
-│   │       │   ├── IContestRepository.ts
-│   │       │   ├── ICounterRepository.ts
-│   │       │   ├── IOtpRepository.ts
-│   │       │   ├── IPaymentGatewayService.ts
-│   │       │   ├── IProblemRepository.ts
-│   │       │   ├── IRoomActivityRepository.ts
-│   │       │   ├── IRoomRepository.ts
-│   │       │   ├── IStoreItemRepository.ts
-│   │       │   ├── ISubmissionRepository.ts
-│   │       │   ├── ITestCaseRepository.ts
-│   │       │   ├── IUserConnectionRepository.ts
-│   │       │   ├── IUserInventoryRepository.ts
-│   │       │   ├── IUserProfileRepository.ts
-│   │       │   └── IUserRepository.ts
-│   │       └── services
-│   │           ├── ICodeExecutionService.ts
-│   │           ├── ICoinService.ts
-│   │           ├── IEmailService.ts
-│   │           ├── IJudge0Service.ts
-│   │           ├── IOAuthService.ts
-│   │           ├── IPasswordService.ts
-│   │           ├── IPaymentGatewayService.ts
-│   │           ├── ITokenService.ts
-│   │           └── IUserStatsService.ts
+│   │   ├── errors
+│   │   │   ├── AuthErrors.ts
+│   │   │   ├── CoinErrors.ts
+│   │   │   ├── DomainError.ts
+│   │   │   ├── ProblemErrors.ts
+│   │   │   └── SubmissionErrors.ts
+│   │   ├── interfaces
+│   │   │   ├── repositories
+│   │   │   │   ├── IBadgeRepository.ts
+│   │   │   │   ├── ICoinPurchaseRepository.ts
+│   │   │   │   ├── ICoinService.ts
+│   │   │   │   ├── ICoinTransactionRepository.ts
+│   │   │   │   ├── IContestParticipantRepository.ts
+│   │   │   │   ├── IContestRepository.ts
+│   │   │   │   ├── ICounterRepository.ts
+│   │   │   │   ├── IOtpRepository.ts
+│   │   │   │   ├── IPaymentGatewayService.ts
+│   │   │   │   ├── IProblemRepository.ts
+│   │   │   │   ├── IRoomActivityRepository.ts
+│   │   │   │   ├── IRoomRepository.ts
+│   │   │   │   ├── IStoreItemRepository.ts
+│   │   │   │   ├── ISubmissionRepository.ts
+│   │   │   │   ├── ITestCaseRepository.ts
+│   │   │   │   ├── IUserConnectionRepository.ts
+│   │   │   │   ├── IUserInventoryRepository.ts
+│   │   │   │   ├── IUserProfileRepository.ts
+│   │   │   │   └── IUserRepository.ts
+│   │   │   └── services
+│   │   │       ├── ICodeExecutionService.ts
+│   │   │       ├── ICoinService.ts
+│   │   │       ├── IEmailService.ts
+│   │   │       ├── IJudge0HealthService.ts
+│   │   │       ├── IJudge0Service.ts
+│   │   │       ├── IOAuthService.ts
+│   │   │       ├── IPasswordService.ts
+│   │   │       ├── IPaymentGatewayService.ts
+│   │   │       ├── IRealtimeService.ts
+│   │   │       ├── IS3Service.ts
+│   │   │       ├── ITokenService.ts
+│   │   │       ├── IUsernameService.ts
+│   │   │       └── IUserStatsService.ts
+│   │   └── value-objects
+│   │       └── ProgrammingLanguage.ts
 │   ├── infrastructure
 │   │   ├── config
-│   │   │   └── config.ts
+│   │   │   ├── config.ts
+│   │   │   └── container.ts
 │   │   ├── corn
 │   │   │   ├── ContestCron.ts
 │   │   │   └── cronJobs.ts
@@ -238,68 +273,74 @@ tree  -I 'node_modules' > structure.txt
 │   │   ├── scripts
 │   │   │   ├── initializeCounters.ts
 │   │   │   └── seedBadges.ts
-│   │   └── services
-│   │       ├── CodeExecutionService.ts
-│   │       ├── CoinPricingService.ts
-│   │       ├── Judge0HealthService.ts
-│   │       ├── Judge0Service.ts
-│   │       ├── JwtService.ts
-│   │       ├── NodemailerEmailService.ts
-│   │       ├── OAuthService.ts
-│   │       ├── RazorpayGatewayService.ts
-│   │       ├── S3Service.ts
-│   │       ├── SocketService.ts
-│   │       └── UserStatsService.ts
+│   │   ├── services
+│   │   │   ├── CodeExecutionService.ts
+│   │   │   ├── CoinPricingService.ts
+│   │   │   ├── Judge0HealthService.ts
+│   │   │   ├── Judge0Service.ts
+│   │   │   ├── JwtService.ts
+│   │   │   ├── NodemailerEmailService.ts
+│   │   │   ├── OAuthService.ts
+│   │   │   ├── RazorpayGatewayService.ts
+│   │   │   ├── S3Service.ts
+│   │   │   ├── SocketService.ts
+│   │   │   ├── UsernameService.ts
+│   │   │   └── UserStatsService.ts
+│   │   └── utils
+│   │       └── responseBuilder.ts
 │   ├── presentation
-│   │   ├── controllers
-│   │   │   ├── admin
-│   │   │   │   ├── contests
-│   │   │   │   │   └── AdminContestController.ts
-│   │   │   │   └── problems
-│   │   │   │       └── AdminProblemController.ts
-│   │   │   ├── auth
-│   │   │   │   ├── ChangePasswordController.ts
-│   │   │   │   ├── ForgotPasswordController.ts
-│   │   │   │   ├── LoginController.ts
-│   │   │   │   ├── LogoutController.ts
-│   │   │   │   ├── OAuthController.ts
-│   │   │   │   ├── RefreshTokenController.ts
-│   │   │   │   ├── SignupController.ts
-│   │   │   │   └── UserController.ts
-│   │   │   ├── HealthController.ts
-│   │   │   └── users
-│   │   │       ├── CoinController.ts
-│   │   │       ├── CoinPurchaseController.ts
-│   │   │       ├── contests
-│   │   │       │   └── UserContestController.ts
-│   │   │       ├── problems
-│   │   │       │   ├── ProblemNamesController.ts
-│   │   │       │   ├── ProblemSolvingController.ts
-│   │   │       │   └── UserProblemController.ts
-│   │   │       ├── ProfileImageController.ts
-│   │   │       ├── rooms
-│   │   │       │   └── RoomController.ts
-│   │   │       ├── StoreController.ts
-│   │   │       ├── UserProfileController.ts
-│   │   │       └── UserSocialController.ts
-│   │   ├── middleware
-│   │   │   ├── authMiddleware.ts
-│   │   │   └── errorMiddleware.ts
-│   │   └── routes
-│   │       ├── admin
-│   │       │   ├── contestRoutes.ts
-│   │       │   └── problemRoutes.ts
-│   │       ├── authRoutes.ts
-│   │       ├── healthRoutes.ts
-│   │       └── user
-│   │           ├── coinPurchaseRoutes.ts
-│   │           ├── coinRoutes.ts
-│   │           ├── contestRoutes.ts
-│   │           ├── paymentRoutes.ts
-│   │           ├── problemRoutes.ts
-│   │           ├── profileRoutes.ts
-│   │           ├── roomRoutes.ts
-│   │           └── storeRoutes.ts
+│   │   ├── adaptors
+│   │   │   └── ExpressAdaptor.ts
+│   │   ├── express
+│   │   │   ├── middlewares
+│   │   │   │   ├── authMiddleware.ts
+│   │   │   │   ├── errorHandler.ts
+│   │   │   │   └── index.ts
+│   │   │   └── routes
+│   │   │       ├── admin
+│   │   │       │   ├── adminCoinRoute.ts
+│   │   │       │   ├── adminContestRoute.ts
+│   │   │       │   └── adminProblemRoute.ts
+│   │   │       ├── authRoutes.ts
+│   │   │       ├── healthRoute.ts
+│   │   │       └── user
+│   │   │           ├── userCoinRoute.ts
+│   │   │           ├── userContestRoute.ts
+│   │   │           ├── userProblemRoute.ts
+│   │   │           ├── userProfileRoute.ts
+│   │   │           ├── userRoomRoute.ts
+│   │   │           └── userStoreRoute.ts
+│   │   └── http
+│   │       ├── controllers
+│   │       │   ├── admin
+│   │       │   │   ├── AdminCoinController.ts
+│   │       │   │   ├── AdminContestController.ts
+│   │       │   │   └── AdminProblemController.ts
+│   │       │   ├── authentication
+│   │       │   │   └── AuthController.ts
+│   │       │   ├── health
+│   │       │   │   └── HealthController.ts
+│   │       │   └── user
+│   │       │       ├── UserCoinController.ts
+│   │       │       ├── UserContestController.ts
+│   │       │       ├── UserProblemController.ts
+│   │       │       ├── UserProfileController.ts
+│   │       │       ├── UserRoomController.ts
+│   │       │       └── UserStoreController.ts
+│   │       ├── helper
+│   │       │   └── HttpResponse.ts
+│   │       └── interfaces
+│   │           ├── IAdminContestController.ts
+│   │           ├── IAdminProblemController.ts
+│   │           ├── IAuthController.ts
+│   │           ├── IHealthController.ts
+│   │           ├── IHttpRequest.ts
+│   │           ├── IHttpResponse.ts
+│   │           ├── IUserCoinController.ts
+│   │           ├── IUserContestController.ts
+│   │           ├── IUserProblemController.ts
+│   │           ├── IUserProfileController.ts
+│   │           └── IUserStoreController.ts
 │   ├── server.ts
 │   └── shared
 │       ├── constants
@@ -316,4 +357,4 @@ tree  -I 'node_modules' > structure.txt
 ├── test-presigned-url.js
 └── tsconfig.json
 
-55 directories, 258 files
+61 directories, 287 files

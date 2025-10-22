@@ -5,6 +5,7 @@ import { Submission } from '../../domain/entities/Submission';
 import { SubmissionModel } from './models/SubmissionModel';
 
 export class MongoSubmissionRepository implements ISubmissionRepository {
+  
   async create(submission: Omit<Submission, 'id' | 'createdAt' | 'updatedAt'>): Promise<Submission> {
     const submissionDoc = new SubmissionModel(submission);
     const saved = await submissionDoc.save();

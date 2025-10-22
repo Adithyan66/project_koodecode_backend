@@ -1,5 +1,5 @@
 export class ProgrammingLanguage {
-    
+
   private static readonly SUPPORTED_LANGUAGES: Record<number, { name: string; extension: string }> = {
     50: { name: 'C', extension: 'c' },
     54: { name: 'C++', extension: 'cpp' },
@@ -13,8 +13,8 @@ export class ProgrammingLanguage {
     72: { name: 'Ruby', extension: 'rb' }
   };
 
-  constructor(private readonly _id: number) {
-    if (!ProgrammingLanguage.isSupported(_id)) {
+  constructor(private readonly _id?: number) {
+    if (_id && !ProgrammingLanguage.isSupported(_id)) {
       throw new Error(`Unsupported programming language ID: ${_id}`);
     }
   }
@@ -27,19 +27,28 @@ export class ProgrammingLanguage {
     return this.SUPPORTED_LANGUAGES[languageId] || null;
   }
 
-  static getAllSupportedLanguages(): Record<number, { name: string; extension: string }> {
-    return { ...this.SUPPORTED_LANGUAGES };
+  get getAllSupportedLanguages(): Record<number, { name: string; extension: string }> {
+    return { ...ProgrammingLanguage.SUPPORTED_LANGUAGES };
   }
 
   get name(): string {
-    return ProgrammingLanguage.SUPPORTED_LANGUAGES[this._id].name; 
+    if (!this._id) {
+      throw new Error(`id not provided`);
+    }
+    return ProgrammingLanguage.SUPPORTED_LANGUAGES[this._id].name;
   }
 
   get extension(): string {
-    return ProgrammingLanguage.SUPPORTED_LANGUAGES[this._id].extension; 
+    if (!this._id) {
+      throw new Error(`id not provided`);
+    }
+    return ProgrammingLanguage.SUPPORTED_LANGUAGES[this._id].extension;
   }
 
   get id(): number {
-    return this._id; 
+    if (!this._id) {
+      throw new Error(`id not provided`);
+    }
+    return this._id;
   }
 }

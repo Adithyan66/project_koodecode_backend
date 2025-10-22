@@ -56,7 +56,7 @@ export class UserContestController implements IUserContestController{
         const problem = await this._startContestProblemUseCase.execute(+contestNumber, userId);
 
         return new HttpResponse(HTTP_STATUS.OK, {
-            ...buildResponse(true, 'Contest problem retrieved', { problem }),
+            ...buildResponse(true, 'Contest problem retrieved',  problem ),
         });
     }
 
@@ -137,7 +137,7 @@ export class UserContestController implements IUserContestController{
         );
 
         return new HttpResponse(HTTP_STATUS.OK, {
-            ...buildResponse(true, 'Contest details fetched successfully', { result }),
+            ...buildResponse(true, 'Contest details fetched successfully',  result ),
         });
     }
 

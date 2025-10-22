@@ -94,6 +94,8 @@ import { AdminContestController } from "../../presentation/http/controllers/admi
 
 import { createServer } from 'http';
 import { SocketService } from "../services/SocketService";
+import { GetAllProblemsForAdminUseCase } from "../../application/usecases/problems/GetAllProblemsForAdminUseCase";
+import { GetAllProgrammingLanguages } from "../../application/usecases/problems/GetAllProgrammingLanguages";
 
 
 
@@ -204,6 +206,8 @@ container.registerSingleton('IPurchaseStoreItemUseCase', PurchaseStoreItemUseCas
 container.registerSingleton('IGetUserInventoryUseCase', GetUserInventoryUseCase)
 container.registerSingleton('ICheckItemOwnershipUseCase', CheckItemOwnershipUseCase)
 container.registerSingleton('ICreateContestUseCase', CreateContestUseCase)
+container.registerSingleton('IGetAllProblemsForAdminUseCase', GetAllProblemsForAdminUseCase)
+container.registerSingleton('IGetAllProgrammingLanguages', GetAllProgrammingLanguages)
 
 
 
