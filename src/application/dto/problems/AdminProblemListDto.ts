@@ -1,4 +1,5 @@
-// src/application/dto/problems/AdminProblemListDto.ts
+
+
 export interface AdminProblemListDto {
   id: string;
   problemNumber: number;

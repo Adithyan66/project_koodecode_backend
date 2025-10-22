@@ -96,6 +96,7 @@ import { createServer } from 'http';
 import { SocketService } from "../services/SocketService";
 import { GetAllProblemsForAdminUseCase } from "../../application/usecases/problems/GetAllProblemsForAdminUseCase";
 import { GetAllProgrammingLanguages } from "../../application/usecases/problems/GetAllProgrammingLanguages";
+import { GetProblemDetailForAdminUseCase } from "../../application/usecases/problems/GetProblemDetailForAdminUseCase";
 
 
 
@@ -208,6 +209,7 @@ container.registerSingleton('ICheckItemOwnershipUseCase', CheckItemOwnershipUseC
 container.registerSingleton('ICreateContestUseCase', CreateContestUseCase)
 container.registerSingleton('IGetAllProblemsForAdminUseCase', GetAllProblemsForAdminUseCase)
 container.registerSingleton('IGetAllProgrammingLanguages', GetAllProgrammingLanguages)
+container.registerSingleton('IGetProblemDetailForAdminUseCase', GetProblemDetailForAdminUseCase)
 
 
 

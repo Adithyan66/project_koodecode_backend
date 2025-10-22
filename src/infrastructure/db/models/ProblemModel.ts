@@ -11,7 +11,7 @@ export interface IProblemModel extends Document {
     problemNumber: number;
     title: string;
     slug: string;
-    difficulty: 'easy' | 'medium' | 'hard'; 
+    difficulty: 'easy' | 'medium' | 'hard';
     tags: string[];
     description: string;
     constraints: {
@@ -44,7 +44,7 @@ export interface IProblemModel extends Document {
         type: string;
         description?: string;
     }[];
-    
+
     supportedLanguages: number[];
     templates: {
         [languageId: string]: {
@@ -53,7 +53,7 @@ export interface IProblemModel extends Document {
             placeholder: string;
         };
     };
-    
+
 }
 
 
@@ -81,13 +81,13 @@ const ProblemSchema: Schema = new Schema({
         }
     ],
     examples: { type: Schema.Types.Mixed, required: true },
-   likes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    likes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     totalSubmissions: { type: Number, default: 0 },
     acceptedSubmissions: { type: Number, default: 0 },
     hints: [{ type: String }],
     companies: [{ type: String }],
     isActive: { type: Boolean, default: true },
-    createdBy: { type: String, required: true },
+    createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
     functionName: { type: String, required: true },
     returnType: { type: String, required: true },
     parameters: [{
@@ -95,7 +95,7 @@ const ProblemSchema: Schema = new Schema({
         type: { type: String },
         description: { type: String }
     }],
-    supportedLanguages: [{ type: Number, required: true }], 
+    supportedLanguages: [{ type: Number, required: true }],
     templates: {
         type: Object,
         of: {

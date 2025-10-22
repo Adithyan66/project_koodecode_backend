@@ -1,33 +1,15 @@
 
 
-
-import { CreateSubmissionUseCase } from '../../../../application/usecases/submissions/CreateSubmissionUseCase';
-import { GetSubmissionResultUseCase } from '../../../../application/usecases/submissions/GetSubmissionResultUseCase';
-import { RunCodeUseCase } from '../../../../application/usecases/submissions/RunCodeUseCase';
-import { GetLanguagesUseCase } from '../../../../application/usecases/submissions/GetLanguagesUseCase';
-
-
-
-
-import { Request, Response } from 'express';
-import { GetProblemsListUseCase } from '../../../../application/usecases/problems/GetProblemsListUseCase';
-import { GetProblemByIdUseCase } from '../../../../application/usecases/problems/GetProblemByIdUseCase';
 import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 import { IHttpRequest } from '../../interfaces/IHttpRequest';
 import { HttpResponse } from '../../helper/HttpResponse';
 import { buildResponse } from '../../../../infrastructure/utils/responseBuilder';
 import { BadRequestError, UnauthorizedError } from '../../../../application/errors/AppErrors';
-import { MESSAGES } from '../../../../shared/constants/messages';
-import { ProblemNamesRequestDto } from '../../../../application/dto/problems/ProblemNamesDto';
-import { GetProblemNamesUseCase } from '../../../../application/usecases/problems/GetProblemNamesUseCase';
-import { IUserProblemController } from '../../interfaces/IUserProblemController';
-import { ICreateProblemUseCase, ICreateSubmissionUseCase, IGetAllProblemsForAdminUseCase, IGetAllProgrammingLanguages, IGetLanguagesUseCase, IGetProblemByIdUseCase, IGetProblemNamesUseCase, IGetProblemsListUseCase, IGetSubmissionResultUseCase, IRunCodeUseCase } from '../../../../application/interfaces/IProblemUseCase';
+import { ICreateProblemUseCase, IGetAllProblemsForAdminUseCase, IGetAllProgrammingLanguages, IGetProblemDetailForAdminUseCase } from '../../../../application/interfaces/IProblemUseCase';
 import { inject, injectable } from 'tsyringe';
-import { CreateProblemUseCase } from '../../../../application/usecases/problems/CreateProblemUseCase';
 import { CreateProblemDto } from '../../../../application/dto/problems/CreateProblemDto';
 import { IAdminProblemController } from '../../interfaces/IAdminProblemController';
 import { AdminProblemsListRequestDto } from '../../../../application/dto/problems/AdminProblemListDto';
-import { HttpRequest } from 'aws-sdk';
 
 
 
@@ -38,7 +20,8 @@ export class AdminProblemController implements IAdminProblemController {
     constructor(
         @inject('ICreateProblemUseCase') private _createProblemUseCase: ICreateProblemUseCase,
         @inject('IGetAllProblemsForAdminUseCase') private _getAllProblemsForAdminUseCase: IGetAllProblemsForAdminUseCase,
-        @inject('IGetAllProgrammingLanguages') private _getAllProgrammingLanguages : IGetAllProgrammingLanguages
+        @inject('IGetAllProgrammingLanguages') private _getAllProgrammingLanguages: IGetAllProgrammingLanguages,
+       @inject('IGetProblemDetailForAdminUseCase') private getProblemDetailForAdminUseCase : IGetProblemDetailForAdminUseCase
     ) { }
 
     createProblem = async (httpRequest: IHttpRequest) => {
@@ -164,20 +147,36 @@ export class AdminProblemController implements IAdminProblemController {
     getAllLanguages = async (httpRequest: IHttpRequest) => {
 
         const result = await this._getAllProgrammingLanguages.execute();
-        console.log(result)
-         return new HttpResponse(HTTP_STATUS.OK, {
+
+        return new HttpResponse(HTTP_STATUS.OK, {
             ...buildResponse(true, 'languages retrieved successfully', result),
         });
     }
 
+
+    getProblemDetail = async (httpRequest: IHttpRequest) => {
+
+        const { problemId } = httpRequest.params;
+
+        if (!problemId) {
+            throw new BadRequestError('Problem ID is required');
+        }
+
+        const result = await this.getProblemDetailForAdminUseCase.execute(problemId);
+
+
+        return new HttpResponse(HTTP_STATUS.OK, {
+            ...buildResponse(true, 'Problem details retrieved successfully', result),
+        });
+
+    }
+
+
+
+
+
+
 }
-
-
-
-
-
-
-
 
 
 

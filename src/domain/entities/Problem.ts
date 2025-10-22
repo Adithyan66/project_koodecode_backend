@@ -10,6 +10,25 @@ export interface Constraint {
   maxValue?: number;
 }
 
+export interface Example {
+  input: string;
+  output: string;
+  explanation: string;
+  isSample?: boolean;
+}
+
+export interface Parameter {
+  name: string;
+  type: string;
+  description?: string;
+}
+
+export interface Template {
+  templateCode: string;
+  userFunctionSignature: string;
+  placeholder: string;
+}
+
 export interface ProblemProps {
   problemNumber: number;
   title: string;
@@ -18,12 +37,7 @@ export interface ProblemProps {
   tags: string[];
   description: string;
   constraints: Constraint[];
-  examples: {
-    input: string;
-    output: string;
-    explanation: string;
-    isSample?: boolean;
-  }[];
+  examples: Example[];
   likes?: string[];
   totalSubmissions?: number;
   acceptedSubmissions?: number;
@@ -33,17 +47,9 @@ export interface ProblemProps {
   createdBy: string;
   functionName: string;
   returnType: string;
-  parameters: {
-    name: string;
-    type: string;
-    description?: string;
-  }[];
+  parameters: Parameter[];
   supportedLanguages: number[];
-  templates: Record<string, {
-    templateCode: string;
-    userFunctionSignature: string;
-    placeholder: string;
-  }>;
+  templates: Record<string, Template>;
 
   id?: string;
   createdAt?: Date;
@@ -58,12 +64,7 @@ export class Problem {
   public tags: string[];
   public description: string;
   public constraints: Constraint[];
-  public examples: {
-    input: string;
-    output: string;
-    explanation: string;
-    isSample?: boolean;
-  }[];
+  public examples: Example[];
   public likes: string[];
   public totalSubmissions: number;
   public acceptedSubmissions: number;
@@ -73,17 +74,9 @@ export class Problem {
   public createdBy: string;
   public functionName: string;
   public returnType: string;
-  public parameters: {
-    name: string;
-    type: string;
-    description?: string;
-  }[];
+  public parameters: Parameter[];
   public supportedLanguages: number[];
-  public templates: Record<string, {
-    templateCode: string;
-    userFunctionSignature: string;
-    placeholder: string;
-  }>;
+  public templates: Record<string, Template>;
 
   public id?: string;
   public createdAt?: Date;
@@ -163,11 +156,7 @@ export class Problem {
     this.likes = this.likes.filter(id => id !== userId);
   }
 
-  addSupportedLanguage(languageId: number, template: {
-    templateCode: string;
-    userFunctionSignature: string;
-    placeholder: string;
-  }): void {
+  addSupportedLanguage(languageId: number, template: Template): void {
     if (!this.supportedLanguages.includes(languageId)) {
       this.supportedLanguages.push(languageId);
       this.templates[languageId.toString()] = template;
@@ -181,22 +170,14 @@ export class Problem {
     this.updatedAt = new Date();
   }
 
-  updateTemplate(languageId: number, template: {
-    templateCode: string;
-    userFunctionSignature: string;
-    placeholder: string;
-  }): void {
+  updateTemplate(languageId: number, template: Template): void {
     if (this.supportedLanguages.includes(languageId)) {
       this.templates[languageId.toString()] = template;
       this.updatedAt = new Date();
     }
   }
 
-  getTemplate(languageId: number): {
-    templateCode: string;
-    userFunctionSignature: string;
-    placeholder: string;
-  } | undefined {
+  getTemplate(languageId: number): Template | undefined {
     return this.templates[languageId.toString()];
   }
 }

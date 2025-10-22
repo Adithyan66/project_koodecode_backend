@@ -41,7 +41,7 @@ export class MongoProblemRepository implements IProblemRepository {
     }
 
     async findById(id: string): Promise<Problem | null> {
-        const problem = await ProblemModel.findById(id);
+        const problem = await ProblemModel.findById(id).populate('createdBy');
         return problem ? this.mapToDomain(problem) : null;
     }
 
@@ -418,7 +418,6 @@ export class MongoProblemRepository implements IProblemRepository {
     acceptedSubmissions: number;
   }> {
     try {
-      console.log("id",problemId);
       
       const stats = await SubmissionModel.aggregate([
         { 
