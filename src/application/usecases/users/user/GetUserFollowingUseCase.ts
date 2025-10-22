@@ -2,8 +2,8 @@
 
 import { IUserConnectionRepository } from '../../interfaces/IUserConnectionRepository';
 import { IUserRepository } from '../../interfaces/IUserRepository';
-import { ConnectionStatus } from '../../../domain/entities/UserConnection';
-import { UserFollowingResponseDto } from '../../dto/users/FollowUserDto';
+import { ConnectionStatus } from '../../../../domain/entities/UserConnection';
+import { UserFollowingResponseDto } from '../../../dto/users/FollowUserDto';
 
 export class GetUserFollowingUseCase {
     constructor(

@@ -176,7 +176,7 @@ const UserProfileSchema = new Schema<IUserProfile>({
 });
 
 // Indexes for better performance
-UserProfileSchema.index({ userId: 1 });
+// UserProfileSchema.index({ userId: 1 });
 UserProfileSchema.index({ ranking: 1 });
 UserProfileSchema.index({ totalProblems: -1 });
 UserProfileSchema.index({ 'streak.currentCount': -1 });

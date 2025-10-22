@@ -1,9 +1,9 @@
 
 
 import { inject, injectable } from 'tsyringe';
-import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
-import { IImageUploadService } from '../../interfaces/IImageUploadService';
-import { IUpdateProfileImageUseCase } from '../../interfaces/IProfileUseCase';
+import { IUserRepository } from '../../../../domain/interfaces/repositories/IUserRepository';
+import { IImageUploadService } from '../../../interfaces/IImageUploadService';
+import { IUpdateProfileImageUseCase } from '../../../interfaces/IProfileUseCase';
 
 
 @injectable()

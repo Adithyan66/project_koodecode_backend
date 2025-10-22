@@ -32,7 +32,7 @@ const ContestSchema = new Schema<ContestDocument>({
   updatedAt: { type: Date, default: Date.now }
 });
 
-ContestSchema.index({ contestNumber: 1 });
+
 ContestSchema.index({ state: 1 });
 ContestSchema.index({ startTime: 1 });
 

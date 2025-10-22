@@ -1,7 +1,7 @@
 
 
 import { IUserConnectionRepository } from '../../interfaces/IUserConnectionRepository';
-import { FollowUserResponseDto } from '../../dto/users/FollowUserDto';
+import { FollowUserResponseDto } from '../../../dto/users/FollowUserDto';
 
 export class UnfollowUserUseCase {
     constructor(

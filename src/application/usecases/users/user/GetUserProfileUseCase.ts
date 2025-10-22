@@ -1,9 +1,9 @@
-import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
-import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
-import { IUserConnectionRepository } from '../../../domain/interfaces/repositories/IUserConnectionRepository';
-import { UserProfile } from '../../../domain/entities/UserProfile';
-import { UserProfileResponseDto } from '../../dto/users/UserProfileDto';
-import { IGetUserProfileUseCase } from '../../interfaces/IProfileUseCase';
+import { IUserRepository } from '../../../../domain/interfaces/repositories/IUserRepository';
+import { IUserProfileRepository } from '../../../../domain/interfaces/repositories/IUserProfileRepository';
+import { IUserConnectionRepository } from '../../../../domain/interfaces/repositories/IUserConnectionRepository';
+import { UserProfile } from '../../../../domain/entities/UserProfile';
+import { UserProfileResponseDto } from '../../../dto/users/UserProfileDto';
+import { IGetUserProfileUseCase } from '../../../interfaces/IProfileUseCase';
 import { inject, injectable } from 'tsyringe';
 
 

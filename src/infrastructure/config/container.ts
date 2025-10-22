@@ -64,11 +64,11 @@ import { GetProblemNamesUseCase } from "../../application/usecases/problems/GetP
 import { AdminProblemController } from "../../presentation/http/controllers/admin/AdminProblemController";
 import { CreateProblemUseCase } from "../../application/usecases/problems/CreateProblemUseCase";
 import { UserProfileController } from "../../presentation/http/controllers/user/UserProfileController";
-import { GetUserProfileUseCase } from "../../application/usecases/users/GetUserProfileUseCase";
-import { UpdateUserProfileUseCase } from "../../application/usecases/users/UpdateUserProfileUseCase";
-import { GetUserEditableProfile } from "../../application/usecases/users/GetUserEditableProfile";
-import { GenerateProfileImageUploadUrlUseCase } from "../../application/usecases/users/GenerateProfileImageUploadUrlUseCase";
-import { UpdateProfileImageUseCase } from "../../application/usecases/users/UpdateProfileImageUseCase";
+import { GetUserProfileUseCase } from "../../application/usecases/users/user/GetUserProfileUseCase";
+import { UpdateUserProfileUseCase } from "../../application/usecases/users/user/UpdateUserProfileUseCase";
+import { GetUserEditableProfile } from "../../application/usecases/users/user/GetUserEditableProfile";
+import { GenerateProfileImageUploadUrlUseCase } from "../../application/usecases/users/user/GenerateProfileImageUploadUrlUseCase";
+import { UpdateProfileImageUseCase } from "../../application/usecases/users/user/UpdateProfileImageUseCase";
 import { MongoUserConnectionRepository } from "../db/MongoUserConnectionRepository";
 import { S3Service } from "../services/S3Service";
 import { ImageUploadService } from "../../application/services/ImageUploadService";

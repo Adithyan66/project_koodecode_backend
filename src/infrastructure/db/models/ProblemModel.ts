@@ -111,7 +111,7 @@ const ProblemSchema: Schema = new Schema({
     timestamps: true
 });
 
-ProblemSchema.index({ slug: 1 });
+
 ProblemSchema.index({ difficulty: 1 });
 ProblemSchema.index({ tags: 1 });
 ProblemSchema.index({ isActive: 1 });

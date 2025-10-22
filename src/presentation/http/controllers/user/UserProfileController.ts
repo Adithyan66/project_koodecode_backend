@@ -1,18 +1,12 @@
 
 
 
-
-import { GetUserProfileUseCase } from '../../../../application/usecases/users/GetUserProfileUseCase';
-import { UpdateUserProfileUseCase } from '../../../../application/usecases/users/UpdateUserProfileUseCase';
-import { GetUserEditableProfile } from '../../../../application/usecases/users/GetUserEditableProfile';
 import { IHttpRequest } from '../../interfaces/IHttpRequest';
 import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 import { HttpResponse } from '../../helper/HttpResponse';
 import { buildResponse } from '../../../../infrastructure/utils/responseBuilder';
 import { BadRequestError } from '../../../../application/errors/AppErrors';
 import { UpdateProfileDto } from '../../../../application/dto/users/UserProfileDto';
-import { GenerateProfileImageUploadUrlUseCase } from '../../../../application/usecases/users/GenerateProfileImageUploadUrlUseCase';
-import { UpdateProfileImageUseCase } from '../../../../application/usecases/users/UpdateProfileImageUseCase';
 import { IUserProfileController } from '../../interfaces/IUserProfileController';
 import { IGenerateProfileImageUploadUrlUseCase, IGetUserEditableProfile, IGetUserProfileUseCase, IUpdateProfileImageUseCase, IUpdateUserProfileUseCase } from '../../../../application/interfaces/IProfileUseCase';
 import { inject, injectable } from 'tsyringe';

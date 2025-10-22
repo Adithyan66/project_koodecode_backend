@@ -1,9 +1,9 @@
 
 
-import { IImageUploadService } from '../../interfaces/IImageUploadService';
-import { GenerateUploadUrlDto } from '../../dto/users/GenerateUploadUrlDto';
-import { UploadUrlResponseDto } from '../../dto/users/UploadUrlResponseDto';
-import { IGenerateProfileImageUploadUrlUseCase } from '../../interfaces/IProfileUseCase';
+import { IImageUploadService } from '../../../interfaces/IImageUploadService';
+import { GenerateUploadUrlDto } from '../../../dto/users/GenerateUploadUrlDto';
+import { UploadUrlResponseDto } from '../../../dto/users/UploadUrlResponseDto';
+import { IGenerateProfileImageUploadUrlUseCase } from '../../../interfaces/IProfileUseCase';
 import { inject, injectable } from 'tsyringe';
 
 

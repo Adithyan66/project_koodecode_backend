@@ -1,9 +1,9 @@
 
 
-import { IUserConnectionRepository } from '../../../domain/interfaces/repositories/IUserConnectionRepository';
-import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
-import { UserConnection, ConnectionStatus } from '../../../domain/entities/UserConnection';
-import { FollowUserResponseDto } from '../../dto/users/FollowUserDto';
+import { IUserConnectionRepository } from '../../../../domain/interfaces/repositories/IUserConnectionRepository';
+import { IUserRepository } from '../../../../domain/interfaces/repositories/IUserRepository';
+import { UserConnection, ConnectionStatus } from '../../../../domain/entities/UserConnection';
+import { FollowUserResponseDto } from '../../../dto/users/FollowUserDto';
 
 export class FollowUserUseCase {
     constructor(

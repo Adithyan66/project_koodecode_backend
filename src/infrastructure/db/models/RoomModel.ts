@@ -77,8 +77,7 @@ const RoomSchema = new Schema({
     timestamps: true
 });
 
-RoomSchema.index({ roomId: 1 });
-RoomSchema.index({ roomNumber: 1 });
+
 RoomSchema.index({ createdBy: 1 });
 RoomSchema.index({ status: 1 });
 RoomSchema.index({ isPrivate: 1 });

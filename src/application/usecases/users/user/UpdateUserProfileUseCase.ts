@@ -1,10 +1,10 @@
 
 
-import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
-import { UpdateProfileDto, UserProfileResponseDto } from '../../dto/users/UserProfileDto';
+import { IUserProfileRepository } from '../../../../domain/interfaces/repositories/IUserProfileRepository';
+import { UpdateProfileDto, UserProfileResponseDto } from '../../../dto/users/UserProfileDto';
 
-import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
-import { IGetUserProfileUseCase, IUpdateUserProfileUseCase } from '../../interfaces/IProfileUseCase';
+import { IUserRepository } from '../../../../domain/interfaces/repositories/IUserRepository';
+import { IGetUserProfileUseCase, IUpdateUserProfileUseCase } from '../../../interfaces/IProfileUseCase';
 import { inject, injectable } from 'tsyringe';
 
 
