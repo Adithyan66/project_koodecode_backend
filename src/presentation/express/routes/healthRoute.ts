@@ -3,7 +3,7 @@
 
 
 import { Router } from 'express';
-import { HealthController } from '../../http/controllers/health/HealthController';
+import { HealthController } from '../../http/controllers/shared/HealthController';
 import { container } from 'tsyringe';
 import { expressAdapter } from '../../adaptors/ExpressAdaptor';
 

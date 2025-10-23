@@ -14,6 +14,7 @@ export class ContestParticipant {
   public rank: number | null;
   public coinsEarned: number;
   public status: ParticipantStatus;
+  public isDeleted: boolean;
   public createdAt: Date;
   public updatedAt: Date;
 
@@ -30,6 +31,7 @@ export class ContestParticipant {
     rank = null,
     coinsEarned = 0,
     status = ParticipantStatus.REGISTERED,
+    isDeleted = false,
     createdAt = new Date(),
     updatedAt = new Date()
   }: {
@@ -45,6 +47,7 @@ export class ContestParticipant {
     rank?: number | null;
     coinsEarned?: number;
     status?: ParticipantStatus;
+    isDeleted?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
   }) {
@@ -60,6 +63,7 @@ export class ContestParticipant {
     this.rank = rank;
     this.coinsEarned = coinsEarned;
     this.status = status;
+    this.isDeleted = isDeleted;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
@@ -121,6 +125,11 @@ export class ContestParticipant {
 
   canSubmit(maxAttempts: number): boolean {
     return this.status === ParticipantStatus.IN_PROGRESS && this.submissions.length < maxAttempts;
+  }
+
+  softDelete(): void {
+    this.isDeleted = true;
+    this.updatedAt = new Date();
   }
 }
 

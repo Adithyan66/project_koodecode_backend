@@ -26,6 +26,7 @@ export class MongoContestRepository implements IContestRepository {
       coinRewards: contest.coinRewards,
       state: contest.state,
       participants: contest.participants,
+      isDeleted: contest.isDeleted,
       createdAt: contest.createdAt,
       updatedAt: contest.updatedAt
     });
@@ -38,7 +39,7 @@ export class MongoContestRepository implements IContestRepository {
 
 
   async findById(id: string): Promise<Contest | null> {
-    const contest = await ContestModel.findById(id)
+    const contest = await ContestModel.findOne({ _id: id, isDeleted: { $ne: true } })
     // .populate('problems', 'title difficulty')
     // .populate('createdBy', 'username')
     // .populate('participants', 'username profileImage');
@@ -47,18 +48,18 @@ export class MongoContestRepository implements IContestRepository {
 
 
   async findByNumber(contestNumber: number): Promise<Contest | null> {
-    const contest = await ContestModel.findOne({ contestNumber }).exec();
+    const contest = await ContestModel.findOne({ contestNumber, isDeleted: { $ne: true } }).exec();
     return contest ? this.mapToEntity(contest) : null;
   }
 
   async find(): Promise<Contest[]> {
-    const contests = await ContestModel.find()
+    const contests = await ContestModel.find({ isDeleted: { $ne: true } })
     return contests.map(contest => this.mapToEntity(contest))
   }
 
 
   async findAll(page: number, limit: number, filters?: ContestFilters): Promise<Contest[]> {
-    const query: any = {};
+    const query: any = { isDeleted: { $ne: true } };
 
     if (filters) {
       if (filters.state) {
@@ -86,7 +87,7 @@ export class MongoContestRepository implements IContestRepository {
   }
 
   async findByState(state: string): Promise<Contest[]> {
-    const contests = await ContestModel.find({ state })
+    const contests = await ContestModel.find({ state, isDeleted: { $ne: true } })
       .populate('problems', 'title difficulty')
       .populate('createdBy', 'username')
       .sort({ startTime: 1 });
@@ -97,6 +98,7 @@ export class MongoContestRepository implements IContestRepository {
     const contests = await ContestModel.find({
       state: { $in: ['upcoming', 'registration_open'] },
       startTime: { $gt: new Date() },
+      isDeleted: { $ne: true }
     })
       .populate('problems', 'title difficulty')
       .populate('createdBy', 'username')
@@ -108,7 +110,8 @@ export class MongoContestRepository implements IContestRepository {
     const contests = await ContestModel.find({
       state: 'active',
       startTime: { $lte: new Date() },
-      endTime: { $gt: new Date() }
+      endTime: { $gt: new Date() },
+      isDeleted: { $ne: true }
     })
       .populate('problems', 'title difficulty')
       .populate('createdBy', 'username')
@@ -117,7 +120,7 @@ export class MongoContestRepository implements IContestRepository {
   }
 
   async findByCreator(creatorId: string): Promise<Contest[]> {
-    const contests = await ContestModel.find({ createdBy: creatorId })
+    const contests = await ContestModel.find({ createdBy: creatorId, isDeleted: { $ne: true } })
       .populate('problems', 'title difficulty')
       .sort({ createdAt: -1 });
     return contests.map(contest => this.mapToEntity(contest));
@@ -136,6 +139,17 @@ export class MongoContestRepository implements IContestRepository {
 
   async delete(id: string): Promise<boolean> {
     const result = await ContestModel.findByIdAndDelete(id);
+    return !!result;
+  }
+
+  async softDelete(id: string): Promise<boolean> {
+    const result = await ContestModel.findByIdAndUpdate(
+      id,
+      { 
+        isDeleted: true, 
+        updatedAt: new Date() 
+      }
+    );
     return !!result;
   }
 
@@ -330,6 +344,7 @@ export class MongoContestRepository implements IContestRepository {
       participants: contestDoc.participants.map((p: any) =>
         typeof p === 'object' ? p._id.toString() : p.toString()
       ),
+      isDeleted: contestDoc.isDeleted || false,
       createdAt: contestDoc.createdAt,
       updatedAt: contestDoc.updatedAt
     });

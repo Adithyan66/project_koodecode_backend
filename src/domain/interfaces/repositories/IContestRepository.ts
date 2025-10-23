@@ -15,6 +15,7 @@ export interface IContestRepository {
   findByCreator(creatorId: string): Promise<Contest[]>;
   update(id: string, updates: Partial<Contest>): Promise<Contest | null>;
   delete(id: string): Promise<boolean>;
+  softDelete(id: string): Promise<boolean>;
   addParticipant(contestId: string, userId: string): Promise<boolean>;
   removeParticipant(contestId: string, userId: string): Promise<boolean>;
   getParticipantCount(contestId: string): Promise<number>;

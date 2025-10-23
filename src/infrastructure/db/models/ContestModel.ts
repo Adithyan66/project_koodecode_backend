@@ -28,6 +28,7 @@ const ContestSchema = new Schema<ContestDocument>({
   coinRewards: [ContestRewardSchema],
   state: { type: String, enum: Object.values(ContestState), default: ContestState.UPCOMING },
   participants: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  isDeleted: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });

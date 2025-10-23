@@ -20,8 +20,8 @@ router.get('/profile/:userId', expressAdapter(userProfileController.getProfile))
 router.get('/u/:username', expressAdapter(userProfileController.getPublicProfile));
 router.get('/profile', authenticate, expressAdapter(userProfileController.getEditProfile));
 router.put('/profile', authenticate, expressAdapter(userProfileController.updateProfile));
-router.post('/upload-url', authenticate, expressAdapter(userProfileController.generateUploadUrl));
-router.post('/confirm-upload', authenticate, expressAdapter(userProfileController.confirmUpload));
+// router.post('/upload-url', authenticate, expressAdapter(userProfileController.generateUploadUrl));
+// router.post('/confirm-upload', authenticate, expressAdapter(userProfileController.confirmUpload));
 
 
 

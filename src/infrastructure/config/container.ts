@@ -88,8 +88,14 @@ import { CheckItemOwnershipUseCase } from "../../application/usecases/store/Chec
 import { MongoStoreItemRepository } from "../db/MongoStoreItemRepository";
 import { MongoUserInventoryRepository } from "../db/MongoUserInventoryRepository";
 import { Judge0HealthService } from "../services/Judge0HealthService";
-import { HealthController } from "../../presentation/http/controllers/health/HealthController";
+import { HealthController } from "../../presentation/http/controllers/shared/HealthController";
 import { CreateContestUseCase } from "../../application/usecases/contests/admin/CreateContestUseCase";
+import { GetAdminActiveContestsUseCase } from "../../application/usecases/contests/admin/GetAdminActiveContestsUseCase";
+import { GetAdminUpcomingContestsUseCase } from "../../application/usecases/contests/admin/GetAdminUpcomingContestsUseCase";
+import { GetAdminPastContestsUseCase } from "../../application/usecases/contests/admin/GetAdminPastContestsUseCase";
+import { GetAdminContestByIdUseCase } from "../../application/usecases/contests/admin/GetAdminContestByIdUseCase";
+import { UpdateContestUseCase } from "../../application/usecases/contests/admin/UpdateContestUseCase";
+import { DeleteContestUseCase } from "../../application/usecases/contests/admin/DeleteContestUseCase";
 import { AdminContestController } from "../../presentation/http/controllers/admin/AdminContestController";
 
 import { createServer } from 'http';
@@ -104,6 +110,9 @@ import { UpdateTestCaseUseCase } from '../../application/usecases/problems/Updat
 import { AddTestCaseUseCase } from '../../application/usecases/problems/AddTestCaseUseCase';
 import { DeleteTestCaseUseCase } from '../../application/usecases/problems/DeleteTestCaseUseCase';
 import { DeleteProblemUseCase } from '../../application/usecases/problems/DeleteProblemUseCase';
+import { GenerateImageUploadUrlUseCase } from '../../application/usecases/shared/GenerateImageUploadUrlUseCase';
+import { ConfirmImageUploadUseCase } from '../../application/usecases/shared/ConfirmImageUploadUseCase';
+import { ImageServiceController } from '../../presentation/http/controllers/shared/ImageServiceController';
 
 
 
@@ -214,6 +223,12 @@ container.registerSingleton('IPurchaseStoreItemUseCase', PurchaseStoreItemUseCas
 container.registerSingleton('IGetUserInventoryUseCase', GetUserInventoryUseCase)
 container.registerSingleton('ICheckItemOwnershipUseCase', CheckItemOwnershipUseCase)
 container.registerSingleton('ICreateContestUseCase', CreateContestUseCase)
+container.registerSingleton('IGetAdminActiveContestsUseCase', GetAdminActiveContestsUseCase)
+container.registerSingleton('IGetAdminUpcomingContestsUseCase', GetAdminUpcomingContestsUseCase)
+container.registerSingleton('IGetAdminPastContestsUseCase', GetAdminPastContestsUseCase)
+container.registerSingleton('IGetAdminContestByIdUseCase', GetAdminContestByIdUseCase)
+container.registerSingleton('IUpdateContestUseCase', UpdateContestUseCase)
+container.registerSingleton('IDeleteContestUseCase', DeleteContestUseCase)
 container.registerSingleton('IGetAllProblemsForAdminUseCase', GetAllProblemsForAdminUseCase)
 container.registerSingleton('IGetAllProgrammingLanguages', GetAllProgrammingLanguages)
 container.registerSingleton('IGetProblemDetailForAdminUseCase', GetProblemDetailForAdminUseCase)
@@ -225,6 +240,8 @@ container.registerSingleton("IUpdateTestCaseUseCase", UpdateTestCaseUseCase);
 container.registerSingleton("IAddTestCaseUseCase", AddTestCaseUseCase);
 container.registerSingleton("IDeleteTestCaseUseCase", DeleteTestCaseUseCase);
 container.registerSingleton("IDeleteProblemUseCase", DeleteProblemUseCase);
+container.registerSingleton("IGenerateImageUploadUrlUseCase", GenerateImageUploadUrlUseCase);
+container.registerSingleton("IConfirmImageUploadUseCase", ConfirmImageUploadUseCase);
 
 
 //   Register Controllers  //
@@ -237,5 +254,6 @@ container.registerSingleton(UserProfileController)
 container.registerSingleton(UserStoreController)
 container.registerSingleton(HealthController)
 container.registerSingleton(AdminContestController)
+container.registerSingleton(ImageServiceController)
 
 export { container };

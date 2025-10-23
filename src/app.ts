@@ -21,6 +21,7 @@ import userStoreRoute from './presentation/express/routes/user/userStoreRoute'
 import adminContestRoute from './presentation/express/routes/admin/adminContestRoute'
 
 import { errorMiddleware } from './presentation/express/middlewares/errorHandler';
+import imageServiceRoute from './presentation/express/routes/imageServiceRoute'
 import healthRoute from './presentation/express/routes/healthRoute'
 dotenv.config();
 const app = express();
@@ -53,7 +54,7 @@ app.use('/api/user/store', userStoreRoute);
 app.use('/api/admin/contests', adminContestRoute)
 app.use('/api/admin/problems', adminProblemRoute);
 
-
+app.use('/api/image-service', imageServiceRoute)
 app.use('/api/health', healthRoute);
 
 app.use(errorMiddleware);

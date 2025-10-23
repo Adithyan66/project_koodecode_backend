@@ -17,6 +17,7 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
       rank: participant.rank,
       coinsEarned: participant.coinsEarned,
       status: participant.status,
+      isDeleted: participant.isDeleted,
       createdAt: participant.createdAt,
       updatedAt: participant.updatedAt
     });
@@ -28,14 +29,18 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
   async findByContestAndUser(contestId: string, userId: string): Promise<ContestParticipant | null> {
     const participant = await ContestParticipantModel.findOne({
       contestId,
-      userId
+      userId,
+      isDeleted: { $ne: true }
     }).populate('assignedProblemId', 'title difficulty');
 
     return participant ? this.mapToEntity(participant) : null;
   }
 
   async findByContest(contestId: string): Promise<ContestParticipant[]> {
-    const participants = await ContestParticipantModel.find({ contestId })
+    const participants = await ContestParticipantModel.find({ 
+      contestId, 
+      isDeleted: { $ne: true } 
+    })
       .populate('userId', 'username profileImage')
       .populate('assignedProblemId', 'title difficulty')
       .sort({ totalScore: -1, updatedAt: 1 });
@@ -46,7 +51,10 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
   async findByUser(userId: string, page: number = 1, limit: number = 10): Promise<ContestParticipant[]> {
     const skip = (page - 1) * limit;
 
-    const participants = await ContestParticipantModel.find({ userId })
+    const participants = await ContestParticipantModel.find({ 
+      userId, 
+      isDeleted: { $ne: true } 
+    })
       .populate('contestId', 'title contestNumber startTime endTime state')
       .populate('assignedProblemId', 'title difficulty')
       .sort({ createdAt: -1 })
@@ -326,8 +334,20 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
       rank: participantDoc.rank,
       coinsEarned: participantDoc.coinsEarned,
       status: participantDoc.status,
+      isDeleted: participantDoc.isDeleted || false,
       createdAt: participantDoc.createdAt,
       updatedAt: participantDoc.updatedAt
     });
+  }
+
+  async softDeleteByContest(contestId: string): Promise<boolean> {
+    const result = await ContestParticipantModel.updateMany(
+      { contestId },
+      { 
+        isDeleted: true, 
+        updatedAt: new Date() 
+      }
+    );
+    return result.modifiedCount > 0;
   }
 }

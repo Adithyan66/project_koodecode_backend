@@ -28,6 +28,7 @@ const ContestParticipantSchema = new Schema<ContestParticipantDocument>({
   rank: { type: Number },
   coinsEarned: { type: Number, default: 0 },
   status: { type: String, enum: Object.values(ParticipantStatus), default: ParticipantStatus.REGISTERED },
+  isDeleted: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });

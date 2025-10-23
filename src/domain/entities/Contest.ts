@@ -17,6 +17,7 @@ export class Contest {
   public coinRewards: ContestReward[];
   public state: ContestState;
   public participants: string[];
+  public isDeleted: boolean;
   public createdAt: Date;
   public updatedAt: Date;
 
@@ -37,6 +38,7 @@ export class Contest {
     coinRewards,
     state,
     participants = [],
+    isDeleted = false,
     createdAt = new Date(),
     updatedAt = new Date()
   }: {
@@ -56,6 +58,7 @@ export class Contest {
     coinRewards: ContestReward[];
     state: ContestState;
     participants?: string[];
+    isDeleted?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
   }) {
@@ -75,6 +78,7 @@ export class Contest {
     this.coinRewards = coinRewards;
     this.state = state;
     this.participants = participants;
+    this.isDeleted = isDeleted;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
@@ -116,6 +120,11 @@ export class Contest {
 
   updateState(newState: ContestState): void {
     this.state = newState;
+    this.updatedAt = new Date();
+  }
+
+  softDelete(): void {
+    this.isDeleted = true;
     this.updatedAt = new Date();
   }
 }

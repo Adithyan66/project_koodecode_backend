@@ -77,7 +77,8 @@ export class CreateRoomUseCase implements ICreateRoomUseCase{
                     canDrawWhiteboard: [userId],
                     canChangeProblem: [userId]
                 },
-                lastActivity: new Date()
+                lastActivity: new Date(),
+                _id: undefined
             };
 
             const createdRoom = await this.roomRepository.create(room);

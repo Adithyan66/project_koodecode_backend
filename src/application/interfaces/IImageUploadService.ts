@@ -7,4 +7,9 @@ export interface IImageUploadService {
     publicUrl: string;
   }>;
   deleteProfileImage(imageKey: string): Promise<void>;
+  generateUploadUrl(type: string, userId: string, fileExtension: string): Promise<{
+    uploadUrl: string;
+    imageKey: string;
+    publicUrl: string;
+  }>;
 }

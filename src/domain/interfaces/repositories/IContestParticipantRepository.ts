@@ -19,4 +19,12 @@ export interface IContestParticipantRepository {
   awardCoins(participantId: string, coins: number): Promise<boolean>;
   findByContestId(contestId: string): Promise<ContestParticipant[]>;
   findById(id: string): Promise<ContestParticipant | null>;
+  getContestStats(contestId: string): Promise<{
+    totalParticipants: number;
+    completedParticipants: number;
+    inProgressParticipants: number;
+    averageScore: number;
+  }>;
+  getTopPerformers(contestId: string, limit: number): Promise<any[]>;
+  softDeleteByContest(contestId: string): Promise<boolean>;
 }
