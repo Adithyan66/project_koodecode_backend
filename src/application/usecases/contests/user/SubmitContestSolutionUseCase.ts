@@ -2,17 +2,17 @@
 
 
 
-import { IContestRepository } from '../../../domain/interfaces/repositories/IContestRepository';
-import { IContestParticipantRepository } from '../../../domain/interfaces/repositories/IContestParticipantRepository';
-import { ISubmissionRepository } from '../../../domain/interfaces/repositories/ISubmissionRepository';
-import { ContestSubmission, ParticipantStatus } from '../../../domain/entities/ContestParticipant';
-import { ContestSubmissionDto, ContestSubmissionResponseDto } from '../../dto/contests/ContestSubmissionDto';
-import { ExecuteCodeDto } from '../../dto/submissions/ExecuteCodeDto';
+import { IContestRepository } from '../../../../domain/interfaces/repositories/IContestRepository';
+import { IContestParticipantRepository } from '../../../../domain/interfaces/repositories/IContestParticipantRepository';
+import { ISubmissionRepository } from '../../../../domain/interfaces/repositories/ISubmissionRepository';
+import { ContestSubmission, ParticipantStatus } from '../../../../domain/entities/ContestParticipant';
+import { ContestSubmissionDto, ContestSubmissionResponseDto } from '../../../dto/contests/ContestSubmissionDto';
+import { ExecuteCodeDto } from '../../../dto/submissions/ExecuteCodeDto';
 import { inject, injectable } from 'tsyringe';
-import { IContestScoringService } from '../../interfaces/IContestScoringService';
-import { IContestTimerService } from '../../interfaces/IContestTimerService';
-import { ICreateSubmissionUseCase } from '../../interfaces/ISubmissionUseCase';
-import { ISubmitContestSolutionUseCase } from '../../interfaces/IContestUseCase';
+import { IContestScoringService } from '../../../interfaces/IContestScoringService';
+import { IContestTimerService } from '../../../interfaces/IContestTimerService';
+import { ICreateSubmissionUseCase } from '../../../interfaces/ISubmissionUseCase';
+import { ISubmitContestSolutionUseCase } from '../../../interfaces/IContestUseCase';
 
 
 @injectable()

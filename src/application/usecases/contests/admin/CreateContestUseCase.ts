@@ -2,12 +2,12 @@
 
 
 import { inject, injectable } from 'tsyringe';
-import { Contest, ContestState, ContestReward } from '../../../domain/entities/Contest';
-import { IContestRepository } from '../../../domain/interfaces/repositories/IContestRepository';
-import { ICounterRepository } from '../../../domain/interfaces/repositories/ICounterRepository';
-import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
-import { CreateContestDto } from '../../dto/contests/CreateContestDto';
-import { ICreateContestUseCase } from '../../interfaces/IContestUseCase';
+import { Contest, ContestState, ContestReward } from '../../../../domain/entities/Contest';
+import { IContestRepository } from '../../../../domain/interfaces/repositories/IContestRepository';
+import { ICounterRepository } from '../../../../domain/interfaces/repositories/ICounterRepository';
+import { IProblemRepository } from '../../../../domain/interfaces/repositories/IProblemRepository';
+import { CreateContestDto } from '../../../dto/contests/CreateContestDto';
+import { ICreateContestUseCase } from '../../../interfaces/IContestUseCase';
 
 @injectable()
 export class CreateContestUseCase implements ICreateContestUseCase{

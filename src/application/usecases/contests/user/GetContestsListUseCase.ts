@@ -1,10 +1,10 @@
 
 
 import { inject, injectable } from 'tsyringe';
-import { Contest, ContestState } from '../../../domain/entities/Contest';
-import { IContestRepository } from '../../../domain/interfaces/repositories/IContestRepository';
-import { ContestResponseDto } from '../../dto/contests/ContestResponseDto';
-import { IGetContestsListUseCase } from '../../interfaces/IContestUseCase';
+import { Contest, ContestState } from '../../../../domain/entities/Contest';
+import { IContestRepository } from '../../../../domain/interfaces/repositories/IContestRepository';
+import { ContestResponseDto } from '../../../dto/contests/ContestResponseDto';
+import { IGetContestsListUseCase } from '../../../interfaces/IContestUseCase';
 
 export type ContestListType = 'active' | 'upcoming' | 'past';
 

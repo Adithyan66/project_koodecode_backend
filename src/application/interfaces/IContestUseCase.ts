@@ -5,7 +5,7 @@ import { ContestRegistrationResponseDto } from "../dto/contests/ContestRegistrat
 import { AssignedProblemDto } from "../dto/contests/ContestResponseDto";
 import { ContestSubmissionDto, ContestSubmissionResponseDto } from "../dto/contests/ContestSubmissionDto";
 import { CreateContestDto } from "../dto/contests/CreateContestDto";
-import { ContestListResponseDto, ContestListType } from "../usecases/contests/GetContestsListUseCase";
+import { ContestListResponseDto, ContestListType } from "../usecases/contests/user/GetContestsListUseCase";
 
 
 export interface IRegisterForContestUseCase {

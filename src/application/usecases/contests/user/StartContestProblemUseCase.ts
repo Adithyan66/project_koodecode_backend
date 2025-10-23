@@ -1,14 +1,14 @@
 
 
-import { IContestRepository } from '../../../domain/interfaces/repositories/IContestRepository';
-import { IContestParticipantRepository } from '../../../domain/interfaces/repositories/IContestParticipantRepository';
-import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
-import { ParticipantStatus } from '../../../domain/entities/ContestParticipant';
-import { AssignedProblemDto } from '../../dto/contests/ContestResponseDto';
-import { ITestCaseRepository } from '../../../domain/interfaces/repositories/ITestCaseRepository';
+import { IContestRepository } from '../../../../domain/interfaces/repositories/IContestRepository';
+import { IContestParticipantRepository } from '../../../../domain/interfaces/repositories/IContestParticipantRepository';
+import { IProblemRepository } from '../../../../domain/interfaces/repositories/IProblemRepository';
+import { ParticipantStatus } from '../../../../domain/entities/ContestParticipant';
+import { AssignedProblemDto } from '../../../dto/contests/ContestResponseDto';
+import { ITestCaseRepository } from '../../../../domain/interfaces/repositories/ITestCaseRepository';
 import { inject, injectable } from 'tsyringe';
-import { IContestTimerService } from '../../interfaces/IContestTimerService';
-import { IStartContestProblemUseCase } from '../../interfaces/IContestUseCase';
+import { IContestTimerService } from '../../../interfaces/IContestTimerService';
+import { IStartContestProblemUseCase } from '../../../interfaces/IContestUseCase';
 
 
 @injectable()

@@ -1,12 +1,12 @@
 
 
-import { IContestRepository } from '../../../domain/interfaces/repositories/IContestRepository';
-import { IContestParticipantRepository } from '../../../domain/interfaces/repositories/IContestParticipantRepository';
-import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
-import { ContestLeaderboardDto, LeaderboardEntryDto } from '../../dto/contests/ContestLeaderboardDto';
-import { ParticipantStatus } from '../../../domain/entities/ContestParticipant';
+import { IContestRepository } from '../../../../domain/interfaces/repositories/IContestRepository';
+import { IContestParticipantRepository } from '../../../../domain/interfaces/repositories/IContestParticipantRepository';
+import { IUserRepository } from '../../../../domain/interfaces/repositories/IUserRepository';
+import { ContestLeaderboardDto, LeaderboardEntryDto } from '../../../dto/contests/ContestLeaderboardDto';
+import { ParticipantStatus } from '../../../../domain/entities/ContestParticipant';
 import { inject, injectable } from 'tsyringe';
-import { IGetContestLeaderboardUseCase } from '../../interfaces/IContestUseCase';
+import { IGetContestLeaderboardUseCase } from '../../../interfaces/IContestUseCase';
 
 
 @injectable()

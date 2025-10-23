@@ -8,13 +8,13 @@
 
 
 
-import { Contest } from '../../../domain/entities/Contest';
-import { IContestRepository } from '../../../domain/interfaces/repositories/IContestRepository';
-import { IContestParticipantRepository } from '../../../domain/interfaces/repositories/IContestParticipantRepository';
-import { ContestDetailDto, CoinRewardDto, SubmissionDto } from '../../dto/contests/ContestDetailDto';
-import { ISubmissionRepository } from '../../../domain/interfaces/repositories/ISubmissionRepository';
+import { Contest } from '../../../../domain/entities/Contest';
+import { IContestRepository } from '../../../../domain/interfaces/repositories/IContestRepository';
+import { IContestParticipantRepository } from '../../../../domain/interfaces/repositories/IContestParticipantRepository';
+import { ContestDetailDto, CoinRewardDto, SubmissionDto } from '../../../dto/contests/ContestDetailDto';
+import { ISubmissionRepository } from '../../../../domain/interfaces/repositories/ISubmissionRepository';
 import { inject, injectable } from 'tsyringe';
-import { IGetContestDetailUseCase } from '../../interfaces/IContestUseCase';
+import { IGetContestDetailUseCase } from '../../../interfaces/IContestUseCase';
 
 
 @injectable()

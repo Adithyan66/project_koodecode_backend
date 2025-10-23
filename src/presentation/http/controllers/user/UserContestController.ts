@@ -2,7 +2,7 @@
 
 
 
-import { ContestListType } from '../../../../application/usecases/contests/GetContestsListUseCase';
+import { ContestListType } from '../../../../application/usecases/contests/user/GetContestsListUseCase';
 import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 import { MESSAGES } from '../../../../shared/constants/messages';
 import { IHttpRequest } from '../../interfaces/IHttpRequest';

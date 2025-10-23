@@ -1,12 +1,12 @@
 
 
-import { IContestRepository } from '../../../domain/interfaces/repositories/IContestRepository';
-import { IContestParticipantRepository } from '../../../domain/interfaces/repositories/IContestParticipantRepository';
-import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
-import { ContestParticipant, ParticipantStatus } from '../../../domain/entities/ContestParticipant';
-import { ContestRegistrationResponseDto } from '../../dto/contests/ContestRegistrationDto';
+import { IContestRepository } from '../../../../domain/interfaces/repositories/IContestRepository';
+import { IContestParticipantRepository } from '../../../../domain/interfaces/repositories/IContestParticipantRepository';
+import { IProblemRepository } from '../../../../domain/interfaces/repositories/IProblemRepository';
+import { ContestParticipant, ParticipantStatus } from '../../../../domain/entities/ContestParticipant';
+import { ContestRegistrationResponseDto } from '../../../dto/contests/ContestRegistrationDto';
 import { inject, injectable } from 'tsyringe';
-import { IRegisterForContestUseCase } from '../../interfaces/IContestUseCase';
+import { IRegisterForContestUseCase } from '../../../interfaces/IContestUseCase';
 
 
 @injectable()
