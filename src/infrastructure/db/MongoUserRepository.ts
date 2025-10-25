@@ -19,6 +19,10 @@ export class MongoUserRepository implements IUserRepository {
       passwordHash: userDoc.passwordHash,
       createdAt: userDoc.createdAt,
       updatedAt: userDoc.updatedAt,
+      googleId: userDoc.googleId,
+      githubId: userDoc.githubId,
+      provider: userDoc.provider,
+      emailVerified: userDoc.emailVerified,
     });
   }
 
@@ -89,6 +93,42 @@ export class MongoUserRepository implements IUserRepository {
   async findByEmailAndProvider(email: string, provider: string): Promise<User | null> {
     const userData = await UserModel.findOne({ email, provider });
     return userData ? this.mapToEntity(userData) : null;
+  }
+
+  async findAllUsersWithPagination(params: {
+    page: number;
+    limit: number;
+    search?: string;
+  }): Promise<{
+    users: User[];
+    total: number;
+  }> {
+    const { page, limit, search } = params;
+    const skip = (page - 1) * limit;
+    
+    // Build search query - exclude admins and include search
+    let searchQuery: any = { role: 'user' }; // Exclude admins
+    
+    if (search) {
+      searchQuery.$or = [
+        { email: { $regex: search, $options: 'i' } },
+        { userName: { $regex: search, $options: 'i' } }
+      ];
+    }
+    
+    const [users, total] = await Promise.all([
+      UserModel.find(searchQuery)
+        .sort({ createdAt: -1 }) // Sort by join date (newest first)
+        .skip(skip)
+        .limit(limit)
+        .exec(),
+      UserModel.countDocuments(searchQuery)
+    ]);
+    
+    return {
+      users: users.map(user => this.mapToEntity(user)),
+      total
+    };
   }
 
 }

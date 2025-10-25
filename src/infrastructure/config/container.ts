@@ -104,6 +104,8 @@ import { UpdateTestCaseUseCase } from '../../application/usecases/problems/Updat
 import { AddTestCaseUseCase } from '../../application/usecases/problems/AddTestCaseUseCase';
 import { DeleteTestCaseUseCase } from '../../application/usecases/problems/DeleteTestCaseUseCase';
 import { DeleteProblemUseCase } from '../../application/usecases/problems/DeleteProblemUseCase';
+import { GetAllUsersUseCase } from '../../application/usecases/users/admin/GetAllUsersUseCase';
+import { AdminUserController } from '../../presentation/http/controllers/admin/AdminUserController';
 
 
 
@@ -225,6 +227,7 @@ container.registerSingleton("IUpdateTestCaseUseCase", UpdateTestCaseUseCase);
 container.registerSingleton("IAddTestCaseUseCase", AddTestCaseUseCase);
 container.registerSingleton("IDeleteTestCaseUseCase", DeleteTestCaseUseCase);
 container.registerSingleton("IDeleteProblemUseCase", DeleteProblemUseCase);
+container.registerSingleton("IGetAllUsersUseCase", GetAllUsersUseCase);
 
 
 //   Register Controllers  //
@@ -237,5 +240,6 @@ container.registerSingleton(UserProfileController)
 container.registerSingleton(UserStoreController)
 container.registerSingleton(HealthController)
 container.registerSingleton(AdminContestController)
+container.registerSingleton(AdminUserController)
 
 export { container };

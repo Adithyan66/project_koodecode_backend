@@ -10,7 +10,7 @@ import { IHttpRequest } from "../../interfaces/IHttpRequest";
 export class AdminCoinController {
 
     constructor(
-        private _awardCoinsUseCase: 
+        private _awardCoinsUseCase: any
     ) { }
 
     awardCoins = async (httpRequest: IHttpRequest) => {

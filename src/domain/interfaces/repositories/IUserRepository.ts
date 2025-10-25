@@ -20,4 +20,12 @@ export interface IUserRepository {
   findByGoogleId(googleId: string): Promise<User | null>;
   findByGithubId(githubId: string): Promise<User | null>;
   findByEmailAndProvider(email: string, provider: string): Promise<User | null>;
+  findAllUsersWithPagination(params: {
+    page: number;
+    limit: number;
+    search?: string;
+  }): Promise<{
+    users: User[];
+    total: number;
+  }>;
 }
