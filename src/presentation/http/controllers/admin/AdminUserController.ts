@@ -9,17 +9,17 @@ import { GetAllUsersRequestDto } from '../../../../application/dto/users/admin/G
 
 @injectable()
 export class AdminUserController {
+
   constructor(
     @inject('IGetAllUsersUseCase') private getAllUsersUseCase: IGetAllUsersUseCase
   ) {}
 
   getAllUsers = async (httpRequest: IHttpRequest) => {
-    // Check admin access
+  
     if (!httpRequest.user || httpRequest.user.role !== 'admin') {
       throw new UnauthorizedError('Admin access required');
     }
 
-    // Extract query parameters
     const page = parseInt(httpRequest.query?.page as string) || 1;
     const limit = parseInt(httpRequest.query?.limit as string) || 10;
     const search = httpRequest.query?.search as string;

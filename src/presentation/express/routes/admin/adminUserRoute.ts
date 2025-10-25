@@ -7,6 +7,6 @@ import { adminOnly } from '../../middlewares';
 const router = Router();
 const adminUserController = container.resolve(AdminUserController);
 
-router.get('/users', adminOnly, expressAdapter(adminUserController.getAllUsers));
+router.get('/', adminOnly, expressAdapter(adminUserController.getAllUsers));
 
 export default router;

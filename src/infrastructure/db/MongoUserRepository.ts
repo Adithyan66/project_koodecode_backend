@@ -106,8 +106,7 @@ export class MongoUserRepository implements IUserRepository {
     const { page, limit, search } = params;
     const skip = (page - 1) * limit;
     
-    // Build search query - exclude admins and include search
-    let searchQuery: any = { role: 'user' }; // Exclude admins
+    let searchQuery: any = { role: 'user' }; 
     
     if (search) {
       searchQuery.$or = [
@@ -118,7 +117,7 @@ export class MongoUserRepository implements IUserRepository {
     
     const [users, total] = await Promise.all([
       UserModel.find(searchQuery)
-        .sort({ createdAt: -1 }) // Sort by join date (newest first)
+        .sort({ createdAt: -1 }) 
         .skip(skip)
         .limit(limit)
         .exec(),
