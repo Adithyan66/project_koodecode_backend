@@ -1,4 +1,7 @@
 export class ProgrammingLanguage {
+  static getAllSupportedLanguages(): {} {
+      throw new Error('Method not implemented.');
+  }
 
   private static readonly SUPPORTED_LANGUAGES: Record<number, { name: string; extension: string }> = {
     50: { name: 'C', extension: 'c' },

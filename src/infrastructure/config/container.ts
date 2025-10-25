@@ -105,6 +105,14 @@ import { GetAllProgrammingLanguages } from "../../application/usecases/problems/
 import { GetProblemDetailForAdminUseCase } from "../../application/usecases/problems/admin/GetProblemDetailForAdminUseCase";
 import { GetProblemTestCasesForAdminUseCase } from '../../application/usecases/problems/admin/GetProblemTestCasesForAdminUseCase';
 import { IGetProblemTestCasesForAdminUseCase } from '../../application/interfaces/ITestCaseUseCase';
+import { UpdateProblemUseCase } from '../../application/usecases/problems/admin/UpdateProblemUseCase';
+import { UpdateTestCaseUseCase } from '../../application/usecases/problems/admin/UpdateTestCaseUseCase';
+import { AddTestCaseUseCase } from '../../application/usecases/problems/admin/AddTestCaseUseCase';
+import { DeleteTestCaseUseCase } from '../../application/usecases/problems/admin/DeleteTestCaseUseCase';
+import { DeleteProblemUseCase } from '../../application/usecases/problems/admin/DeleteProblemUseCase';
+import { GenerateImageUploadUrlUseCase } from '../../application/usecases/shared/GenerateImageUploadUrlUseCase';
+import { ConfirmImageUploadUseCase } from '../../application/usecases/shared/ConfirmImageUploadUseCase';
+import { ImageServiceController } from '../../presentation/http/controllers/shared/ImageServiceController';
 
 
 
@@ -127,14 +135,11 @@ container.registerSingleton("IPasswordService", PasswordService);
 container.registerSingleton("IEmailService", NodemailerEmailService);
 container.registerSingleton("IUsernameService", UsernameService);
 container.registerSingleton("IOAuthService", OAuthService);
-container.registerSingleton("IContestTimerService", ContestTimerService)
-container.registerSingleton("IContestScoringService", ContestScoringService)
-container.registerSingleton("ICodeExecutionHelperService", CodeExecutionHelperService)
-container.registerSingleton("IImageUploadService", ImageUploadService)
-container.registerSingleton("IJudge0HealthService", Judge0HealthService)
-
-container.registerSingleton("IJudge0HealthService", Judge0HealthService)
-
+container.registerSingleton("IContestTimerService", ContestTimerService);
+container.registerSingleton("IContestScoringService", ContestScoringService);
+container.registerSingleton("ICodeExecutionHelperService", CodeExecutionHelperService);
+container.registerSingleton("IImageUploadService", ImageUploadService);
+container.registerSingleton("IJudge0HealthService", Judge0HealthService);
 
 container.registerSingleton("ICoinTransactionRepository", MongoCoinTransactionRepository)
 container.registerSingleton("IUserProfileRepository", MongoUserProfileRepository)
