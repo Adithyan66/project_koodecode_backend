@@ -260,3 +260,4 @@ export class UpdateContestUseCase implements IUpdateContestUseCase {
     }
   }
 }
+
