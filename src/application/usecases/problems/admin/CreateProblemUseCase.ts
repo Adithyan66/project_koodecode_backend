@@ -2,16 +2,16 @@
 
 
 
-import { Problem, Constraint } from '../../../domain/entities/Problem';
-import { TestCase } from '../../../domain/entities/TestCase';
-import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
-import { ITestCaseRepository } from '../../../domain/interfaces/repositories/ITestCaseRepository';
-import { ICounterRepository } from '../../../domain/interfaces/repositories/ICounterRepository';
-import { CreateProblemDto } from '../../dto/problems/CreateProblemDto';
+import { Problem, Constraint } from '../../../../domain/entities/Problem';
+import { TestCase } from '../../../../domain/entities/TestCase';
+import { IProblemRepository } from '../../../../domain/interfaces/repositories/IProblemRepository';
+import { ITestCaseRepository } from '../../../../domain/interfaces/repositories/ITestCaseRepository';
+import { ICounterRepository } from '../../../../domain/interfaces/repositories/ICounterRepository';
+import { CreateProblemDto } from '../../../dto/problems/CreateProblemDto';
 import { inject, injectable } from 'tsyringe';
 
 // Domain Value Objects
-import { ProgrammingLanguage } from '../../../domain/value-objects/ProgrammingLanguage';
+import { ProgrammingLanguage } from '../../../../domain/value-objects/ProgrammingLanguage';
 
 // Domain Errors
 import { 
@@ -21,15 +21,15 @@ import {
   ProblemParameterError,
   ProblemTemplateError,
   ProblemCreationError
-} from '../../../domain/errors/ProblemErrors';
+} from '../../../../domain/errors/ProblemErrors';
 
 // Application Errors
 import { 
   BadRequestError, 
   ConflictError, 
   NotFoundError 
-} from '../../errors/AppErrors';
-import { ICreateProblemUseCase } from '../../interfaces/IProblemUseCase';
+} from '../../../errors/AppErrors';
+import { ICreateProblemUseCase } from '../../../interfaces/IProblemUseCase';
 
 @injectable()
 export class CreateProblemUseCase implements ICreateProblemUseCase {

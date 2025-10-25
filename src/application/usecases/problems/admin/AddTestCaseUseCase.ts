@@ -1,10 +1,10 @@
 import { inject, injectable } from 'tsyringe';
-import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
-import { ITestCaseRepository } from '../../../domain/interfaces/repositories/ITestCaseRepository';
-import { AddTestCasePayload } from '../../dto/problems/AddTestCaseDto';
-import { TestCase } from '../../../domain/entities/TestCase';
-import { BadRequestError, NotFoundError, ConflictError } from '../../errors/AppErrors';
-import { TestCaseValidationError } from '../../../domain/errors/ProblemErrors';
+import { IProblemRepository } from '../../../../domain/interfaces/repositories/IProblemRepository';
+import { ITestCaseRepository } from '../../../../domain/interfaces/repositories/ITestCaseRepository';
+import { AddTestCasePayload } from '../../../dto/problems/AddTestCaseDto';
+import { TestCase } from '../../../../domain/entities/TestCase';
+import { BadRequestError, NotFoundError, ConflictError } from '../../../errors/AppErrors';
+import { TestCaseValidationError } from '../../../../domain/errors/ProblemErrors';
 
 @injectable()
 export class AddTestCaseUseCase {

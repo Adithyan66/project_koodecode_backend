@@ -4,12 +4,12 @@
 
 
 import { inject, injectable } from 'tsyringe';
-import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
-import { ProblemListResponseDto } from '../../dto/problems/ProblemListDto';
-import { IGetProblemsListUseCase } from '../../interfaces/IProblemUseCase';
+import { IProblemRepository } from '../../../../domain/interfaces/repositories/IProblemRepository';
+import { ProblemListResponseDto } from '../../../dto/problems/ProblemListDto';
+import { IGetProblemsListUseCase } from '../../../interfaces/IProblemUseCase';
 
 // Domain Value Objects
-import { ProgrammingLanguage } from '../../../domain/value-objects/ProgrammingLanguage';
+import { ProgrammingLanguage } from '../../../../domain/value-objects/ProgrammingLanguage';
 
 // Domain Errors
 import {
@@ -17,14 +17,14 @@ import {
     InvalidFilterError,
     ProblemListRetrievalError,
     ProblemListProcessingError
-} from '../../../domain/errors/ProblemErrors';
+} from '../../../../domain/errors/ProblemErrors';
 
 // Application Errors
 import {
     BadRequestError,
     NotFoundError,
     TransactionProcessingError
-} from '../../errors/AppErrors';
+} from '../../../errors/AppErrors';
 
 interface ProblemListFilters {
     difficulty?: 'easy' | 'medium' | 'hard';
