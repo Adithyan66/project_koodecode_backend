@@ -105,6 +105,7 @@ import { GetAllProgrammingLanguages } from "../../application/usecases/problems/
 import { GetProblemDetailForAdminUseCase } from "../../application/usecases/problems/admin/GetProblemDetailForAdminUseCase";
 import { GetProblemTestCasesForAdminUseCase } from '../../application/usecases/problems/admin/GetProblemTestCasesForAdminUseCase';
 import { IGetProblemTestCasesForAdminUseCase } from '../../application/interfaces/ITestCaseUseCase';
+
 import { UpdateProblemUseCase } from '../../application/usecases/problems/admin/UpdateProblemUseCase';
 import { UpdateTestCaseUseCase } from '../../application/usecases/problems/admin/UpdateTestCaseUseCase';
 import { AddTestCaseUseCase } from '../../application/usecases/problems/admin/AddTestCaseUseCase';
@@ -113,6 +114,11 @@ import { DeleteProblemUseCase } from '../../application/usecases/problems/admin/
 import { GenerateImageUploadUrlUseCase } from '../../application/usecases/shared/GenerateImageUploadUrlUseCase';
 import { ConfirmImageUploadUseCase } from '../../application/usecases/shared/ConfirmImageUploadUseCase';
 import { ImageServiceController } from '../../presentation/http/controllers/shared/ImageServiceController';
+
+
+
+import { GetAllUsersUseCase } from '../../application/usecases/users/admin/GetAllUsersUseCase';
+import { AdminUserController } from '../../presentation/http/controllers/admin/AdminUserController';
 
 
 
@@ -236,8 +242,11 @@ container.registerSingleton("IUpdateTestCaseUseCase", UpdateTestCaseUseCase);
 container.registerSingleton("IAddTestCaseUseCase", AddTestCaseUseCase);
 container.registerSingleton("IDeleteTestCaseUseCase", DeleteTestCaseUseCase);
 container.registerSingleton("IDeleteProblemUseCase", DeleteProblemUseCase);
+
 container.registerSingleton("IGenerateImageUploadUrlUseCase", GenerateImageUploadUrlUseCase);
 container.registerSingleton("IConfirmImageUploadUseCase", ConfirmImageUploadUseCase);
+
+container.registerSingleton("IGetAllUsersUseCase", GetAllUsersUseCase);
 
 
 //   Register Controllers  //
@@ -250,6 +259,9 @@ container.registerSingleton(UserProfileController)
 container.registerSingleton(UserStoreController)
 container.registerSingleton(HealthController)
 container.registerSingleton(AdminContestController)
+
 container.registerSingleton(ImageServiceController)
+container.registerSingleton(AdminUserController)
+
 
 export { container };
