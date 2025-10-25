@@ -1,17 +1,17 @@
 import { inject, injectable } from 'tsyringe';
-import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
-import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
-import { UpdateProblemPayload } from '../../dto/problems/UpdateProblemDto';
-import { Problem } from '../../../domain/entities/Problem';
-import { BadRequestError, NotFoundError, ConflictError } from '../../errors/AppErrors';
+import { IProblemRepository } from '../../../../domain/interfaces/repositories/IProblemRepository';
+import { IUserRepository } from '../../../../domain/interfaces/repositories/IUserRepository';
+import { UpdateProblemPayload } from '../../../dto/problems/UpdateProblemDto';
+import { Problem } from '../../../../domain/entities/Problem';
+import { BadRequestError, NotFoundError, ConflictError } from '../../../errors/AppErrors';
 import { 
   InvalidProblemDataError, 
   ProblemAlreadyExistsError,
   TestCaseValidationError,
   ProblemParameterError,
   ProblemTemplateError
-} from '../../../domain/errors/ProblemErrors';
-import { AdminProblemDetailResponse, UserDTO, SubmissionStats } from '../../dto/problems/AdminProblem';
+} from '../../../../domain/errors/ProblemErrors';
+import { AdminProblemDetailResponse, UserDTO, SubmissionStats } from '../../../dto/problems/AdminProblem';
 
 @injectable()
 export class UpdateProblemUseCase {

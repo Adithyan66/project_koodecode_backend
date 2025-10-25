@@ -55,14 +55,14 @@ import { ContestTimerService } from "../../application/services/ContestTimerServ
 import { CreateSubmissionUseCase } from "../../application/usecases/submissions/CreateSubmissionUseCase";
 import { DistributeContestRewardsUseCase } from "../../application/usecases/contests/DistributeContestRewardsUseCase";
 import { CodeExecutionHelperService } from "../../application/services/CodeExecutionHelperService";
-import { GetProblemsListUseCase } from "../../application/usecases/problems/GetProblemsListUseCase";
-import { GetProblemByIdUseCase } from "../../application/usecases/problems/GetProblemByIdUseCase";
+import { GetProblemsListUseCase } from "../../application/usecases/problems/user/GetProblemsListUseCase";
+import { GetProblemByIdUseCase } from "../../application/usecases/problems/user/GetProblemByIdUseCase";
 import { GetSubmissionResultUseCase } from "../../application/usecases/submissions/GetSubmissionResultUseCase";
 import { RunCodeUseCase } from "../../application/usecases/submissions/RunCodeUseCase";
 import { GetLanguagesUseCase } from "../../application/usecases/submissions/GetLanguagesUseCase";
-import { GetProblemNamesUseCase } from "../../application/usecases/problems/GetProblemNamesUseCase";
+import { GetProblemNamesUseCase } from "../../application/usecases/problems/user/GetProblemNamesUseCase";
 import { AdminProblemController } from "../../presentation/http/controllers/admin/AdminProblemController";
-import { CreateProblemUseCase } from "../../application/usecases/problems/CreateProblemUseCase";
+import { CreateProblemUseCase } from "../../application/usecases/problems/admin/CreateProblemUseCase";
 import { UserProfileController } from "../../presentation/http/controllers/user/UserProfileController";
 import { GetUserProfileUseCase } from "../../application/usecases/users/GetUserProfileUseCase";
 import { UpdateUserProfileUseCase } from "../../application/usecases/users/UpdateUserProfileUseCase";
@@ -94,16 +94,16 @@ import { AdminContestController } from "../../presentation/http/controllers/admi
 
 import { createServer } from 'http';
 import { SocketService } from "../services/SocketService";
-import { GetAllProblemsForAdminUseCase } from "../../application/usecases/problems/GetAllProblemsForAdminUseCase";
-import { GetAllProgrammingLanguages } from "../../application/usecases/problems/GetAllProgrammingLanguages";
-import { GetProblemDetailForAdminUseCase } from "../../application/usecases/problems/GetProblemDetailForAdminUseCase";
-import { GetProblemTestCasesForAdminUseCase } from '../../application/usecases/problems/GetProblemTestCasesForAdminUseCase';
+import { GetAllProblemsForAdminUseCase } from "../../application/usecases/problems/admin/GetAllProblemsForAdminUseCase";
+import { GetAllProgrammingLanguages } from "../../application/usecases/problems/user/GetAllProgrammingLanguages";
+import { GetProblemDetailForAdminUseCase } from "../../application/usecases/problems/admin/GetProblemDetailForAdminUseCase";
+import { GetProblemTestCasesForAdminUseCase } from '../../application/usecases/problems/admin/GetProblemTestCasesForAdminUseCase';
 import { IGetProblemTestCasesForAdminUseCase } from '../../application/interfaces/ITestCaseUseCase';
-import { UpdateProblemUseCase } from '../../application/usecases/problems/UpdateProblemUseCase';
-import { UpdateTestCaseUseCase } from '../../application/usecases/problems/UpdateTestCaseUseCase';
-import { AddTestCaseUseCase } from '../../application/usecases/problems/AddTestCaseUseCase';
-import { DeleteTestCaseUseCase } from '../../application/usecases/problems/DeleteTestCaseUseCase';
-import { DeleteProblemUseCase } from '../../application/usecases/problems/DeleteProblemUseCase';
+import { UpdateProblemUseCase } from '../../application/usecases/problems/admin/UpdateProblemUseCase';
+import { UpdateTestCaseUseCase } from '../../application/usecases/problems/admin/UpdateTestCaseUseCase';
+import { AddTestCaseUseCase } from '../../application/usecases/problems/admin/AddTestCaseUseCase';
+import { DeleteTestCaseUseCase } from '../../application/usecases/problems/admin/DeleteTestCaseUseCase';
+import { DeleteProblemUseCase } from '../../application/usecases/problems/admin/DeleteProblemUseCase';
 
 
 
@@ -217,9 +217,7 @@ container.registerSingleton('ICreateContestUseCase', CreateContestUseCase)
 container.registerSingleton('IGetAllProblemsForAdminUseCase', GetAllProblemsForAdminUseCase)
 container.registerSingleton('IGetAllProgrammingLanguages', GetAllProgrammingLanguages)
 container.registerSingleton('IGetProblemDetailForAdminUseCase', GetProblemDetailForAdminUseCase)
-container.register<IGetProblemTestCasesForAdminUseCase>('IGetProblemTestCasesForAdminUseCase', {
-    useClass: GetProblemTestCasesForAdminUseCase,
-});
+container.registerSingleton('IGetProblemTestCasesForAdminUseCase', GetProblemTestCasesForAdminUseCase);
 container.registerSingleton("IUpdateProblemUseCase", UpdateProblemUseCase);
 container.registerSingleton("IUpdateTestCaseUseCase", UpdateTestCaseUseCase);
 container.registerSingleton("IAddTestCaseUseCase", AddTestCaseUseCase);

@@ -2,10 +2,10 @@
 
 
 import { inject, injectable } from "tsyringe";
-import { IGetAllProblemsForAdminUseCase } from "../../interfaces/IProblemUseCase";
-import { IProblemRepository, ProblemSearchFilters } from "../../../domain/interfaces/repositories/IProblemRepository";
-import { ITestCaseRepository } from "../../../domain/interfaces/repositories/ITestCaseRepository";
-import { AdminProblemsListResponseDto, AdminProblemListDto, AdminProblemsListRequestDto } from "../../dto/problems/AdminProblemListDto";
+import { IGetAllProblemsForAdminUseCase } from "../../../interfaces/IProblemUseCase";
+import { IProblemRepository, ProblemSearchFilters } from "../../../../domain/interfaces/repositories/IProblemRepository";
+import { ITestCaseRepository } from "../../../../domain/interfaces/repositories/ITestCaseRepository";
+import { AdminProblemsListResponseDto, AdminProblemListDto, AdminProblemsListRequestDto } from "../../../dto/problems/AdminProblemListDto";
 
 @injectable()
 export class GetAllProblemsForAdminUseCase implements IGetAllProblemsForAdminUseCase {

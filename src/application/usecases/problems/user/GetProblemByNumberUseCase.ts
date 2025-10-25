@@ -1,8 +1,8 @@
 
 
 import { inject, injectable } from 'tsyringe';
-import { Problem } from '../../../domain/entities/Problem';
-import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
+import { Problem } from '../../../../domain/entities/Problem';
+import { IProblemRepository } from '../../../../domain/interfaces/repositories/IProblemRepository';
 
 
 @injectable()

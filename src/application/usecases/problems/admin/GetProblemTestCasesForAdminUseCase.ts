@@ -1,9 +1,9 @@
 import { inject, injectable } from 'tsyringe';
-import { ITestCaseRepository } from '../../../domain/interfaces/repositories/ITestCaseRepository';
-import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
-import { TestCaseListRequestDto, TestCaseListResponseDto, TestCaseDto } from '../../dto/problems/TestCaseListDto';
-import { IGetProblemTestCasesForAdminUseCase } from '../../interfaces/ITestCaseUseCase';
-import { ProblemNotFoundError } from '../../../domain/errors/ProblemErrors';
+import { ITestCaseRepository } from '../../../../domain/interfaces/repositories/ITestCaseRepository';
+import { IProblemRepository } from '../../../../domain/interfaces/repositories/IProblemRepository';
+import { TestCaseListRequestDto, TestCaseListResponseDto, TestCaseDto } from '../../../dto/problems/TestCaseListDto';
+import { IGetProblemTestCasesForAdminUseCase } from '../../../interfaces/ITestCaseUseCase';
+import { ProblemNotFoundError } from '../../../../domain/errors/ProblemErrors';
 
 @injectable()
 export class GetProblemTestCasesForAdminUseCase implements IGetProblemTestCasesForAdminUseCase {

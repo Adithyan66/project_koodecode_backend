@@ -1,11 +1,11 @@
 
 
 import { inject, injectable } from 'tsyringe';
-import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
-import { ISubmissionRepository } from '../../../domain/interfaces/repositories/ISubmissionRepository';
-import { AdminProblemDetailResponse } from '../../dto/problems/AdminProblem';
-import { NotFoundError } from '../../errors/AppErrors';
-import { IGetProblemDetailForAdminUseCase } from '../../interfaces/IProblemUseCase';
+import { IProblemRepository } from '../../../../domain/interfaces/repositories/IProblemRepository';
+import { ISubmissionRepository } from '../../../../domain/interfaces/repositories/ISubmissionRepository';
+import { AdminProblemDetailResponse } from '../../../dto/problems/AdminProblem';
+import { NotFoundError } from '../../../errors/AppErrors';
+import { IGetProblemDetailForAdminUseCase } from '../../../interfaces/IProblemUseCase';
 
 @injectable()
 export class GetProblemDetailForAdminUseCase implements IGetProblemDetailForAdminUseCase {

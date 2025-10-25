@@ -1,23 +1,23 @@
 
 
-import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
-import { ProblemResponseDto } from '../../dto/problems/ProblemResponseDto';
-import { ITestCaseRepository } from '../../../domain/interfaces/repositories/ITestCaseRepository';
+import { IProblemRepository } from '../../../../domain/interfaces/repositories/IProblemRepository';
+import { ProblemResponseDto } from '../../../dto/problems/ProblemResponseDto';
+import { ITestCaseRepository } from '../../../../domain/interfaces/repositories/ITestCaseRepository';
 import { inject, injectable } from 'tsyringe';
-import { IGetProblemByIdUseCase } from '../../interfaces/IProblemUseCase';
+import { IGetProblemByIdUseCase } from '../../../interfaces/IProblemUseCase';
 
 import {
     ProblemNotFoundError,
     ProblemInactiveError,
     ProblemAccessError,
     TestCaseRetrievalError
-} from '../../../domain/errors/ProblemErrors';
+} from '../../../../domain/errors/ProblemErrors';
 
 import {
     NotFoundError,
     BadRequestError,
     UnauthorizedError
-} from '../../errors/AppErrors';
+} from '../../../errors/AppErrors';
 
 
 

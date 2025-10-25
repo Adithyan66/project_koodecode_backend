@@ -1,7 +1,7 @@
 
 import { inject, injectable } from 'tsyringe';
-import { TestCase } from '../../../domain/entities/TestCase';
-import { ITestCaseRepository } from '../../../domain/interfaces/repositories/ITestCaseRepository';
+import { TestCase } from '../../../../domain/entities/TestCase';
+import { ITestCaseRepository } from '../../../../domain/interfaces/repositories/ITestCaseRepository';
 
 
 @injectable()

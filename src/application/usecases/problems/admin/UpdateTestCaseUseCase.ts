@@ -1,9 +1,9 @@
 import { inject, injectable } from 'tsyringe';
-import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
-import { ITestCaseRepository } from '../../../domain/interfaces/repositories/ITestCaseRepository';
-import { UpdateTestCasePayload } from '../../dto/problems/UpdateTestCaseDto';
-import { BadRequestError, NotFoundError } from '../../errors/AppErrors';
-import { TestCaseValidationError } from '../../../domain/errors/ProblemErrors';
+import { IProblemRepository } from '../../../../domain/interfaces/repositories/IProblemRepository';
+import { ITestCaseRepository } from '../../../../domain/interfaces/repositories/ITestCaseRepository';
+import { UpdateTestCasePayload } from '../../../dto/problems/UpdateTestCaseDto';
+import { BadRequestError, NotFoundError } from '../../../errors/AppErrors';
+import { TestCaseValidationError } from '../../../../domain/errors/ProblemErrors';
 
 @injectable()
 export class UpdateTestCaseUseCase {

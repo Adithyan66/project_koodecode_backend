@@ -2,9 +2,9 @@
 
 
 import { inject, injectable } from 'tsyringe';
-import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
-import { ProblemNamesRequestDto, ProblemNamesResponseDto, ProblemNameDto } from '../../dto/problems/ProblemNamesDto';
-import { IGetProblemNamesUseCase } from '../../interfaces/IProblemUseCase';
+import { IProblemRepository } from '../../../../domain/interfaces/repositories/IProblemRepository';
+import { ProblemNamesRequestDto, ProblemNamesResponseDto, ProblemNameDto } from '../../../dto/problems/ProblemNamesDto';
+import { IGetProblemNamesUseCase } from '../../../interfaces/IProblemUseCase';
 
 
 @injectable()
