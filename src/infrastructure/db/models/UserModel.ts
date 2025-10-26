@@ -11,6 +11,7 @@ export interface IUser extends Document {
     role: string;
     profilePicUrl?: string;
     profilePicKey?: String;
+    isBlocked: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -22,7 +23,8 @@ const UserSchema = new Schema<IUser>({
     passwordHash: { type: String },
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
     profilePicUrl: { type: String },
-    profilePicKey: { type: String }
+    profilePicKey: { type: String },
+    isBlocked: { type: Boolean, default: false }
 }, {
     timestamps: true
 });

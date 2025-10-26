@@ -4,7 +4,11 @@ import { HttpResponse } from '../../helper/HttpResponse';
 import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 import { buildResponse } from '../../../../infrastructure/utils/responseBuilder';
 import { BadRequestError, UnauthorizedError } from '../../../../application/errors/AppErrors';
+
 import { IGetAllUsersUseCase, IGetUserDetailForAdminUseCase } from '../../../../application/interfaces/IUserUseCase';
+
+import {  IBlockUserUseCase } from '../../../../application/interfaces/IUserUseCase';
+
 import { GetAllUsersRequestDto } from '../../../../application/dto/users/admin/GetAllUsersRequestDto';
 
 @injectable()
@@ -12,7 +16,9 @@ export class AdminUserController {
 
   constructor(
     @inject('IGetAllUsersUseCase') private getAllUsersUseCase: IGetAllUsersUseCase,
-    @inject('IGetUserDetailForAdminUseCase') private getUserProfileUseCase: IGetUserDetailForAdminUseCase
+    @inject('IGetUserDetailForAdminUseCase') private getUserDetailForAdminUseCase: IGetUserDetailForAdminUseCase,
+    @inject('IBlockUserUseCase') private blockUserUseCase: IBlockUserUseCase
+
   ) {}
 
   getAllUsers = async (httpRequest: IHttpRequest) => {
@@ -58,10 +64,33 @@ export class AdminUserController {
       throw new BadRequestError('User ID is required');
     }
 
-    const result = await this.getUserProfileUseCase.execute(userId);
+    const result = await this.getUserDetailForAdminUseCase.execute(userId);
 
     return new HttpResponse(HTTP_STATUS.OK, {
       ...buildResponse(true, 'User profile retrieved successfully', result),
+    });
+  };
+
+  blockUser = async (httpRequest: IHttpRequest) => {
+    if (!httpRequest.user || httpRequest.user.role !== 'admin') {
+      throw new UnauthorizedError('Admin access required');
+    }
+
+    const { userId } = httpRequest.params;
+    const { isBlocked } = httpRequest.body;
+
+    if (!userId) {
+      throw new BadRequestError('User ID is required');
+    }
+
+    if (typeof isBlocked !== 'boolean') {
+      throw new BadRequestError('isBlocked must be a boolean value');
+    }
+
+    const result = await this.blockUserUseCase.execute(userId, httpRequest.user.userId, isBlocked);
+
+    return new HttpResponse(HTTP_STATUS.OK, {
+      ...buildResponse(true, result.message, { userId, isBlocked }),
     });
   };
 }

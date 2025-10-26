@@ -96,7 +96,7 @@ export class GetUserDetailsForAdminUseCase implements IGetUserDetailForAdminUseC
 
 
       // Status
-      isBlocked: profile.isBlocked || false,
+      isBlocked: user.isBlocked || false,
       lastLogin: profile.lastLogin?.toISOString(),
 
       // Streak Data

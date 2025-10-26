@@ -125,6 +125,8 @@ import { UserStatsService } from '../services/UserStatsService';
 import { PostSubmissionHandler } from '../../application/services/PostSubmissionHandler';
 import { MongoBadgeRepository } from '../db/MongoBadgeRepository';
 
+import { BlockUserUseCase, IBlockUserUseCase } from '../../application/usecases/users/admin/BlockUserUseCase';
+
 
 
 
@@ -257,6 +259,8 @@ container.registerSingleton("IConfirmImageUploadUseCase", ConfirmImageUploadUseC
 container.registerSingleton("IGetAllUsersUseCase", GetAllUsersUseCase);
 container.registerSingleton("IGetUserProfileForUserUseCase", GetUserDetailsForAdminUseCase);
 container.registerSingleton("IGetUserDetailForAdminUseCase", GetUserDetailForAdminUseCase);
+
+container.registerSingleton('IBlockUserUseCase', BlockUserUseCase);
 
 
 //   Register Controllers  //

@@ -14,7 +14,7 @@ import { IGoogleOAuthUseCase } from '../../interfaces/IAuthenticationUseCase';
 import { IUsernameService } from '../../../domain/interfaces/services/IUsernameService';
 import { ITokenService } from '../../../domain/interfaces/services/ITokenService';
 import { IProfileImageMigrationService } from "../../interfaces/IProfileImageMigrationService";
-
+import { UserBlockedError } from '../../../domain/errors/AuthErrors';
 
 
 @injectable()
@@ -59,7 +59,8 @@ export class GoogleOAuthUseCase implements IGoogleOAuthUseCase {
           googleId: profile.id,
           profilePicUrl: profile.picture,
           emailVerified: true,
-          role: "user"
+          role: "user",
+          isBlocked: false
         });
         user = await this.userRepository.saveUser(newUser);
 
@@ -100,6 +101,11 @@ export class GoogleOAuthUseCase implements IGoogleOAuthUseCase {
 
     if (!user) {
       throw new Error("user creration failed")
+    }
+
+    // Add blocked user check after user is found/created
+    if (user.isBlocked) {
+        throw new UserBlockedError();
     }
 
     const accessToken = this.jwtService.generateAccessToken({

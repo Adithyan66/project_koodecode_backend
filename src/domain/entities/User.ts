@@ -17,6 +17,7 @@ export interface UserProps {
   githubId?: string;
   provider?: "email" | "google" | "github";
   emailVerified?: boolean;
+  isBlocked: boolean;
 }
 
 export class User {
@@ -34,6 +35,7 @@ export class User {
   public githubId?: string;
   public provider: "email" | "google" | "github";
   public emailVerified: boolean;
+  public isBlocked: boolean;
 
   constructor(props: UserProps) {
     this.fullName = props.fullName;
@@ -50,9 +52,10 @@ export class User {
     this.githubId = props.githubId;
     this.provider = props.provider ?? "email";
     this.emailVerified = props.emailVerified ?? (props.provider !== "email");
+    this.isBlocked = props.isBlocked;
   }
 
 
 
-  
+
 }

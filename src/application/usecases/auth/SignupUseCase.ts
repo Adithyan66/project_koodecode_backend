@@ -12,6 +12,7 @@ import { ITokenService } from '../../../domain/interfaces/services/ITokenService
 import { IOtpRepository } from "../../../domain/interfaces/repositories/IOtpRepository";
 import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
 import { UserProfile } from '../../../domain/entities/UserProfile';
+import { User } from '../../../domain/entities/User';
 import { BadRequestError } from "../../errors/AppErrors";
 import { EmailAlreadyExistsError, FullNameOrUsernameMissingError, MissingFieldsError, OtpInvalidOrExpiredError, UsernameAlreadyExistsError } from "../../../domain/errors/AuthErrors";
 
@@ -70,15 +71,16 @@ export class SignupUseCase implements ISignupUseCase {
 
         const passwordHash = await this.passwordService.hashPassword(password);
 
-        const user = await this.userRepository.saveUser({
+        const user = await this.userRepository.saveUser(new User({
             fullName,
             userName,
             email,
             passwordHash,
             role: "user",
             provider: 'email',
-            emailVerified: true
-        });
+            emailVerified: true,
+            isBlocked: false // Explicitly set to false for new users
+        }));
 
         // Create UserProfile with default values for new user
         try {

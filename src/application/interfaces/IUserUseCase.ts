@@ -11,6 +11,11 @@ export interface IGetUserDetailForAdminUseCase {
   execute(userId: string): Promise<GetUserProfileResponseDto>;
 }
 
+
 export interface IGetUserDetailForAdminUseCase {
   execute(userId: string): Promise<UserDetailDto>;
+}
+export interface IBlockUserUseCase {
+  execute(userId: string, adminId: string, isBlocked: boolean): Promise<{ success: boolean; message: string }>;
+
 }

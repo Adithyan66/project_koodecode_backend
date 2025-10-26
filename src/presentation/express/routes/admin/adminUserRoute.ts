@@ -9,5 +9,5 @@ const adminUserController = container.resolve(AdminUserController);
 
 router.get('/', adminOnly, expressAdapter(adminUserController.getAllUsers));
 router.get('/:userId', adminOnly, expressAdapter(adminUserController.getUserProfile));
-
+router.patch('/:userId/block', adminOnly,expressAdapter( adminUserController.blockUser));
 export default router;

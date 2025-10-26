@@ -33,4 +33,5 @@ export interface IUserRepository {
     profile: any;
     badges: any[];
   } | null>;
+  blockUser(userId: string, isBlocked: boolean): Promise<User | null>;
 }

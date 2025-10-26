@@ -8,6 +8,7 @@ export interface AdminUserDto {
   updatedAt: string;
   provider: 'email' | 'google' | 'github';
   emailVerified: boolean;
+  isBlocked: boolean;
 }
 
 export interface GetAllUsersResponseDto {
