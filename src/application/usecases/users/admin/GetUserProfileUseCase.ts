@@ -11,6 +11,7 @@ export class GetUserProfileUseCase implements IGetUserProfileUseCase {
   ) {}
 
   async execute(userId: string): Promise<GetUserProfileResponseDto> {
+    
     const userData = await this.userRepository.findUserWithProfileAndBadges(userId);
     
     if (!userData) {

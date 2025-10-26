@@ -138,13 +138,11 @@ export class MongoUserRepository implements IUserRepository {
     badges: any[];
   } | null> {
     try {
-      // Find user
       const userDoc = await UserModel.findById(userId).exec();
       if (!userDoc) {
         return null;
       }
 
-      // Find user profile with badges
       const profileDoc = await UserProfileModel.findOne({ 
         userId: new Types.ObjectId(userId) 
       }).exec();

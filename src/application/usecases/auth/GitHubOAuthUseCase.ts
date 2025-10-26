@@ -6,12 +6,13 @@ import { IUserRepository } from "../../../domain/interfaces/repositories/IUserRe
 import { IOAuthService } from "../../../domain/interfaces/services/IOAuthService";
 import { ITokenService } from "../../../domain/interfaces/services/ITokenService";
 import { IUsernameService } from "../../../domain/interfaces/services/IUsernameService";
-import { JwtService } from "../../../infrastructure/services/JwtService";
+import { IUserProfileRepository } from "../../../domain/interfaces/repositories/IUserProfileRepository";
+import { UserProfile } from "../../../domain/entities/UserProfile";
 import { LoginUserResponse } from "../../dto/users/loginUserResponse";
-import { OAuthUserResponse } from "../../dto/users/OAuthUserResponse";
 import { SafeUser } from "../../dto/users/safeUser";
 import { toLoginUserResponse } from "../../services/userMapper";
 import { IGitHubOAuthUseCase } from "../../interfaces/IAuthenticationUseCase";
+import { IProfileImageMigrationService } from "../../interfaces/IProfileImageMigrationService";
 
 
 
@@ -21,7 +22,9 @@ export class GitHubOAuthUseCase implements IGitHubOAuthUseCase{
     @inject("IUserRepository") private userRepository: IUserRepository,
     @inject("IOAuthService") private oauthService: IOAuthService,
     @inject("ITokenService") private jwtService: ITokenService,
-    @inject("IUsernameService") private usernameService: IUsernameService
+    @inject("IUsernameService") private usernameService: IUsernameService,
+    @inject("IUserProfileRepository") private userProfileRepository: IUserProfileRepository,
+    @inject("IProfileImageMigrationService") private profileImageMigrationService: IProfileImageMigrationService
   ) { }
 
   async execute(code: string): Promise<LoginUserResponse> {
@@ -43,6 +46,7 @@ export class GitHubOAuthUseCase implements IGitHubOAuthUseCase{
         user = await this.userRepository.updateUser(user.id!, updatedUser);
       } else {
         isNewUser = true;
+        
         const newUser = new User({
           fullName: profile.name,
           userName: this.usernameService.generate(profile.name, profile.email),
@@ -54,6 +58,39 @@ export class GitHubOAuthUseCase implements IGitHubOAuthUseCase{
           role: "user"
         });
         user = await this.userRepository.saveUser(newUser);
+
+        // Migrate profile image to S3 after user creation (so we have the user ID)
+        if (profile.picture && user.id) {
+          try {
+            const profileImageKey = await this.profileImageMigrationService.migrateOAuthProfileImage(
+              profile.picture, 
+              user.id
+            );
+            
+            // Update user with S3 key
+            if (profileImageKey) {
+              const updatedUser = new User({
+                ...user,
+                profilePicKey: profileImageKey
+              });
+              await this.userRepository.updateUser(user.id, updatedUser);
+            }
+          } catch (error) {
+            console.error('Failed to migrate GitHub profile image:', error);
+            // Continue without failing the entire process
+          }
+        }
+
+        // Create UserProfile with default values for new user
+        try {
+          const userProfile = new UserProfile({
+            userId: user.id!
+          });
+          await this.userProfileRepository.create(userProfile);
+        } catch (error) {
+          // Note: User creation rollback not implemented as deleteUser method doesn't exist
+          throw new Error("Failed to create user profile. Please contact support.");
+        }
       }
     }
     if (!user) {
@@ -89,10 +126,4 @@ export class GitHubOAuthUseCase implements IGitHubOAuthUseCase{
 
   }
 
-  // private generateUsername(name: string, email: string): string {
-  //   const baseName = name.toLowerCase().replace(/\s+/g, '');
-  //   const emailPrefix = email.split('@');
-  //   const randomSuffix = Math.floor(Math.random() * 1000);
-  //   return `${baseName || emailPrefix}${randomSuffix}`;
-  // }
 }

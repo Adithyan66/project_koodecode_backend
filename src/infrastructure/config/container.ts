@@ -119,6 +119,7 @@ import { ImageServiceController } from '../../presentation/http/controllers/shar
 import { GetAllUsersUseCase } from '../../application/usecases/users/admin/GetAllUsersUseCase';
 import { GetUserProfileUseCase } from '../../application/usecases/users/admin/GetUserProfileUseCase';
 import { AdminUserController } from '../../presentation/http/controllers/admin/AdminUserController';
+import { ProfileImageMigrationService } from '../../application/services/ProfileImageMigrationService';
 
 
 
@@ -146,6 +147,7 @@ container.registerSingleton("IContestScoringService", ContestScoringService);
 container.registerSingleton("ICodeExecutionHelperService", CodeExecutionHelperService);
 container.registerSingleton("IImageUploadService", ImageUploadService);
 container.registerSingleton("IJudge0HealthService", Judge0HealthService);
+container.registerSingleton("IProfileImageMigrationService", ProfileImageMigrationService);
 
 container.registerSingleton("ICoinTransactionRepository", MongoCoinTransactionRepository)
 container.registerSingleton("IUserProfileRepository", MongoUserProfileRepository)

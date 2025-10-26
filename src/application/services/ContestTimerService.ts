@@ -5,14 +5,13 @@ import { inject, injectable } from 'tsyringe';
 import { Contest, ContestState } from '../../domain/entities/Contest';
 import { ContestParticipant, ParticipantStatus } from '../../domain/entities/ContestParticipant';
 import { IContestRepository } from '../../domain/interfaces/repositories/IContestRepository';
-import { DistributeContestRewardsUseCase } from '../usecases/contests/DistributeContestRewardsUseCase';
 import { IDistributeContestRewardsUseCase } from '../interfaces/IContestUseCase';
 
 @injectable()
 export class ContestTimerService {
   constructor(
     @inject("IContestRepository") private contestRepository: IContestRepository,
-    @inject("IDistributeContestRewardsUseCase")private distributeContestRewardsUseCase: IDistributeContestRewardsUseCase
+    @inject("IDistributeContestRewardsUseCase") private distributeContestRewardsUseCase: IDistributeContestRewardsUseCase
   ) { }
 
   checkContestStatus(contest: Contest): ContestState {

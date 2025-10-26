@@ -10,6 +10,8 @@ import { IPasswordService } from '../../../domain/interfaces/services/IPasswordS
 import { IOtpUseCase, ISignupUseCase } from '../../interfaces/IAuthenticationUseCase';
 import { ITokenService } from '../../../domain/interfaces/services/ITokenService';
 import { IOtpRepository } from "../../../domain/interfaces/repositories/IOtpRepository";
+import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
+import { UserProfile } from '../../../domain/entities/UserProfile';
 import { BadRequestError } from "../../errors/AppErrors";
 import { EmailAlreadyExistsError, FullNameOrUsernameMissingError, MissingFieldsError, OtpInvalidOrExpiredError, UsernameAlreadyExistsError } from "../../../domain/errors/AuthErrors";
 
@@ -22,7 +24,8 @@ export class SignupUseCase implements ISignupUseCase {
         @inject("IUserRepository") private userRepository: IUserRepository,
         @inject("IOtpUseCase") private otpService: IOtpUseCase,
         @inject("ITokenService") private tokenService: ITokenService,
-        @inject("IPasswordService") private passwordService: IPasswordService
+        @inject("IPasswordService") private passwordService: IPasswordService,
+        @inject("IUserProfileRepository") private userProfileRepository: IUserProfileRepository
     ) { }
 
     async otpRequestExecute(fullName: string, userName: string, email: string) {
@@ -77,6 +80,16 @@ export class SignupUseCase implements ISignupUseCase {
             emailVerified: true
         });
 
+        // Create UserProfile with default values for new user
+        try {
+            const userProfile = new UserProfile({
+                userId: user.id!
+            });
+            await this.userProfileRepository.create(userProfile);
+        } catch (error) {
+            // Note: User creation rollback not implemented as deleteUser method doesn't exist
+            throw new Error("Failed to create user profile. Please contact support.");
+        }
 
         const accessToken = this.tokenService.generateAccessToken({ userId: user.id, role: user.role });
         const refreshToken = this.tokenService.generateRefreshToken({ userId: user.id, role: user.role })

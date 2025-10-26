@@ -47,7 +47,7 @@ export class AdminUserController {
   };
 
   getUserProfile = async (httpRequest: IHttpRequest) => {
-    // Check admin access
+
     if (!httpRequest.user || httpRequest.user.role !== 'admin') {
       throw new UnauthorizedError('Admin access required');
     }
