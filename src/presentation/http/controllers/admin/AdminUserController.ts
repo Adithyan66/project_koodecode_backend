@@ -4,11 +4,8 @@ import { HttpResponse } from '../../helper/HttpResponse';
 import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 import { buildResponse } from '../../../../infrastructure/utils/responseBuilder';
 import { BadRequestError, UnauthorizedError } from '../../../../application/errors/AppErrors';
-
 import { IGetAllUsersUseCase, IGetUserDetailForAdminUseCase } from '../../../../application/interfaces/IUserUseCase';
-
-import {  IBlockUserUseCase } from '../../../../application/interfaces/IUserUseCase';
-
+import {  IBlockUserUseCase, IGetUserContestDataUseCase } from '../../../../application/interfaces/IUserUseCase';
 import { GetAllUsersRequestDto } from '../../../../application/dto/users/admin/GetAllUsersRequestDto';
 
 @injectable()
@@ -17,7 +14,8 @@ export class AdminUserController {
   constructor(
     @inject('IGetAllUsersUseCase') private getAllUsersUseCase: IGetAllUsersUseCase,
     @inject('IGetUserDetailForAdminUseCase') private getUserDetailForAdminUseCase: IGetUserDetailForAdminUseCase,
-    @inject('IBlockUserUseCase') private blockUserUseCase: IBlockUserUseCase
+    @inject('IBlockUserUseCase') private blockUserUseCase: IBlockUserUseCase,
+    @inject('IGetUserContestDataUseCase') private getUserContestDataUseCase: IGetUserContestDataUseCase
 
   ) {}
 
@@ -91,6 +89,35 @@ export class AdminUserController {
 
     return new HttpResponse(HTTP_STATUS.OK, {
       ...buildResponse(true, result.message, { userId, isBlocked }),
+    });
+  };
+
+
+  getUserContestData = async (httpRequest: IHttpRequest) => {
+
+    if (!httpRequest.user || httpRequest.user.role !== 'admin') {
+      throw new UnauthorizedError('Admin access required');
+    }
+
+    const { userId } = httpRequest.params;
+    const page = parseInt(httpRequest.query?.page as string) || 1;
+    const limit = parseInt(httpRequest.query?.limit as string) || 10;
+
+    if (!userId) {
+      throw new BadRequestError('User ID is required');
+    }
+
+    if (page < 1) {
+      throw new BadRequestError('Page must be greater than 0');
+    }
+    if (limit < 1 || limit > 100) {
+      throw new BadRequestError('Limit must be between 1 and 100');
+    }
+
+    const result = await this.getUserContestDataUseCase.execute(userId, page, limit);
+
+    return new HttpResponse(HTTP_STATUS.OK, {
+      ...buildResponse(true, 'User contest data retrieved successfully', result),
     });
   };
 }

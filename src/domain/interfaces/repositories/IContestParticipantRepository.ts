@@ -27,4 +27,5 @@ export interface IContestParticipantRepository {
   }>;
   getTopPerformers(contestId: string, limit: number): Promise<any[]>;
   softDeleteByContest(contestId: string): Promise<boolean>;
+  countByUser(userId: string): Promise<number>;
 }

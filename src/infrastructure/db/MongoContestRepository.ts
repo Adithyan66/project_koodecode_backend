@@ -40,9 +40,8 @@ export class MongoContestRepository implements IContestRepository {
 
   async findById(id: string): Promise<Contest | null> {
     const contest = await ContestModel.findOne({ _id: id, isDeleted: { $ne: true } })
-    // .populate('problems', 'title difficulty')
-    // .populate('createdBy', 'username')
-    // .populate('participants', 'username profileImage');
+    console.log("contestssssssssssssssssssssssssssssss",contest);
+    
     return contest ? this.mapToEntity(contest) : null;
   }
 

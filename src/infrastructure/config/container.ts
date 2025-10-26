@@ -126,6 +126,7 @@ import { PostSubmissionHandler } from '../../application/services/PostSubmission
 import { MongoBadgeRepository } from '../db/MongoBadgeRepository';
 
 import { BlockUserUseCase, IBlockUserUseCase } from '../../application/usecases/users/admin/BlockUserUseCase';
+import { GetUserContestDataUseCase } from '../../application/usecases/users/admin/GetUserContestDataUseCase';
 
 
 
@@ -261,6 +262,7 @@ container.registerSingleton("IGetUserProfileForUserUseCase", GetUserDetailsForAd
 container.registerSingleton("IGetUserDetailForAdminUseCase", GetUserDetailForAdminUseCase);
 
 container.registerSingleton('IBlockUserUseCase', BlockUserUseCase);
+container.registerSingleton('IGetUserContestDataUseCase', GetUserContestDataUseCase);
 
 
 //   Register Controllers  //

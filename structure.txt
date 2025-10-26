@@ -1,8 +1,4 @@
-tree  -I 'node_modules' > structure.txt
-
-
-
-
+ tree  -I 'node_modules|dist' > structure.txt
 
 
 
@@ -19,6 +15,7 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   │   ├── CoinPurchaseDto.ts
 │   │   │   │   └── CoinTransactionDto.ts
 │   │   │   ├── contests
+│   │   │   │   ├── AdminContestDto.ts
 │   │   │   │   ├── ContestDetailDto.ts
 │   │   │   │   ├── ContestLeaderboardDto.ts
 │   │   │   │   ├── ContestListDto.ts
@@ -28,13 +25,18 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   │   ├── CreateContestDto.ts
 │   │   │   │   └── UpdateContestDto.ts
 │   │   │   ├── problems
+│   │   │   │   ├── AddTestCaseDto.ts
+│   │   │   │   ├── AdminProblemListDto.ts
+│   │   │   │   ├── AdminProblem.ts
 │   │   │   │   ├── CreateProblemDto.ts
 │   │   │   │   ├── CreateTestCaseDto.ts
 │   │   │   │   ├── ProblemListDto.ts
 │   │   │   │   ├── ProblemNamesDto.ts
 │   │   │   │   ├── ProblemResponseDto.ts
+│   │   │   │   ├── TestCaseListDto.ts
 │   │   │   │   ├── TestCaseResponseDto.ts
-│   │   │   │   └── UpdateProblemDto.ts
+│   │   │   │   ├── UpdateProblemDto.ts
+│   │   │   │   └── UpdateTestCaseDto.ts
 │   │   │   ├── rooms
 │   │   │   │   ├── CreateRoomDto.ts
 │   │   │   │   ├── JoinRoomDto.ts
@@ -53,6 +55,12 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   │   ├── RunCodeDto.ts
 │   │   │   │   └── SubmissionResponseDto.ts
 │   │   │   └── users
+│   │   │       ├── admin
+│   │   │       │   ├── GetAllUsersRequestDto.ts
+│   │   │       │   ├── GetAllUsersResponseDto.ts
+│   │   │       │   ├── GetUserProfileResponseDto.ts
+│   │   │       │   ├── UserContestDataDto.ts
+│   │   │       │   └── UserDetailDto.ts
 │   │   │       ├── FollowUserDto.ts
 │   │   │       ├── GenerateUploadUrlDto.ts
 │   │   │       ├── loginUserResponse.ts
@@ -68,25 +76,34 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   ├── AppError.ts
 │   │   │   └── ErrorMapper.ts
 │   │   ├── interfaces
+│   │   │   ├── IAdminContestUseCase.ts
 │   │   │   ├── IAuthenticationUseCase.ts
 │   │   │   ├── ICodeExecutionHelperService.ts
 │   │   │   ├── ICoinUseCase.ts
+│   │   │   ├── IConfirmImageUploadUseCase.ts
 │   │   │   ├── IContestScoringService.ts
 │   │   │   ├── IContestTimerService.ts
 │   │   │   ├── IContestUseCase.ts
+│   │   │   ├── IImageServiceUseCase.ts
 │   │   │   ├── IImageUploadService.ts
 │   │   │   ├── IJudge0Repository.ts
+│   │   │   ├── IPostSubmissionHandler.ts
 │   │   │   ├── IProblemUseCase.ts
+│   │   │   ├── IProfileImageMigrationService.ts
 │   │   │   ├── IProfileUseCase.ts
 │   │   │   ├── IRoomUseCase.ts
 │   │   │   ├── IS3Service.ts
-│   │   │   └── IStoreUseCase.ts
+│   │   │   ├── IStoreUseCase.ts
+│   │   │   ├── ITestCaseUseCase.ts
+│   │   │   └── IUserUseCase.ts
 │   │   ├── services
 │   │   │   ├── CodeExecutionHelperService.ts
 │   │   │   ├── ContestScoringService.ts
 │   │   │   ├── ContestTimerService.ts
 │   │   │   ├── ImageUploadService.ts
 │   │   │   ├── PasswordService.ts
+│   │   │   ├── PostSubmissionHandler.ts
+│   │   │   ├── ProfileImageMigrationService.ts
 │   │   │   └── userMapper.ts
 │   │   ├── usecases
 │   │   │   ├── auth
@@ -111,22 +128,41 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   │   ├── SpendCoinsUseCase.ts
 │   │   │   │   └── TransferCoinsUseCase.ts
 │   │   │   ├── contests
-│   │   │   │   ├── CreateContestUseCase.ts
+│   │   │   │   ├── admin
+│   │   │   │   │   ├── CreateContestUseCase.ts
+│   │   │   │   │   ├── DeleteContestUseCase.ts
+│   │   │   │   │   ├── GetAdminActiveContestsUseCase.ts
+│   │   │   │   │   ├── GetAdminContestByIdUseCase.ts
+│   │   │   │   │   ├── GetAdminPastContestsUseCase.ts
+│   │   │   │   │   ├── GetAdminUpcomingContestsUseCase.ts
+│   │   │   │   │   └── UpdateContestUseCase.ts
 │   │   │   │   ├── DistributeContestRewardsUseCase.ts
-│   │   │   │   ├── GetContestDetailUseCase.ts
-│   │   │   │   ├── GetContestLeaderboardUseCase.ts
-│   │   │   │   ├── GetContestsListUseCase.ts
-│   │   │   │   ├── RegisterForContestUseCase.ts
-│   │   │   │   ├── StartContestProblemUseCase.ts
-│   │   │   │   └── SubmitContestSolutionUseCase.ts
+│   │   │   │   └── user
+│   │   │   │       ├── GetContestDetailUseCase.ts
+│   │   │   │       ├── GetContestLeaderboardUseCase.ts
+│   │   │   │       ├── GetContestsListUseCase.ts
+│   │   │   │       ├── RegisterForContestUseCase.ts
+│   │   │   │       ├── StartContestProblemUseCase.ts
+│   │   │   │       └── SubmitContestSolutionUseCase.ts
 │   │   │   ├── problems
-│   │   │   │   ├── CreateProblemUseCase.ts
-│   │   │   │   ├── GetProblemByIdUseCase.ts
-│   │   │   │   ├── GetProblemByNumberUseCase.ts
-│   │   │   │   ├── GetProblemNamesUseCase.ts
-│   │   │   │   ├── GetProblemsListUseCase.ts
-│   │   │   │   ├── GetProblemTestCasesUseCase.ts
-│   │   │   │   └── GetSubmissionTestCasesUseCase.ts
+│   │   │   │   ├── admin
+│   │   │   │   │   ├── AddTestCaseUseCase.ts
+│   │   │   │   │   ├── CreateProblemUseCase.ts
+│   │   │   │   │   ├── DeleteProblemUseCase.ts
+│   │   │   │   │   ├── DeleteTestCaseUseCase.ts
+│   │   │   │   │   ├── GetAllProblemsForAdminUseCase.ts
+│   │   │   │   │   ├── GetProblemDetailForAdminUseCase.ts
+│   │   │   │   │   ├── GetProblemTestCasesForAdminUseCase.ts
+│   │   │   │   │   ├── UpdateProblemUseCase.ts
+│   │   │   │   │   └── UpdateTestCaseUseCase.ts
+│   │   │   │   └── user
+│   │   │   │       ├── GetAllProgrammingLanguages.ts
+│   │   │   │       ├── GetProblemByIdUseCase.ts
+│   │   │   │       ├── GetProblemByNumberUseCase.ts
+│   │   │   │       ├── GetProblemNamesUseCase.ts
+│   │   │   │       ├── GetProblemsListUseCase.ts
+│   │   │   │       ├── GetProblemTestCasesUseCase.ts
+│   │   │   │       └── GetSubmissionTestCasesUseCase.ts
 │   │   │   ├── rooms
 │   │   │   │   ├── CreateRoomUseCase.ts
 │   │   │   │   ├── GetPublicRoomsUseCase.ts
@@ -134,6 +170,9 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   │   ├── KickUserUseCase.ts
 │   │   │   │   ├── UpdateRoomPermissionsUseCase.ts
 │   │   │   │   └── VerifyPrivateRoomUseCase.ts
+│   │   │   ├── shared
+│   │   │   │   ├── ConfirmImageUploadUseCase.ts
+│   │   │   │   └── GenerateImageUploadUrlUseCase.ts
 │   │   │   ├── store
 │   │   │   │   ├── CheckItemOwnershipUseCase.ts
 │   │   │   │   ├── GetStoreItemsUseCase.ts
@@ -145,15 +184,22 @@ tree  -I 'node_modules' > structure.txt
 │   │   │   │   ├── GetSubmissionResultUseCase.ts
 │   │   │   │   └── RunCodeUseCase.ts
 │   │   │   └── users
-│   │   │       ├── FollowUserUseCase.ts
-│   │   │       ├── GenerateProfileImageUploadUrlUseCase.ts
-│   │   │       ├── GetUserEditableProfile.ts
-│   │   │       ├── GetUserFollowersUseCase.ts
-│   │   │       ├── GetUserFollowingUseCase.ts
-│   │   │       ├── GetUserProfileUseCase.ts
-│   │   │       ├── UnfollowUserUseCase.ts
-│   │   │       ├── UpdateProfileImageUseCase.ts
-│   │   │       └── UpdateUserProfileUseCase.ts
+│   │   │       ├── admin
+│   │   │       │   ├── BlockUserUseCase.ts
+│   │   │       │   ├── GetAllUsersUseCase.ts
+│   │   │       │   ├── GetUserContestDataUseCase.ts
+│   │   │       │   ├── GetUserDetailForAdminUseCase.ts
+│   │   │       │   └── GetUserDetailsForAdminUseCase.ts
+│   │   │       └── user
+│   │   │           ├── FollowUserUseCase.ts
+│   │   │           ├── GenerateProfileImageUploadUrlUseCase.ts
+│   │   │           ├── GetUserEditableProfile.ts
+│   │   │           ├── GetUserFollowersUseCase.ts
+│   │   │           ├── GetUserFollowingUseCase.ts
+│   │   │           ├── GetUserProfileUseCase.ts
+│   │   │           ├── UnfollowUserUseCase.ts
+│   │   │           ├── UpdateProfileImageUseCase.ts
+│   │   │           └── UpdateUserProfileUseCase.ts
 │   │   └── utils
 │   ├── app.ts
 │   ├── domain
@@ -300,9 +346,12 @@ tree  -I 'node_modules' > structure.txt
 │   │   │       ├── admin
 │   │   │       │   ├── adminCoinRoute.ts
 │   │   │       │   ├── adminContestRoute.ts
-│   │   │       │   └── adminProblemRoute.ts
-│   │   │       ├── authRoutes.ts
-│   │   │       ├── healthRoute.ts
+│   │   │       │   ├── adminProblemRoute.ts
+│   │   │       │   └── adminUserRoute.ts
+│   │   │       ├── shared
+│   │   │       │   ├── authRoutes.ts
+│   │   │       │   ├── healthRoute.ts
+│   │   │       │   └── imageServiceRoute.ts
 │   │   │       └── user
 │   │   │           ├── userCoinRoute.ts
 │   │   │           ├── userContestRoute.ts
@@ -315,11 +364,13 @@ tree  -I 'node_modules' > structure.txt
 │   │       │   ├── admin
 │   │       │   │   ├── AdminCoinController.ts
 │   │       │   │   ├── AdminContestController.ts
-│   │       │   │   └── AdminProblemController.ts
+│   │       │   │   ├── AdminProblemController.ts
+│   │       │   │   └── AdminUserController.ts
 │   │       │   ├── authentication
 │   │       │   │   └── AuthController.ts
-│   │       │   ├── health
-│   │       │   │   └── HealthController.ts
+│   │       │   ├── shared
+│   │       │   │   ├── HealthController.ts
+│   │       │   │   └── ImageServiceController.ts
 │   │       │   └── user
 │   │       │       ├── UserCoinController.ts
 │   │       │       ├── UserContestController.ts
@@ -357,4 +408,4 @@ tree  -I 'node_modules' > structure.txt
 ├── test-presigned-url.js
 └── tsconfig.json
 
-61 directories, 287 files
+70 directories, 333 files

@@ -310,20 +310,20 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
   private mapToEntity(participantDoc: any): ContestParticipant {
     return new ContestParticipant({
       id: participantDoc._id.toString(),
-      contestId: typeof participantDoc.contestId === 'object'
+      contestId: typeof participantDoc.contestId === 'object' && participantDoc.contestId
         ? participantDoc.contestId._id.toString()
-        : participantDoc.contestId.toString(),
-      userId: typeof participantDoc.userId === 'object'
+        : participantDoc.contestId ? participantDoc.contestId.toString() : 'invalid-contest-id',
+      userId: typeof participantDoc.userId === 'object' && participantDoc.userId
         ? participantDoc.userId._id.toString()
-        : participantDoc.userId.toString(),
-      assignedProblemId: typeof participantDoc.assignedProblemId === 'object'
+        : participantDoc.userId ? participantDoc.userId.toString() : 'invalid-user-id',
+      assignedProblemId: typeof participantDoc.assignedProblemId === 'object' && participantDoc.assignedProblemId
         ? participantDoc.assignedProblemId._id.toString()
-        : participantDoc.assignedProblemId.toString(),
+        : participantDoc.assignedProblemId ? participantDoc.assignedProblemId.toString() : 'invalid-problem-id',
       registrationTime: participantDoc.registrationTime,
       startTime: participantDoc.startTime,
       endTime: participantDoc.endTime,
-      submissions: participantDoc.submissions.map((sub: any) => new ContestSubmission({
-        submissionId: sub.submissionId.toString(),
+      submissions: (participantDoc.submissions || []).map((sub: any) => new ContestSubmission({
+        submissionId: sub.submissionId ? sub.submissionId.toString() : '',
         submittedAt: sub.submittedAt,
         isCorrect: sub.isCorrect,
         timeTaken: sub.timeTaken,
@@ -349,5 +349,12 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
       }
     );
     return result.modifiedCount > 0;
+  }
+
+  async countByUser(userId: string): Promise<number> {
+    return await ContestParticipantModel.countDocuments({ 
+      userId, 
+      isDeleted: { $ne: true } 
+    });
   }
 }
