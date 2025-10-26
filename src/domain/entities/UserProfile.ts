@@ -17,6 +17,15 @@ export class UserProfile {
     public easyProblems: number;
     public mediumProblems: number;
     public hardProblems: number;
+    public totalSubmissions: number;
+    public acceptedSubmissions: number;
+    public rejectedSubmissions: number;
+    public problemsAttempted: string[];
+    public problemsSolved: string[];
+    public firstSolveDate?: Date;
+    public lastSolveDate?: Date;
+    public averageSolveTime?: number;
+    public languagesUsed: Record<number, number>;
     public streak: UserStreak;
     public activeDays: number;
     public isPremium: boolean;
@@ -46,6 +55,15 @@ export class UserProfile {
         easyProblems = 0,
         mediumProblems = 0,
         hardProblems = 0,
+        totalSubmissions = 0,
+        acceptedSubmissions = 0,
+        rejectedSubmissions = 0,
+        problemsAttempted = [],
+        problemsSolved = [],
+        firstSolveDate,
+        lastSolveDate,
+        averageSolveTime,
+        languagesUsed = {},
         streak = new UserStreak(),
         activeDays = 0,
         isPremium = false,
@@ -74,6 +92,15 @@ export class UserProfile {
         easyProblems?: number;
         mediumProblems?: number;
         hardProblems?: number;
+        totalSubmissions?: number;
+        acceptedSubmissions?: number;
+        rejectedSubmissions?: number;
+        problemsAttempted?: string[];
+        problemsSolved?: string[];
+        firstSolveDate?: Date;
+        lastSolveDate?: Date;
+        averageSolveTime?: number;
+        languagesUsed?: Record<number, number>;
         streak?: UserStreak;
         activeDays?: number;
         isPremium?: boolean;
@@ -102,6 +129,15 @@ export class UserProfile {
         this.easyProblems = easyProblems;
         this.mediumProblems = mediumProblems;
         this.hardProblems = hardProblems;
+        this.totalSubmissions = totalSubmissions;
+        this.acceptedSubmissions = acceptedSubmissions;
+        this.rejectedSubmissions = rejectedSubmissions;
+        this.problemsAttempted = problemsAttempted;
+        this.problemsSolved = problemsSolved;
+        this.firstSolveDate = firstSolveDate;
+        this.lastSolveDate = lastSolveDate;
+        this.averageSolveTime = averageSolveTime;
+        this.languagesUsed = languagesUsed;
         this.streak = streak;
         this.activeDays = activeDays;
         this.isPremium = isPremium;
@@ -148,6 +184,68 @@ export class UserProfile {
             });
 
         return calendar;
+    }
+
+    public addProblemAttempt(problemId: string): void {
+        if (!this.problemsAttempted.includes(problemId)) {
+            this.problemsAttempted.push(problemId);
+        }
+    }
+
+    public addProblemSolved(problemId: string, difficulty: 'easy' | 'medium' | 'hard'): void {
+        if (!this.problemsSolved.includes(problemId)) {
+            this.problemsSolved.push(problemId);
+            this.totalProblems += 1;
+            
+            switch (difficulty) {
+                case 'easy':
+                    this.easyProblems += 1;
+                    break;
+                case 'medium':
+                    this.mediumProblems += 1;
+                    break;
+                case 'hard':
+                    this.hardProblems += 1;
+                    break;
+            }
+
+            // Update solve dates
+            const now = new Date();
+            if (!this.firstSolveDate) {
+                this.firstSolveDate = now;
+            }
+            this.lastSolveDate = now;
+        }
+    }
+
+    public incrementSubmissionStats(isAccepted: boolean): void {
+        this.totalSubmissions += 1;
+        if (isAccepted) {
+            this.acceptedSubmissions += 1;
+        } else {
+            this.rejectedSubmissions += 1;
+        }
+        
+        // Recalculate acceptance rate
+        this.acceptanceRate = this.calculateAcceptanceRate(this.totalSubmissions, this.acceptedSubmissions);
+    }
+
+    public trackLanguageUsage(languageId: number): void {
+        this.languagesUsed[languageId] = (this.languagesUsed[languageId] || 0) + 1;
+    }
+
+    public getMostUsedLanguage(): number | null {
+        let maxCount = 0;
+        let mostUsedLanguage: number | null = null;
+        
+        for (const [languageId, count] of Object.entries(this.languagesUsed)) {
+            if (count > maxCount) {
+                maxCount = count;
+                mostUsedLanguage = parseInt(languageId);
+            }
+        }
+        
+        return mostUsedLanguage;
     }
 }
 

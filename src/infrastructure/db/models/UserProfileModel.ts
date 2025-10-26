@@ -65,6 +65,15 @@ export interface IUserProfile extends Document {
     easyProblems: number;
     mediumProblems: number;
     hardProblems: number;
+    totalSubmissions: number;
+    acceptedSubmissions: number;
+    rejectedSubmissions: number;
+    problemsAttempted: string[];
+    problemsSolved: string[];
+    firstSolveDate?: Date;
+    lastSolveDate?: Date;
+    averageSolveTime: number;
+    languagesUsed: Map<string, number>;
     
     // Streak Information
     streak: IStreak;
@@ -152,6 +161,15 @@ const UserProfileSchema = new Schema<IUserProfile>({
     easyProblems: { type: Number, default: 0 },
     mediumProblems: { type: Number, default: 0 },
     hardProblems: { type: Number, default: 0 },
+    totalSubmissions: { type: Number, default: 0 },
+    acceptedSubmissions: { type: Number, default: 0 },
+    rejectedSubmissions: { type: Number, default: 0 },
+    problemsAttempted: { type: [String], default: [] },
+    problemsSolved: { type: [String], default: [] },
+    firstSolveDate: { type: Date },
+    lastSolveDate: { type: Date },
+    averageSolveTime: { type: Number, default: 0 },
+    languagesUsed: { type: Map, of: Number, default: new Map() },
     
     // Streak Information
     streak: { type: StreakSchema, default: () => ({}) },

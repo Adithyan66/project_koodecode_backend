@@ -21,43 +21,45 @@ export interface UserStreakDto {
 
 export interface GetUserProfileResponseDto {
   // Basic User Info
-  id: string;
-  fullName: string;
-  userName: string;
-  email: string;
-  googleId?: string;
-  githubId?: string;
-  emailVerified: boolean;
-  profilePicKey?: string;
-  createdAt: string;
-  updatedAt: string;
-  
+  user: {
+    id: string;
+    fullName: string;
+    userName: string;
+    email: string;
+    googleId?: string;
+    githubId?: string;
+    emailVerified: boolean;
+    profilePicKey?: string;
+    createdAt: string;
+    updatedAt: string;
+  }
   // Extended Profile Info
-  bio?: string;
-  location?: string;
-  birthdate?: string;
-  gender?: 'male' | 'female' | 'other';
-  githubUrl?: string;
-  linkedinUrl?: string;
-  
+  UserProfile: {
+    bio?: string;
+    location?: string;
+    birthdate?: string;
+    gender?: 'male' | 'female' | 'other';
+    githubUrl?: string;
+    linkedinUrl?: string;
+    coinBalance: number;
+  }
   // Performance Metrics
   ranking?: number;
   acceptanceRate: number;
   contestRating: number;
-  coinBalance: number;
   totalProblems: number;
   easyProblems: number;
   mediumProblems: number;
   hardProblems: number;
   activeDays: number;
-  
+
   // Status
   isBlocked: boolean;
   lastLogin?: string;
-  
+
   // Streak Data
   streak: UserStreakDto;
-  
+
   // Badges
   badges: UserBadgeDto[];
 }

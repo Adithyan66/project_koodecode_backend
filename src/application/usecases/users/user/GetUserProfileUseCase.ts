@@ -3,12 +3,12 @@ import { IUserProfileRepository } from '../../../../domain/interfaces/repositori
 import { IUserConnectionRepository } from '../../../../domain/interfaces/repositories/IUserConnectionRepository';
 import { UserProfile } from '../../../../domain/entities/UserProfile';
 import { UserProfileResponseDto } from '../../../dto/users/UserProfileDto';
-import { IGetUserProfileUseCase } from '../../../interfaces/IProfileUseCase';
+import { IGetUserProfileForUserUseCase } from '../../../interfaces/IProfileUseCase';
 import { inject, injectable } from 'tsyringe';
 
 
 @injectable()
-export class GetUserProfileUseCase implements IGetUserProfileUseCase {
+export class GetUserProfileUseCase implements IGetUserProfileForUserUseCase {
     
     constructor(
         @inject('IUserRepository') private userRepository: IUserRepository,
@@ -87,6 +87,15 @@ export class GetUserProfileUseCase implements IGetUserProfileUseCase {
                     medium: profile.mediumProblems,
                     hard: profile.hardProblems
                 },
+                totalSubmissions: profile.totalSubmissions,
+                acceptedSubmissions: profile.acceptedSubmissions,
+                rejectedSubmissions: profile.rejectedSubmissions,
+                problemsAttempted: profile.problemsAttempted.length,
+                problemsSolved: profile.problemsSolved.length,
+                firstSolveDate: profile.firstSolveDate?.toISOString(),
+                lastSolveDate: profile.lastSolveDate?.toISOString(),
+                averageSolveTime: profile.averageSolveTime,
+                languagesUsed: profile.languagesUsed,
                 streak: {
                     current: profile.streak.currentCount,
                     max: profile.streak.maxCount,

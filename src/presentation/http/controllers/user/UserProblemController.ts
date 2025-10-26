@@ -21,7 +21,7 @@ export class UserProblemController implements IUserProblemController {
     constructor(
         @inject("IGetProblemsListUseCase") private _getProblemsListUseCase: IGetProblemsListUseCase,
         @inject("IGetProblemByIdUseCase") private _getProblemDetailUseCase: IGetProblemByIdUseCase,
-        @inject("ICreateSubmissionUseCase") private _executeCodeUseCase: ICreateSubmissionUseCase,
+        @inject("ICreateSubmissionUseCase") private _submitCodeUseCase: ICreateSubmissionUseCase,
         @inject("IGetSubmissionResultUseCase") private _getSubmissionResultUseCase: IGetSubmissionResultUseCase,
         @inject("IRunCodeUseCase") private _runCodeUseCase: IRunCodeUseCase,
         @inject("IGetLanguagesUseCase") private _getLanguagesUseCase: IGetLanguagesUseCase,
@@ -99,7 +99,7 @@ export class UserProblemController implements IUserProblemController {
             throw new BadRequestError("Problem ID, source code, and language ID are required")
         }
 
-        const result = await this._executeCodeUseCase.execute({
+        const result = await this._submitCodeUseCase.execute({
             userId,
             problemId,
             sourceCode,

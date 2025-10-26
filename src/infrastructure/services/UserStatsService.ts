@@ -1,18 +1,22 @@
 
 
-import { IUserStatsService } from '../../application/interfaces/IUserStatsService';
-import { IUserRepository } from '../../application/interfaces/IUserRepository';
-import { IUserProfileRepository } from '../../application/interfaces/IUserProfileRepository';
-import { IBadgeRepository } from '../../domain/interfaces/repositories/IBadgeRepository'; 
-import { ActivityType, BadgeType, UserProfile } from '../../domain/entities/UserProfile';
+import { IUserStatsService } from '../../domain/interfaces/services/IUserStatsService';
+import { IUserRepository } from '../../domain/interfaces/repositories/IUserRepository';
+import { IUserProfileRepository } from '../../domain/interfaces/repositories/IUserProfileRepository';
+import { IBadgeRepository } from '../../domain/interfaces/repositories/IBadgeRepository';
+import { ActivityType, BadgeType, UserProfile, UserStreak } from '../../domain/entities/UserProfile';
 import { Badge } from '../../domain/entities/Badge';
+import { inject, injectable } from 'tsyringe';
 
+
+@injectable()
 export class UserStatsService implements IUserStatsService {
+
     constructor(
-        private userRepository: IUserRepository,
-        private profileRepository: IUserProfileRepository,
-        private badgeRepository: IBadgeRepository
-    ) {}
+        @inject('IUserRepository') private userRepository: IUserRepository,
+        @inject('IUserProfileRepository') private profileRepository: IUserProfileRepository,
+        @inject('IBadgeRepository') private badgeRepository: IBadgeRepository
+    ) { }
 
     async initializeUserProfile(userId: string): Promise<UserProfile> {
         const existingProfile = await this.profileRepository.findByUserId(userId);
@@ -20,7 +24,29 @@ export class UserStatsService implements IUserStatsService {
             return existingProfile;
         }
 
-        const newProfile = new UserProfile(userId);
+        const newProfile = new UserProfile({
+            userId,
+            acceptanceRate: 0,
+            contestRating: 0,
+            coinBalance: 0,
+            totalProblems: 0,
+            easyProblems: 0,
+            mediumProblems: 0,
+            hardProblems: 0,
+            totalSubmissions: 0,
+            acceptedSubmissions: 0,
+            rejectedSubmissions: 0,
+            problemsAttempted: [],
+            problemsSolved: [],
+            languagesUsed: {},
+            streak: new UserStreak(),
+            activeDays: 0,
+            isPremium: false,
+            isBlocked: false,
+            badges: [],
+            hints: [],
+            activities: []
+        });
         return await this.profileRepository.create(newProfile);
     }
 
@@ -31,7 +57,7 @@ export class UserStatsService implements IUserStatsService {
         }
 
         profile.totalProblems += 1;
-        
+
         switch (difficulty) {
             case 'Easy':
                 profile.easyProblems += 1;
@@ -53,10 +79,10 @@ export class UserStatsService implements IUserStatsService {
 
         // Add activity
         await this.addActivity(userId, ActivityType.PROBLEM_SOLVED);
-        
+
         // Update streak
         await this.updateStreak(userId, true);
-        
+
         // Check for badges
         await this.checkAndAwardBadges(userId);
     }
@@ -72,8 +98,8 @@ export class UserStatsService implements IUserStatsService {
 
         if (isActive) {
             const today = currentDate.toISOString().split('T')[0];
-            const existingActivity = profile.activities.find(a => a.date === today);
-            
+            const existingActivity = profile.activities.find((a: any) => a.date === today);
+
             if (!existingActivity) {
                 profile.activeDays += 1;
             }
@@ -108,7 +134,7 @@ export class UserStatsService implements IUserStatsService {
         }
 
         const acceptanceRate = profile.calculateAcceptanceRate(totalSubmissions, acceptedSubmissions);
-        
+
         await this.profileRepository.updateStats(userId, {
             acceptanceRate
         });
@@ -121,13 +147,13 @@ export class UserStatsService implements IUserStatsService {
         }
 
         const availableBadges = await this.badgeRepository.findAll();
-        const earnedBadgeIds = profile.badges.map(b => b.badgeId);
+        const earnedBadgeIds = profile.badges.map((b: any) => b.badgeId);
 
         for (const badge of availableBadges) {
             if (earnedBadgeIds.includes(badge.id!)) continue;
 
             const shouldAward = this.checkBadgeCriteria(profile, badge);
-            
+
             if (shouldAward) {
                 const userBadge = {
                     badgeId: badge.id!,
@@ -171,5 +197,104 @@ export class UserStatsService implements IUserStatsService {
         }
 
         return profile.getActivityCalendar(year);
+    }
+
+    async updateSubmissionStats(
+        userId: string,
+        problemId: string,
+        isAccepted: boolean,
+        difficulty: 'easy' | 'medium' | 'hard',
+        languageId: number)
+        : Promise<void> {
+
+        console.log(`updateSubmissionStats called for user ${userId}, problem ${problemId}, isAccepted: ${isAccepted}`);
+
+        let profile = await this.profileRepository.findByUserId(userId);
+
+        if (!profile) {
+            profile = await this.initializeUserProfile(userId);
+        }
+
+        const beforeTotalProblems = profile.totalProblems;
+        const beforeProblemsSolved = profile.problemsSolved.length;
+
+        profile.incrementSubmissionStats(isAccepted);
+
+        profile.addProblemAttempt(problemId);
+
+        profile.trackLanguageUsage(languageId);
+
+        if (isAccepted) {
+            profile.addProblemSolved(problemId, difficulty);
+        }
+
+        console.log(`Before: totalProblems=${beforeTotalProblems}, problemsSolved=${beforeProblemsSolved}`);
+        console.log(`After: totalProblems=${profile.totalProblems}, problemsSolved=${profile.problemsSolved.length}`);
+
+        await this.profileRepository.update(userId, {
+            totalSubmissions: profile.totalSubmissions,
+            acceptedSubmissions: profile.acceptedSubmissions,
+            rejectedSubmissions: profile.rejectedSubmissions,
+            problemsAttempted: profile.problemsAttempted,
+            problemsSolved: profile.problemsSolved,
+            totalProblems: profile.totalProblems,
+            easyProblems: profile.easyProblems,
+            mediumProblems: profile.mediumProblems,
+            hardProblems: profile.hardProblems,
+            acceptanceRate: profile.acceptanceRate,
+            languagesUsed: profile.languagesUsed,
+            firstSolveDate: profile.firstSolveDate,
+            lastSolveDate: profile.lastSolveDate
+        });
+
+        // Add activity
+        await this.addActivity(userId, ActivityType.PROBLEM_SOLVED);
+
+        // Update streak
+        await this.updateStreak(userId, true);
+
+        // Check for badges
+        await this.checkAndAwardBadges(userId);
+    }
+
+    async trackProblemAttempt(userId: string, problemId: string): Promise<void> {
+        let profile = await this.profileRepository.findByUserId(userId);
+        if (!profile) {
+            profile = await this.initializeUserProfile(userId);
+        }
+
+        profile.addProblemAttempt(problemId);
+
+        await this.profileRepository.update(userId, {
+            problemsAttempted: profile.problemsAttempted
+        });
+    }
+
+    async trackProblemSolve(userId: string, problemId: string, difficulty: 'easy' | 'medium' | 'hard'): Promise<void> {
+        let profile = await this.profileRepository.findByUserId(userId);
+        if (!profile) {
+            profile = await this.initializeUserProfile(userId);
+        }
+
+        profile.addProblemSolved(problemId, difficulty);
+
+        await this.profileRepository.update(userId, {
+            problemsSolved: profile.problemsSolved,
+            totalProblems: profile.totalProblems,
+            easyProblems: profile.easyProblems,
+            mediumProblems: profile.mediumProblems,
+            hardProblems: profile.hardProblems,
+            firstSolveDate: profile.firstSolveDate,
+            lastSolveDate: profile.lastSolveDate
+        });
+
+        // Add activity
+        await this.addActivity(userId, ActivityType.PROBLEM_SOLVED);
+
+        // Update streak
+        await this.updateStreak(userId, true);
+
+        // Check for badges
+        await this.checkAndAwardBadges(userId);
     }
 }

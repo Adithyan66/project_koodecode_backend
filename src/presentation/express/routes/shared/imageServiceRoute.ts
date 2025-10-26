@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { authenticate } from "../middlewares";
-import { expressAdapter } from "../../adaptors/ExpressAdaptor";
-import { container } from "../../../infrastructure/config/container";
-import { ImageServiceController } from "../../http/controllers/shared/ImageServiceController";
+import { authenticate } from "../../middlewares";
+import { expressAdapter } from "../../../adaptors/ExpressAdaptor";
+import { container } from "../../../../infrastructure/config/container";
+import { ImageServiceController } from "../../../http/controllers/shared/ImageServiceController";
 
 const router = Router()
 

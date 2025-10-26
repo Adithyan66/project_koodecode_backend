@@ -1,10 +1,10 @@
 
 
 import { Router } from 'express';
-import { expressAdapter } from '../../adaptors/ExpressAdaptor';
-import { container } from "../../../infrastructure/config/container";
-import { AuthController } from '../../http/controllers/authentication/AuthController';
-import { userOnly } from '../middlewares';
+import { expressAdapter } from '../../../adaptors/ExpressAdaptor';
+import { container } from "../../../../infrastructure/config/container";
+import { AuthController } from '../../../http/controllers/authentication/AuthController';
+import { userOnly } from '../../middlewares';
 
 
 

@@ -5,14 +5,16 @@
 import { IContestRepository } from '../../../../domain/interfaces/repositories/IContestRepository';
 import { IContestParticipantRepository } from '../../../../domain/interfaces/repositories/IContestParticipantRepository';
 import { ISubmissionRepository } from '../../../../domain/interfaces/repositories/ISubmissionRepository';
+import { IProblemRepository } from '../../../../domain/interfaces/repositories/IProblemRepository';
 import { ContestSubmission, ParticipantStatus } from '../../../../domain/entities/ContestParticipant';
 import { ContestSubmissionDto, ContestSubmissionResponseDto } from '../../../dto/contests/ContestSubmissionDto';
 import { ExecuteCodeDto } from '../../../dto/submissions/ExecuteCodeDto';
 import { inject, injectable } from 'tsyringe';
 import { IContestScoringService } from '../../../interfaces/IContestScoringService';
 import { IContestTimerService } from '../../../interfaces/IContestTimerService';
-import { ICreateSubmissionUseCase } from '../../../interfaces/ISubmissionUseCase';
+import { ICreateSubmissionUseCase } from '../../../interfaces/IProblemUseCase';
 import { ISubmitContestSolutionUseCase } from '../../../interfaces/IContestUseCase';
+import { IPostSubmissionHandler } from '../../../interfaces/IPostSubmissionHandler';
 
 
 @injectable()
@@ -21,9 +23,11 @@ export class SubmitContestSolutionUseCase implements ISubmitContestSolutionUseCa
     @inject('IContestRepository') private contestRepository: IContestRepository,
     @inject('IContestParticipantRepository') private participantRepository: IContestParticipantRepository,
     @inject('ISubmissionRepository') private submissionRepository: ISubmissionRepository,
+    @inject('IProblemRepository') private problemRepository: IProblemRepository,
     @inject('ICreateSubmissionUseCase') private createSubmissionUseCase: ICreateSubmissionUseCase,
     @inject('IContestScoringService') private scoringService: IContestScoringService,
-    @inject('IContestTimerService') private timerService: IContestTimerService
+    @inject('IContestTimerService') private timerService: IContestTimerService,
+    @inject('IPostSubmissionHandler') private postSubmissionHandler: IPostSubmissionHandler
   ) { }
 
   async execute(dto: ContestSubmissionDto, userId: string): Promise<ContestSubmissionResponseDto> {
@@ -123,6 +127,16 @@ export class SubmitContestSolutionUseCase implements ISubmitContestSolutionUseCa
 
       await this.updateContestLeaderboard(contest.id);
 
+      // Handle post-submission processing for contest submissions
+      await this.handleContestPostSubmissionProcessing(
+        userId,
+        participant.assignedProblemId,
+        executionResult.id,
+        isCorrect,
+        dto.languageId,
+        executionResult.totalExecutionTime
+      );
+
       const updatedParticipant = await this.participantRepository.findById(participant.id);
       const rank = updatedParticipant?.rank || undefined;
 
@@ -206,6 +220,44 @@ export class SubmitContestSolutionUseCase implements ISubmitContestSolutionUseCa
       return `Wrong answer. You have ${remainingAttempts} attempt(s) remaining.`;
     } else {
       return 'Wrong answer. No more attempts remaining.';
+    }
+  }
+
+  private async handleContestPostSubmissionProcessing(
+    userId: string,
+    problemId: string,
+    submissionId: string,
+    isCorrect: boolean,
+    languageId: number,
+    executionTime: number
+  ): Promise<void> {
+    try {
+      // Get problem details for difficulty
+      const problem = await this.problemRepository.findById(problemId);
+      if (!problem) {
+        console.error(`Problem not found: ${problemId}`);
+        return;
+      }
+
+      const postSubmissionData = {
+        userId,
+        problemId,
+        submissionId,
+        isAccepted: isCorrect,
+        languageId,
+        executionTime,
+        submissionType: 'contest' as const,
+        difficulty: problem.difficulty
+      };
+
+      if (isCorrect) {
+        await this.postSubmissionHandler.handleSubmission(postSubmissionData);
+      } else {
+        await this.postSubmissionHandler.handleFailedSubmission(postSubmissionData);
+      }
+    } catch (error) {
+      console.error('Error in contest post-submission processing:', error);
+      // Don't throw error to avoid breaking the contest submission flow
     }
   }
 }

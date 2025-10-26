@@ -9,7 +9,7 @@ import "reflect-metadata";
 import { cornjob } from './infrastructure/corn/cronJobs';
 
 
-import authRoutes from './presentation/express/routes/authRoutes'
+import authRoutes from './presentation/express/routes/shared/authRoutes'
 import userCoinsRoute from './presentation/express/routes/user/userCoinRoute'
 import adminCoinsRoute from './presentation/express/routes/admin/adminCoinRoute'
 import userContestRoute from './presentation/express/routes/user/userContestRoute'
@@ -22,8 +22,8 @@ import adminContestRoute from './presentation/express/routes/admin/adminContestR
 import adminUserRoute from './presentation/express/routes/admin/adminUserRoute'
 
 import { errorMiddleware } from './presentation/express/middlewares/errorHandler';
-import imageServiceRoute from './presentation/express/routes/imageServiceRoute'
-import healthRoute from './presentation/express/routes/healthRoute'
+import imageServiceRoute from './presentation/express/routes/shared/imageServiceRoute'
+import healthRoute from './presentation/express/routes/shared/healthRoute'
 dotenv.config();
 const app = express();
 app.use(cookieParser());

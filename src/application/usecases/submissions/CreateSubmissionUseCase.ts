@@ -1,8 +1,5 @@
 
 
-
-
-
 import { ICodeExecutionService } from '../../../domain/interfaces/services/IJudge0Service';
 import { ISubmissionRepository } from '../../../domain/interfaces/repositories/ISubmissionRepository';
 import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
@@ -14,8 +11,8 @@ import { inject, injectable } from 'tsyringe';
 import { ICodeExecutionHelperService } from '../../interfaces/ICodeExecutionHelperService';
 import { ICreateSubmissionUseCase } from '../../interfaces/IProblemUseCase';
 import { ProgrammingLanguage } from '../../../domain/value-objects/ProgrammingLanguage';
+import { IPostSubmissionHandler } from '../../interfaces/IPostSubmissionHandler';
 
-// Domain Errors
 import {
   ProblemNotFoundError,
   NoTestCasesError,
@@ -49,7 +46,8 @@ export class CreateSubmissionUseCase implements ICreateSubmissionUseCase {
     @inject('ISubmissionRepository') private submissionRepository: ISubmissionRepository,
     @inject('IProblemRepository') private problemRepository: IProblemRepository,
     @inject('ITestCaseRepository') private testCaseRepository: ITestCaseRepository,
-    @inject('ICodeExecutionHelperService') private codeExecutionHelperService: ICodeExecutionHelperService
+    @inject('ICodeExecutionHelperService') private codeExecutionHelperService: ICodeExecutionHelperService,
+    @inject('IPostSubmissionHandler') private postSubmissionHandler: IPostSubmissionHandler
   ) { }
 
   async execute(params: ExecuteCodeDto): Promise<SubmissionResponseDto> {
@@ -84,6 +82,8 @@ export class CreateSubmissionUseCase implements ICreateSubmissionUseCase {
         testCaseResults,
         finalResults
       );
+
+      await this.handlePostSubmissionProcessing(params, updatedSubmission, finalResults);
 
       return this.buildSubmissionResponse(params, updatedSubmission, testCaseResults, finalResults);
 
@@ -349,6 +349,45 @@ export class CreateSubmissionUseCase implements ICreateSubmissionUseCase {
       totalTestCases: testCaseResults.length,
       userId: params.userId
     };
+  }
+
+  private async handlePostSubmissionProcessing(
+    params: ExecuteCodeDto,
+    submission: any,
+    finalResults: any
+  ): Promise<void> {
+
+    try {
+
+      const isAccepted = finalResults.verdict === 'Accepted' && finalResults.score === 100;
+
+      const problem = await this.problemRepository.findById(params.problemId);
+      if (!problem) {
+        console.error(`Problem not found: ${params.problemId}`);
+        return;
+      }
+
+      const postSubmissionData = {
+        userId: params.userId,
+        problemId: params.problemId,
+        submissionId: submission.id,
+        isAccepted,
+        languageId: params.languageId,
+        executionTime: finalResults.totalTime,
+        submissionType: params.submissionType || 'problem',
+        difficulty: problem.difficulty
+      };
+
+      if (isAccepted) {
+        console.log(`Calling handleSubmission for user ${params.userId}, problem ${params.problemId}`);
+        await this.postSubmissionHandler.handleSubmission(postSubmissionData);
+      } else {
+        console.log(`Calling handleFailedSubmission for user ${params.userId}, problem ${params.problemId}`);
+        await this.postSubmissionHandler.handleFailedSubmission(postSubmissionData );
+      }
+    } catch (error) {
+      console.error('Error in post-submission processing:', error);
+    }
   }
 
   private async handleSubmissionError(submissionId: string, error: any): Promise<void> {

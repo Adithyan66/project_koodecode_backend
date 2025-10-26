@@ -31,6 +31,10 @@ export interface IProblemModel extends Document {
     likes: string[];
     totalSubmissions: number;
     acceptedSubmissions: number;
+    uniqueSolvers: number;
+    averageSolveTime: number;
+    difficultyRating: number;
+    lastSolvedAt?: Date;
     hints: string[];
     companies: string[];
     isActive: boolean;
@@ -85,6 +89,10 @@ const ProblemSchema: Schema = new Schema({
     likes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     totalSubmissions: { type: Number, default: 0 },
     acceptedSubmissions: { type: Number, default: 0 },
+    uniqueSolvers: { type: Number, default: 0 },
+    averageSolveTime: { type: Number, default: 0 },
+    difficultyRating: { type: Number, default: 0 },
+    lastSolvedAt: { type: Date },
     hints: [{ type: String }],
     companies: [{ type: String }],
     isActive: { type: Boolean, default: true },

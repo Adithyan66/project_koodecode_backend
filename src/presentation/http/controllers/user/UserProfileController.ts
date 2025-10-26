@@ -8,7 +8,7 @@ import { buildResponse } from '../../../../infrastructure/utils/responseBuilder'
 import { BadRequestError } from '../../../../application/errors/AppErrors';
 import { UpdateProfileDto } from '../../../../application/dto/users/UserProfileDto';
 import { IUserProfileController } from '../../interfaces/IUserProfileController';
-import { IGenerateProfileImageUploadUrlUseCase, IGetUserEditableProfile, IGetUserProfileUseCase, IUpdateProfileImageUseCase, IUpdateUserProfileUseCase } from '../../../../application/interfaces/IProfileUseCase';
+import { IGenerateProfileImageUploadUrlUseCase, IGetUserEditableProfile, IGetUserProfileForUserUseCase, IUpdateProfileImageUseCase, IUpdateUserProfileUseCase } from '../../../../application/interfaces/IProfileUseCase';
 import { inject, injectable } from 'tsyringe';
 
 
@@ -18,7 +18,7 @@ import { inject, injectable } from 'tsyringe';
 export class UserProfileController implements IUserProfileController {
 
     constructor(
-        @inject('IGetUserProfileUseCase') private getUserProfileUseCase: IGetUserProfileUseCase,
+        @inject('IGetUserProfileForUserUseCase') private getUserProfileUseCase: IGetUserProfileForUserUseCase,
         @inject('IUpdateUserProfileUseCase') private updateUserProfileUseCase: IUpdateUserProfileUseCase,
         @inject('IGetUserEditableProfile') private getUserEditableProfile: IGetUserEditableProfile,
         @inject('IGenerateProfileImageUploadUrlUseCase') private generateUploadUrlUseCase: IGenerateProfileImageUploadUrlUseCase,

@@ -9,6 +9,7 @@ import { CreateProblemDto } from "../dto/problems/CreateProblemDto";
 import { ProblemListResponseDto } from "../dto/problems/ProblemListDto";
 import { ProblemNamesRequestDto, ProblemNamesResponseDto } from "../dto/problems/ProblemNamesDto";
 import { ProblemResponseDto } from "../dto/problems/ProblemResponseDto";
+import { UpdateProblemPayload } from "../dto/problems/UpdateProblemDto";
 import { ExecuteCodeDto } from "../dto/submissions/ExecuteCodeDto";
 import { RunCodeDto, RunCodeResponseDto } from "../dto/submissions/RunCodeDto";
 import { SubmissionResponseDto } from "../dto/submissions/SubmissionResponseDto";

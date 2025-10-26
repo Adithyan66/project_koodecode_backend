@@ -4,7 +4,7 @@ import { HttpResponse } from '../../helper/HttpResponse';
 import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 import { buildResponse } from '../../../../infrastructure/utils/responseBuilder';
 import { BadRequestError, UnauthorizedError } from '../../../../application/errors/AppErrors';
-import { IGetAllUsersUseCase, IGetUserProfileUseCase } from '../../../../application/interfaces/IUserUseCase';
+import { IGetAllUsersUseCase, IGetUserDetailForAdminUseCase } from '../../../../application/interfaces/IUserUseCase';
 import { GetAllUsersRequestDto } from '../../../../application/dto/users/admin/GetAllUsersRequestDto';
 
 @injectable()
@@ -12,7 +12,7 @@ export class AdminUserController {
 
   constructor(
     @inject('IGetAllUsersUseCase') private getAllUsersUseCase: IGetAllUsersUseCase,
-    @inject('IGetUserProfileUseCase') private getUserProfileUseCase: IGetUserProfileUseCase
+    @inject('IGetUserDetailForAdminUseCase') private getUserProfileUseCase: IGetUserDetailForAdminUseCase
   ) {}
 
   getAllUsers = async (httpRequest: IHttpRequest) => {

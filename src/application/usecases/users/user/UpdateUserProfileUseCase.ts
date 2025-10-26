@@ -4,7 +4,7 @@ import { IUserProfileRepository } from '../../../../domain/interfaces/repositori
 import { UpdateProfileDto, UserProfileResponseDto } from '../../../dto/users/UserProfileDto';
 
 import { IUserRepository } from '../../../../domain/interfaces/repositories/IUserRepository';
-import { IGetUserProfileUseCase, IUpdateUserProfileUseCase } from '../../../interfaces/IProfileUseCase';
+import { IGetUserProfileForUserUseCase, IUpdateUserProfileUseCase } from '../../../interfaces/IProfileUseCase';
 import { inject, injectable } from 'tsyringe';
 
 
@@ -13,7 +13,7 @@ export class UpdateUserProfileUseCase implements IUpdateUserProfileUseCase {
 
     constructor(
         @inject('IUserProfileRepository') private profileRepository: IUserProfileRepository,
-        @inject('IGetUserProfileUseCase') private getUserProfileUseCase: IGetUserProfileUseCase,
+        @inject('IGetUserProfileForUserUseCase') private getUserProfileUseCase: IGetUserProfileForUserUseCase,
         @inject('IUserRepository') private userRepository: IUserRepository
     ) { }
 

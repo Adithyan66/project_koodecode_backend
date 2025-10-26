@@ -41,6 +41,10 @@ export interface ProblemProps {
   likes?: string[];
   totalSubmissions?: number;
   acceptedSubmissions?: number;
+  uniqueSolvers?: number;
+  averageSolveTime?: number;
+  difficultyRating?: number;
+  lastSolvedAt?: Date;
   hints?: string[];
   companies?: string[];
   isActive?: boolean;
@@ -69,6 +73,10 @@ export class Problem {
   public likes: string[];
   public totalSubmissions: number;
   public acceptedSubmissions: number;
+  public uniqueSolvers: number;
+  public averageSolveTime: number;
+  public difficultyRating: number;
+  public lastSolvedAt?: Date;
   public hints: string[];
   public companies: string[];
   public isActive: boolean;
@@ -96,6 +104,10 @@ export class Problem {
     likes = [],
     totalSubmissions = 0,
     acceptedSubmissions = 0,
+    uniqueSolvers = 0,
+    averageSolveTime = 0,
+    difficultyRating = 0,
+    lastSolvedAt,
     hints = [],
     companies = [],
     isActive = true,
@@ -121,6 +133,10 @@ export class Problem {
     this.likes = likes;
     this.totalSubmissions = totalSubmissions;
     this.acceptedSubmissions = acceptedSubmissions;
+    this.uniqueSolvers = uniqueSolvers;
+    this.averageSolveTime = averageSolveTime;
+    this.difficultyRating = difficultyRating;
+    this.lastSolvedAt = lastSolvedAt;
     this.hints = hints;
     this.companies = companies;
     this.isActive = isActive;
@@ -187,6 +203,40 @@ export class Problem {
 
   softDelete(): void {
     this.isDeleted = true;
+    this.updatedAt = new Date();
+  }
+
+  incrementSubmissionStats(isAccepted: boolean): void {
+    this.totalSubmissions += 1;
+    if (isAccepted) {
+      this.acceptedSubmissions += 1;
+      this.lastSolvedAt = new Date();
+    }
+    this.updatedAt = new Date();
+  }
+
+  incrementUniqueSolvers(): void {
+    this.uniqueSolvers += 1;
+    this.updatedAt = new Date();
+  }
+
+  updateAverageSolveTime(solveTime: number): void {
+    if (this.averageSolveTime === 0) {
+      this.averageSolveTime = solveTime;
+    } else {
+      // Calculate weighted average
+      this.averageSolveTime = (this.averageSolveTime + solveTime) / 2;
+    }
+    this.updatedAt = new Date();
+  }
+
+  updateDifficultyRating(rating: number): void {
+    if (this.difficultyRating === 0) {
+      this.difficultyRating = rating;
+    } else {
+      // Calculate weighted average
+      this.difficultyRating = (this.difficultyRating + rating) / 2;
+    }
     this.updatedAt = new Date();
   }
 }

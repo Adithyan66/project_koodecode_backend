@@ -32,6 +32,11 @@ export class MongoSubmissionRepository implements ISubmissionRepository {
     return submissions.map(this.mapToEntity);
   }
 
+  async findByUserIdAndProblemId(userId: string, problemId: string): Promise<Submission[]> {
+    const submissions = await SubmissionModel.find({ userId, problemId }).sort({ createdAt: -1 });
+    return submissions.map(this.mapToEntity);
+  }
+
   async update(id: string, updates: Partial<Submission>): Promise<Submission> {
     const updated = await SubmissionModel.findByIdAndUpdate(id, updates, { new: true });
     if (!updated) {

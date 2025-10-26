@@ -20,6 +20,10 @@ export interface ProblemResponseDto {
         hasUserLiked?: boolean; // User-specific field
         totalSubmissions: number;
         acceptedSubmissions: number;
+        uniqueSolvers: number;
+        averageSolveTime: number;
+        difficultyRating: number;
+        lastSolvedAt?: Date;
         acceptanceRate: number;
         hints: string[];
         companies: string[];

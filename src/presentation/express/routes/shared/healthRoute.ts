@@ -3,9 +3,9 @@
 
 
 import { Router } from 'express';
-import { HealthController } from '../../http/controllers/shared/HealthController';
+import { HealthController } from '../../../http/controllers/shared/HealthController';
 import { container } from 'tsyringe';
-import { expressAdapter } from '../../adaptors/ExpressAdaptor';
+import { expressAdapter } from '../../../adaptors/ExpressAdaptor';
 
 
 const router = Router();

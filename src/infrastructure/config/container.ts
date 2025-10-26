@@ -117,9 +117,13 @@ import { ImageServiceController } from '../../presentation/http/controllers/shar
 
 
 import { GetAllUsersUseCase } from '../../application/usecases/users/admin/GetAllUsersUseCase';
-import { GetUserProfileUseCase } from '../../application/usecases/users/admin/GetUserProfileUseCase';
+import { GetUserDetailsForAdminUseCase } from '../../application/usecases/users/admin/GetUserDetailsForAdminUseCase';
+import { GetUserDetailForAdminUseCase } from '../../application/usecases/users/admin/GetUserDetailForAdminUseCase';
 import { AdminUserController } from '../../presentation/http/controllers/admin/AdminUserController';
 import { ProfileImageMigrationService } from '../../application/services/ProfileImageMigrationService';
+import { UserStatsService } from '../services/UserStatsService';
+import { PostSubmissionHandler } from '../../application/services/PostSubmissionHandler';
+import { MongoBadgeRepository } from '../db/MongoBadgeRepository';
 
 
 
@@ -148,6 +152,8 @@ container.registerSingleton("ICodeExecutionHelperService", CodeExecutionHelperSe
 container.registerSingleton("IImageUploadService", ImageUploadService);
 container.registerSingleton("IJudge0HealthService", Judge0HealthService);
 container.registerSingleton("IProfileImageMigrationService", ProfileImageMigrationService);
+container.registerSingleton("IUserStatsService", UserStatsService);
+container.registerSingleton("IPostSubmissionHandler", PostSubmissionHandler);
 
 container.registerSingleton("ICoinTransactionRepository", MongoCoinTransactionRepository)
 container.registerSingleton("IUserProfileRepository", MongoUserProfileRepository)
@@ -164,6 +170,7 @@ container.registerSingleton("ISubmissionRepository", MongoSubmissionRepository)
 container.registerSingleton("ICodeExecutionService", Judge0Service)
 container.registerSingleton("ICounterRepository", MongoCounterRepository)
 container.registerSingleton("IUserConnectionRepository", MongoUserConnectionRepository)
+container.registerSingleton("IBadgeRepository", MongoBadgeRepository)
 
 
 container.registerSingleton('IRoomRepository', MongoRoomRepository)
@@ -248,7 +255,8 @@ container.registerSingleton("IGenerateImageUploadUrlUseCase", GenerateImageUploa
 container.registerSingleton("IConfirmImageUploadUseCase", ConfirmImageUploadUseCase);
 
 container.registerSingleton("IGetAllUsersUseCase", GetAllUsersUseCase);
-container.registerSingleton("IGetUserProfileUseCase", GetUserProfileUseCase);
+container.registerSingleton("IGetUserProfileForUserUseCase", GetUserDetailsForAdminUseCase);
+container.registerSingleton("IGetUserDetailForAdminUseCase", GetUserDetailForAdminUseCase);
 
 
 //   Register Controllers  //

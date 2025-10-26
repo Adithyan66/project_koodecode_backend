@@ -4,7 +4,7 @@ import { GenerateUploadUrlDto } from "../dto/users/GenerateUploadUrlDto";
 import { UploadUrlResponseDto } from "../dto/users/UploadUrlResponseDto";
 import { UpdateProfileDto, UserProfileResponseDto } from "../dto/users/UserProfileDto";
 
-export interface IGetUserProfileUseCase {
+export interface IGetUserProfileForUserUseCase {
     execute(userId: string, year?: number): Promise<UserProfileResponseDto>;
 }
 

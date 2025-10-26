@@ -1,11 +1,11 @@
 
 
 import axios, { AxiosError, AxiosInstance } from 'axios';
-import { IJudge0Service, Judge0SubmissionRequest, Judge0SubmissionResponse } from '../../domain/interfaces/services/IJudge0Service';
+import { ICodeExecutionService, Judge0SubmissionRequest, Judge0SubmissionResponse } from '../../domain/interfaces/services/IJudge0Service';
 import { Judge0Language } from '../../domain/entities/Judge0Submission';
 import { config } from '../config/config';
 
-export class Judge0Service implements IJudge0Service {
+export class Judge0Service implements ICodeExecutionService {
   private httpClient: AxiosInstance;
 
   constructor() {

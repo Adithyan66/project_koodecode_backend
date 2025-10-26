@@ -11,5 +11,8 @@ export interface IUserStatsService {
     checkAndAwardBadges(userId: string): Promise<void>;
     getActivityCalendar(userId: string, year: number): Promise<Map<string, number>>;
     initializeUserProfile(userId: string): Promise<UserProfile>;
+    updateSubmissionStats(userId: string, problemId: string, isAccepted: boolean, difficulty: 'easy' | 'medium' | 'hard', languageId: number): Promise<void>;
+    trackProblemAttempt(userId: string, problemId: string): Promise<void>;
+    trackProblemSolve(userId: string, problemId: string, difficulty: 'easy' | 'medium' | 'hard'): Promise<void>;
 
 }

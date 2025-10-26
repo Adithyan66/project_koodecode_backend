@@ -38,6 +38,15 @@ export interface UserProfileResponseDto {
             medium: number;
             hard: number;
         };
+        totalSubmissions: number;
+        acceptedSubmissions: number;
+        rejectedSubmissions: number;
+        problemsAttempted: number;
+        problemsSolved: number;
+        firstSolveDate?: string;
+        lastSolveDate?: string;
+        averageSolveTime?: number;
+        languagesUsed: Record<string, number>;
         streak: {
             current: number;
             max: number;
