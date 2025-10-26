@@ -28,4 +28,9 @@ export interface IUserRepository {
     users: User[];
     total: number;
   }>;
+  findUserWithProfileAndBadges(userId: string): Promise<{
+    user: User;
+    profile: any;
+    badges: any[];
+  } | null>;
 }

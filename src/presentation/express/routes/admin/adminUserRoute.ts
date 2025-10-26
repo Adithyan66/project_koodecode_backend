@@ -8,5 +8,6 @@ const router = Router();
 const adminUserController = container.resolve(AdminUserController);
 
 router.get('/', adminOnly, expressAdapter(adminUserController.getAllUsers));
+router.get('/:userId', adminOnly, expressAdapter(adminUserController.getUserProfile));
 
 export default router;

@@ -4,14 +4,15 @@ import { HttpResponse } from '../../helper/HttpResponse';
 import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 import { buildResponse } from '../../../../infrastructure/utils/responseBuilder';
 import { BadRequestError, UnauthorizedError } from '../../../../application/errors/AppErrors';
-import { IGetAllUsersUseCase } from '../../../../application/interfaces/IUserUseCase';
+import { IGetAllUsersUseCase, IGetUserProfileUseCase } from '../../../../application/interfaces/IUserUseCase';
 import { GetAllUsersRequestDto } from '../../../../application/dto/users/admin/GetAllUsersRequestDto';
 
 @injectable()
 export class AdminUserController {
 
   constructor(
-    @inject('IGetAllUsersUseCase') private getAllUsersUseCase: IGetAllUsersUseCase
+    @inject('IGetAllUsersUseCase') private getAllUsersUseCase: IGetAllUsersUseCase,
+    @inject('IGetUserProfileUseCase') private getUserProfileUseCase: IGetUserProfileUseCase
   ) {}
 
   getAllUsers = async (httpRequest: IHttpRequest) => {
@@ -42,6 +43,25 @@ export class AdminUserController {
 
     return new HttpResponse(HTTP_STATUS.OK, {
       ...buildResponse(true, 'Users retrieved successfully', result),
+    });
+  };
+
+  getUserProfile = async (httpRequest: IHttpRequest) => {
+    // Check admin access
+    if (!httpRequest.user || httpRequest.user.role !== 'admin') {
+      throw new UnauthorizedError('Admin access required');
+    }
+
+    const { userId } = httpRequest.params;
+
+    if (!userId) {
+      throw new BadRequestError('User ID is required');
+    }
+
+    const result = await this.getUserProfileUseCase.execute(userId);
+
+    return new HttpResponse(HTTP_STATUS.OK, {
+      ...buildResponse(true, 'User profile retrieved successfully', result),
     });
   };
 }

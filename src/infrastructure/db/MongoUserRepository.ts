@@ -3,6 +3,8 @@
 import { IUserRepository } from '../../domain/interfaces/repositories/IUserRepository';
 import { User, UserProps } from '../../domain/entities/User';
 import { UserModel } from './models/UserModel';
+import { UserProfileModel } from './models/UserProfileModel';
+import { Types } from 'mongoose';
 
 export class MongoUserRepository implements IUserRepository {
 
@@ -128,6 +130,40 @@ export class MongoUserRepository implements IUserRepository {
       users: users.map(user => this.mapToEntity(user)),
       total
     };
+  }
+
+  async findUserWithProfileAndBadges(userId: string): Promise<{
+    user: User;
+    profile: any;
+    badges: any[];
+  } | null> {
+    try {
+      // Find user
+      const userDoc = await UserModel.findById(userId).exec();
+      if (!userDoc) {
+        return null;
+      }
+
+      // Find user profile with badges
+      const profileDoc = await UserProfileModel.findOne({ 
+        userId: new Types.ObjectId(userId) 
+      }).exec();
+
+      if (!profileDoc) {
+        return null;
+      }
+
+      const user = this.mapToEntity(userDoc);
+      
+      return {
+        user,
+        profile: profileDoc,
+        badges: profileDoc.badges || []
+      };
+    } catch (error) {
+      console.error('Error fetching user with profile and badges:', error);
+      return null;
+    }
   }
 
 }

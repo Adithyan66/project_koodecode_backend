@@ -64,7 +64,6 @@ import { GetProblemNamesUseCase } from "../../application/usecases/problems/user
 import { AdminProblemController } from "../../presentation/http/controllers/admin/AdminProblemController";
 import { CreateProblemUseCase } from "../../application/usecases/problems/admin/CreateProblemUseCase";
 import { UserProfileController } from "../../presentation/http/controllers/user/UserProfileController";
-import { GetUserProfileUseCase } from "../../application/usecases/users/user/GetUserProfileUseCase";
 import { UpdateUserProfileUseCase } from "../../application/usecases/users/user/UpdateUserProfileUseCase";
 import { GetUserEditableProfile } from "../../application/usecases/users/user/GetUserEditableProfile";
 import { GenerateProfileImageUploadUrlUseCase } from "../../application/usecases/users/user/GenerateProfileImageUploadUrlUseCase";
@@ -118,6 +117,7 @@ import { ImageServiceController } from '../../presentation/http/controllers/shar
 
 
 import { GetAllUsersUseCase } from '../../application/usecases/users/admin/GetAllUsersUseCase';
+import { GetUserProfileUseCase } from '../../application/usecases/users/admin/GetUserProfileUseCase';
 import { AdminUserController } from '../../presentation/http/controllers/admin/AdminUserController';
 
 
@@ -209,7 +209,6 @@ container.registerSingleton("IGetCoinBalanceUseCase", GetCoinBalanceUseCase)
 container.registerSingleton("IGetCoinTransactionsUseCase", GetCoinTransactionsUseCase)
 container.registerSingleton("IGetCoinStatsUseCase", GetCoinStatsUseCase)
 
-container.registerSingleton("IGetUserProfileUseCase", GetUserProfileUseCase)
 container.registerSingleton("IUpdateUserProfileUseCase", UpdateUserProfileUseCase)
 container.registerSingleton("IGetUserEditableProfile", GetUserEditableProfile)
 container.registerSingleton("IGenerateProfileImageUploadUrlUseCase", GenerateProfileImageUploadUrlUseCase)
@@ -247,6 +246,7 @@ container.registerSingleton("IGenerateImageUploadUrlUseCase", GenerateImageUploa
 container.registerSingleton("IConfirmImageUploadUseCase", ConfirmImageUploadUseCase);
 
 container.registerSingleton("IGetAllUsersUseCase", GetAllUsersUseCase);
+container.registerSingleton("IGetUserProfileUseCase", GetUserProfileUseCase);
 
 
 //   Register Controllers  //
