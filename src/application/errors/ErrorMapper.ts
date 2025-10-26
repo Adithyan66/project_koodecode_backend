@@ -1,55 +1,4 @@
 
-// import { 
-//   InvalidCredentials, 
-//   WrongPasswordError, 
-//   UserAlreadyExistsError, 
-//   OtpExpiredError, 
-//   MissingFieldsError,
-//   EmailAlreadyExistsError,
-//   UsernameAlreadyExistsError,
-//   FullNameOrUsernameMissingError,
-//   WeakPasswordError,
-//   OtpInvalidOrExpiredError
-// } from "../../domain/errors/AuthErrors";
-
-// import { HTTP_STATUS } from "../../shared/constants/httpStatus";
-// import { AppError } from "./AppError";
-
-// export class ErrorMapper {
-//   static toAppError(error: Error): AppError {
-
-//     if (error instanceof InvalidCredentials || error instanceof WrongPasswordError) {
-//       return new AppError(error.message, HTTP_STATUS.UNAUTHORIZED);
-//     }
-
-//     if (
-//       error instanceof UserAlreadyExistsError ||
-//       error instanceof EmailAlreadyExistsError ||
-//       error instanceof UsernameAlreadyExistsError
-//     ) {
-//       return new AppError(error.message, HTTP_STATUS.CONFLICT);
-//     }
-
-//     if (error instanceof OtpExpiredError || error instanceof OtpInvalidOrExpiredError) {
-//       return new AppError(error.message, HTTP_STATUS.GONE);
-//     }
-
-//     if (error instanceof MissingFieldsError) {
-//       return new AppError(error.message, HTTP_STATUS.BAD_REQUEST);
-//     }
-
-//     if (error instanceof FullNameOrUsernameMissingError) {
-//       return new AppError(error.message, HTTP_STATUS.BAD_REQUEST);
-//     }
-
-//     if (error instanceof WeakPasswordError) {
-//       return new AppError(error.message, HTTP_STATUS.BAD_REQUEST);
-//     }
-
-//     return new AppError("Internal Server Error", HTTP_STATUS.INTERNAL_SERVER_ERROR);
-//   }
-// }
-
 
 
 
@@ -63,7 +12,8 @@ import {
   UsernameAlreadyExistsError,
   FullNameOrUsernameMissingError,
   WeakPasswordError,
-  OtpInvalidOrExpiredError
+  OtpInvalidOrExpiredError,
+  UserBlockedError
 } from "../../domain/errors/AuthErrors";
 
 import { 
@@ -128,6 +78,10 @@ export class ErrorMapper {
     // 402 Payment Required - Insufficient funds
     if (error instanceof InsufficientCoinBalanceError) {
       return new AppError(error.message, HTTP_STATUS.PAYMENT_REQUIRED);
+    }
+
+    if(error instanceof UserBlockedError){
+      return new AppError(error.message, HTTP_STATUS.FORBIDDEN)
     }
 
     // 404 Not Found - Entity not found

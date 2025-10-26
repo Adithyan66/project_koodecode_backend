@@ -104,3 +104,9 @@ export class UserNotFoundError extends DomainError {
     super(`user not found`);
   }
 }
+
+export class UserBlockedError extends DomainError {
+    constructor() {
+        super("Your account has been blocked. Please contact support for assistance.");
+    }
+}

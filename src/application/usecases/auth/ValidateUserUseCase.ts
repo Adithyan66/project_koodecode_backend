@@ -3,10 +3,10 @@
 import { injectable, inject } from "tsyringe";
 import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
 import { ITokenService } from '../../../domain/interfaces/services/ITokenService';
-import { JwtService } from '../../../infrastructure/services/JwtService';
 import { ValidateUserResponse } from '../../dto/users/ValidateUserResponse';
 import { BadRequestError, UnauthorizedError, NotFoundError } from "../../errors/AppErrors"
 import { IValidateUserUseCase } from "../../interfaces/IAuthenticationUseCase";
+import { UserBlockedError } from '../../../domain/errors/AuthErrors';
 
 
 @injectable()
@@ -40,6 +40,10 @@ export class ValidateUserUseCase implements IValidateUserUseCase{
         const user = await this.userRepository.findById(userId);
         if (!user) {
             throw new NotFoundError('User not found');
+        }
+
+        if (user.isBlocked) {
+            throw new UserBlockedError();
         }
 
         return {

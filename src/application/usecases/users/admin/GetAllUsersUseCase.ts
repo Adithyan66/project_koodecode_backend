@@ -28,7 +28,8 @@ export class GetAllUsersUseCase implements IGetAllUsersUseCase {
       createdAt: user.createdAt!.toISOString(),
       updatedAt: user.updatedAt!.toISOString(),
       provider: user.provider,
-      emailVerified: user.emailVerified
+      emailVerified: user.emailVerified,
+      isBlocked: user.isBlocked
     }));
 
     return {

@@ -25,6 +25,7 @@ export class MongoUserRepository implements IUserRepository {
       githubId: userDoc.githubId,
       provider: userDoc.provider,
       emailVerified: userDoc.emailVerified,
+      isBlocked: userDoc.isBlocked || false
     });
   }
 
@@ -52,6 +53,7 @@ export class MongoUserRepository implements IUserRepository {
       role: user.role,
       profilePicUrl: user.profilePicUrl,
       profilePicKey: user.profilePicKey,
+      isBlocked: user.isBlocked || false
     });
 
     const savedUser = await userDoc.save();
@@ -162,6 +164,16 @@ export class MongoUserRepository implements IUserRepository {
       console.error('Error fetching user with profile and badges:', error);
       return null;
     }
+  }
+
+  async blockUser(userId: string, isBlocked: boolean): Promise<User | null> {
+    const userDoc = await UserModel.findByIdAndUpdate(
+      userId,
+      { isBlocked, updatedAt: new Date() },
+      { new: true }
+    ).exec();
+
+    return userDoc ? this.mapToEntity(userDoc) : null;
   }
 
 }

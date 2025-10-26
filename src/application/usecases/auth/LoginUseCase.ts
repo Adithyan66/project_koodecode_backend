@@ -10,7 +10,7 @@ import { SafeUser } from '../../dto/users/safeUser';
 import { JwtService } from '../../../infrastructure/services/JwtService';
 import { IPasswordService } from '../../../domain/interfaces/services/IPasswordService';
 import { ILoginUseCase } from '../../interfaces/IAuthenticationUseCase';
-import { InvalidCredentials, WrongPasswordError } from '../../../domain/errors/AuthErrors';
+import { InvalidCredentials, WrongPasswordError, UserBlockedError } from '../../../domain/errors/AuthErrors';
 import { ITokenService } from '../../../domain/interfaces/services/ITokenService';
 
 
@@ -32,15 +32,18 @@ export class LoginUseCase implements ILoginUseCase {
             throw new InvalidCredentials();
         }
 
+        // Check if user is blocked
+        if (user.isBlocked) {
+            throw new UserBlockedError();
+        }
+
         let passwordValid
 
         if (user.passwordHash) {
-
             passwordValid = await this.passwordService.verifyPassword(password, user.passwordHash);
         }
 
         if (!passwordValid) {
-
             throw new WrongPasswordError();
         }
 

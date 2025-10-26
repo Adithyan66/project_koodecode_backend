@@ -121,6 +121,8 @@ import { GetUserProfileUseCase } from '../../application/usecases/users/admin/Ge
 import { AdminUserController } from '../../presentation/http/controllers/admin/AdminUserController';
 import { ProfileImageMigrationService } from '../../application/services/ProfileImageMigrationService';
 
+import { BlockUserUseCase, IBlockUserUseCase } from '../../application/usecases/users/admin/BlockUserUseCase';
+
 
 
 
@@ -249,6 +251,8 @@ container.registerSingleton("IConfirmImageUploadUseCase", ConfirmImageUploadUseC
 
 container.registerSingleton("IGetAllUsersUseCase", GetAllUsersUseCase);
 container.registerSingleton("IGetUserProfileUseCase", GetUserProfileUseCase);
+
+container.registerSingleton('IBlockUserUseCase', BlockUserUseCase);
 
 
 //   Register Controllers  //

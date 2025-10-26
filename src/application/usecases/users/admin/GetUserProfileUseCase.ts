@@ -76,7 +76,7 @@ export class GetUserProfileUseCase implements IGetUserProfileUseCase {
       activeDays: profile.activeDays || 0,
       
       // Status
-      isBlocked: profile.isBlocked || false,
+      isBlocked: user.isBlocked || false,
       lastLogin: profile.lastLogin?.toISOString(),
       
       // Streak Data

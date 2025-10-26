@@ -9,3 +9,7 @@ export interface IGetAllUsersUseCase {
 export interface IGetUserProfileUseCase {
   execute(userId: string): Promise<GetUserProfileResponseDto>;
 }
+
+export interface IBlockUserUseCase {
+  execute(userId: string, adminId: string, isBlocked: boolean): Promise<{ success: boolean; message: string }>;
+}
