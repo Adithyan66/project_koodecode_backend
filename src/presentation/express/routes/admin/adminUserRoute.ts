@@ -15,4 +15,5 @@ router.get('/:userId/financial', adminOnly, expressAdapter(adminUserController.g
 router.get('/:userId/store', adminOnly, expressAdapter(adminUserController.getUserStoreData));
 router.get('/:userId/rooms', adminOnly, expressAdapter(adminUserController.getUserRoomData));
 router.patch('/:userId/block', adminOnly,expressAdapter( adminUserController.blockUser));
+router.patch('/:userId/reset-password', adminOnly, expressAdapter(adminUserController.resetUserPassword));
 export default router;

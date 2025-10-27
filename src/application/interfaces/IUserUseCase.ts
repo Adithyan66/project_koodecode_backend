@@ -7,6 +7,7 @@ import { UserSubmissionDataDto } from '../dto/users/admin/UserSubmissionDataDto'
 import { UserFinancialDataDto } from '../dto/users/admin/UserFinancialDataDto';
 import { UserStoreDataDto } from '../dto/users/admin/UserStoreDataDto';
 import { UserRoomDataDto } from '../dto/users/admin/UserRoomDataDto';
+import { ResetPasswordResponseDto } from '../dto/users/admin/ResetPasswordResponseDto';
 
 export interface IGetAllUsersUseCase {
   execute(request: GetAllUsersRequestDto): Promise<GetAllUsersResponseDto>;
@@ -43,4 +44,8 @@ export interface IGetUserStoreDataUseCase {
 
 export interface IGetUserRoomDataUseCase {
   execute(userId: string, page: number, limit: number): Promise<UserRoomDataDto>;
+}
+
+export interface IResetUserPasswordUseCase {
+  execute(userId: string): Promise<ResetPasswordResponseDto>;
 }

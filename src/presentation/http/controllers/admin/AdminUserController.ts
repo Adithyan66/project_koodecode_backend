@@ -5,7 +5,7 @@ import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 import { buildResponse } from '../../../../infrastructure/utils/responseBuilder';
 import { BadRequestError, UnauthorizedError } from '../../../../application/errors/AppErrors';
 import { IGetAllUsersUseCase, IGetUserDetailForAdminUseCase } from '../../../../application/interfaces/IUserUseCase';
-import {  IBlockUserUseCase, IGetUserContestDataUseCase, IGetUserSubmissionDataUseCase, IGetUserFinancialDataUseCase, IGetUserStoreDataUseCase, IGetUserRoomDataUseCase } from '../../../../application/interfaces/IUserUseCase';
+import {  IBlockUserUseCase, IGetUserContestDataUseCase, IGetUserSubmissionDataUseCase, IGetUserFinancialDataUseCase, IGetUserStoreDataUseCase, IGetUserRoomDataUseCase, IResetUserPasswordUseCase } from '../../../../application/interfaces/IUserUseCase';
 import { GetAllUsersRequestDto } from '../../../../application/dto/users/admin/GetAllUsersRequestDto';
 
 @injectable()
@@ -19,7 +19,8 @@ export class AdminUserController {
     @inject('IGetUserSubmissionDataUseCase') private getUserSubmissionDataUseCase: IGetUserSubmissionDataUseCase,
     @inject('IGetUserFinancialDataUseCase') private getUserFinancialDataUseCase: IGetUserFinancialDataUseCase,
     @inject('IGetUserStoreDataUseCase') private getUserStoreDataUseCase: IGetUserStoreDataUseCase,
-    @inject('IGetUserRoomDataUseCase') private getUserRoomDataUseCase: IGetUserRoomDataUseCase
+    @inject('IGetUserRoomDataUseCase') private getUserRoomDataUseCase: IGetUserRoomDataUseCase,
+    @inject('IResetUserPasswordUseCase') private resetUserPasswordUseCase: IResetUserPasswordUseCase
 
   ) {}
 
@@ -233,6 +234,24 @@ export class AdminUserController {
 
     return new HttpResponse(HTTP_STATUS.OK, {
       ...buildResponse(true, 'User room data retrieved successfully', result),
+    });
+  };
+
+  resetUserPassword = async (httpRequest: IHttpRequest) => {
+    if (!httpRequest.user || httpRequest.user.role !== 'admin') {
+      throw new UnauthorizedError('Admin access required');
+    }
+
+    const { userId } = httpRequest.params;
+
+    if (!userId) {
+      throw new BadRequestError('User ID is required');
+    }
+
+    const result = await this.resetUserPasswordUseCase.execute(userId);
+
+    return new HttpResponse(HTTP_STATUS.OK, {
+      ...buildResponse(true, result.message),
     });
   };
 }
