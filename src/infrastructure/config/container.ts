@@ -127,6 +127,10 @@ import { MongoBadgeRepository } from '../db/MongoBadgeRepository';
 
 import { BlockUserUseCase, IBlockUserUseCase } from '../../application/usecases/users/admin/BlockUserUseCase';
 import { GetUserContestDataUseCase } from '../../application/usecases/users/admin/GetUserContestDataUseCase';
+import { GetUserSubmissionDataUseCase } from '../../application/usecases/users/admin/GetUserSubmissionDataUseCase';
+import { GetUserFinancialDataUseCase } from '../../application/usecases/users/admin/GetUserFinancialDataUseCase';
+import { GetUserStoreDataUseCase } from '../../application/usecases/users/admin/GetUserStoreDataUseCase';
+import { GetUserRoomDataUseCase } from '../../application/usecases/users/admin/GetUserRoomDataUseCase';
 
 
 
@@ -263,6 +267,10 @@ container.registerSingleton("IGetUserDetailForAdminUseCase", GetUserDetailForAdm
 
 container.registerSingleton('IBlockUserUseCase', BlockUserUseCase);
 container.registerSingleton('IGetUserContestDataUseCase', GetUserContestDataUseCase);
+container.registerSingleton('IGetUserSubmissionDataUseCase', GetUserSubmissionDataUseCase);
+container.registerSingleton('IGetUserFinancialDataUseCase', GetUserFinancialDataUseCase);
+container.registerSingleton('IGetUserStoreDataUseCase', GetUserStoreDataUseCase);
+container.registerSingleton('IGetUserRoomDataUseCase', GetUserRoomDataUseCase);
 
 
 //   Register Controllers  //

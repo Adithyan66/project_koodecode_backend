@@ -66,16 +66,50 @@ export class MongoSubmissionRepository implements ISubmissionRepository {
     return submissions.map(this.mapToEntity);
   }
 
+  async findByUserIdPaginated(userId: string, page: number, limit: number, submissionType?: string): Promise<Submission[]> {
+    const skip = (page - 1) * limit;
+    const query: any = { userId };
+    
+    if (submissionType) {
+      query.submissionType = submissionType;
+    }
+    
+    const submissions = await SubmissionModel.find(query)
+      .populate('problemId', 'title')
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+    
+    return submissions.map(this.mapToEntity);
+  }
+
+  async countByUserId(userId: string, submissionType?: string): Promise<number> {
+    const query: any = { userId };
+    
+    if (submissionType) {
+      query.submissionType = submissionType;
+    }
+    
+    return await SubmissionModel.countDocuments(query);
+  }
+
   private mapToEntity(doc: any): Submission {
+    // Handle populated problemId - if it's an object, extract the ID or keep it as string
+    const problemId = typeof doc.problemId === 'object' && doc.problemId._id 
+      ? doc.problemId._id.toString() 
+      : doc.problemId;
+console.log(doc);
+
     return {
       id: doc._id.toString(),
       userId: doc.userId,
-      problemId: doc.problemId,
+      problemId,
       sourceCode: doc.sourceCode,
       languageId: doc.languageId,
       status: doc.status,
-      executionTime: doc.executionTime,
-      memoryUsage: doc.memoryUsage,
+      totalExecutionTime: doc.totalExecutionTime,
+      maxMemoryUsage: doc.maxMemoryUsage,
+      score:doc.score,
       output: doc.output,
       expectedOutput: doc.expectedOutput,
       judge0Token: doc.judge0Token,

@@ -6,6 +6,7 @@ export interface ICoinTransactionRepository {
     create(transaction: CoinTransaction): Promise<CoinTransaction>;
     findById(id: string): Promise<CoinTransaction | null>;
     findByUserId(userId: string, limit?: number, offset?: number): Promise<CoinTransaction[]>;
+    findByUserIdPaginated(userId: string, page: number, limit: number): Promise<CoinTransaction[]>;
     findByUserIdAndDateRange(userId: string, startDate: Date, endDate: Date): Promise<CoinTransaction[]>;
     findByUserIdAndType(userId: string, type: CoinTransactionType, limit?: number): Promise<CoinTransaction[]>;
     findByUserIdAndSource(userId: string, source: CoinTransactionSource, limit?: number): Promise<CoinTransaction[]>;

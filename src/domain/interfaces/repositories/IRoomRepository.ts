@@ -8,6 +8,8 @@ export interface IRoomRepository {
   findByName(name: string): Promise<Room | null>;
   findByCreator(userId: string): Promise<Room[]>;
   findActiveRooms(): Promise<Room[]>;
+  findRoomsByUser(userId: string, page: number, limit: number): Promise<Room[]>;
+  countRoomsByUser(userId: string): Promise<number>;
   update(id: string, updates: Partial<Room>): Promise<Room | null>;
   delete(id: string): Promise<void>;
 

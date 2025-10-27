@@ -6,6 +6,8 @@ export interface ICoinPurchaseRepository {
     create(purchase: CoinPurchase): Promise<CoinPurchase>;
     findById(id: string): Promise<CoinPurchase | null>;
     findByUserId(userId: string): Promise<CoinPurchase[]>;
+    findByUserIdPaginated(userId: string, page: number, limit: number): Promise<CoinPurchase[]>;
+    countByUserId(userId: string): Promise<number>;
     findByExternalOrderId(externalOrderId: string): Promise<CoinPurchase | null>;
     findByExternalPaymentId(externalPaymentId: string): Promise<CoinPurchase | null>;
     update(id: string, purchase: Partial<CoinPurchase>): Promise<CoinPurchase | null>;

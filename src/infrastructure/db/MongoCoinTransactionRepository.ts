@@ -41,6 +41,17 @@ export class MongoCoinTransactionRepository implements ICoinTransactionRepositor
         return models.map(model => this.toDomain(model));
     }
 
+    async findByUserIdPaginated(userId: string, page: number, limit: number): Promise<CoinTransaction[]> {
+        const skip = (page - 1) * limit;
+        const models = await CoinTransactionModel
+            .find({ userId })
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
+        
+        return models.map(model => this.toDomain(model));
+    }
+
     async findByUserIdAndDateRange(userId: string, startDate: Date, endDate: Date): Promise<CoinTransaction[]> {
         const models = await CoinTransactionModel
             .find({

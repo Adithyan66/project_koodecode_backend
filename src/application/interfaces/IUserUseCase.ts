@@ -3,6 +3,10 @@ import { GetAllUsersResponseDto } from '../dto/users/admin/GetAllUsersResponseDt
 import { GetUserProfileResponseDto } from '../dto/users/admin/GetUserProfileResponseDto';
 import { UserDetailDto } from '../dto/users/admin/UserDetailDto';
 import { UserContestDataDto } from '../dto/users/admin/UserContestDataDto';
+import { UserSubmissionDataDto } from '../dto/users/admin/UserSubmissionDataDto';
+import { UserFinancialDataDto } from '../dto/users/admin/UserFinancialDataDto';
+import { UserStoreDataDto } from '../dto/users/admin/UserStoreDataDto';
+import { UserRoomDataDto } from '../dto/users/admin/UserRoomDataDto';
 
 export interface IGetAllUsersUseCase {
   execute(request: GetAllUsersRequestDto): Promise<GetAllUsersResponseDto>;
@@ -23,4 +27,20 @@ export interface IBlockUserUseCase {
 
 export interface IGetUserContestDataUseCase {
   execute(userId: string, page: number, limit: number): Promise<UserContestDataDto>;
+}
+
+export interface IGetUserSubmissionDataUseCase {
+  execute(userId: string, page: number, limit: number): Promise<UserSubmissionDataDto>;
+}
+
+export interface IGetUserFinancialDataUseCase {
+  execute(userId: string, coinPage: number, coinLimit: number, paymentPage: number, paymentLimit: number): Promise<UserFinancialDataDto>;
+}
+
+export interface IGetUserStoreDataUseCase {
+  execute(userId: string): Promise<UserStoreDataDto>;
+}
+
+export interface IGetUserRoomDataUseCase {
+  execute(userId: string, page: number, limit: number): Promise<UserRoomDataDto>;
 }

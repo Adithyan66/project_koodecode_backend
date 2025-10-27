@@ -215,6 +215,32 @@ export class MongoRoomRepository implements IRoomRepository {
     return roomCode ? roomCode.toObject() : null;
   }
 
+  async findRoomsByUser(userId: string, page: number, limit: number): Promise<Room[]> {
+    const skip = (page - 1) * limit;
+    
+    const rooms = await RoomModel.find({
+      $or: [
+        { createdBy: userId },
+        { 'participants.userId': userId }
+      ]
+    })
+    .populate('participants.userId', 'username')
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+
+    return rooms.map(room => this.mapToRoom(room));
+  }
+
+  async countRoomsByUser(userId: string): Promise<number> {
+    return await RoomModel.countDocuments({
+      $or: [
+        { createdBy: userId },
+        { 'participants.userId': userId }
+      ]
+    });
+  }
+
   private mapToRoom(roomDoc: RoomDocument): Room {
     return {
       id: roomDoc._id.toString(),
@@ -229,17 +255,32 @@ export class MongoRoomRepository implements IRoomRepository {
       scheduledTime: roomDoc.scheduledTime,
       problemNumber: roomDoc.problemNumber,
       status: roomDoc.status,
-      participants: roomDoc.participants.map(p => ({
-        userId: p.userId._id.toString(),
-        username: p.username,
-        joinedAt: p.joinedAt,
-        isOnline: p.isOnline,
-        permissions: p.permissions
-      })),
+      participants: roomDoc.participants.map(p => {
+        let userId: string;
+        if (p.userId) {
+          if (typeof p.userId === 'object' && p.userId._id) {
+            userId = p.userId._id.toString();
+          } else if (typeof p.userId === 'string') {
+            userId = p.userId;
+          } else {
+            userId = p.userId.toString();
+          }
+        } else {
+          userId = '';
+        }
+        
+        return {
+          userId,
+          username: p.username || '',
+          joinedAt: p.joinedAt,
+          isOnline: p.isOnline || false,
+          permissions: p.permissions || {}
+        };
+      }),
       permissions: {
-        canEditCode: roomDoc.permissions.canEditCode.map(id => id.toString()),
-        canDrawWhiteboard: roomDoc.permissions.canDrawWhiteboard.map(id => id.toString()),
-        canChangeProblem: roomDoc.permissions.canChangeProblem.map(id => id.toString())
+        canEditCode: (roomDoc.permissions?.canEditCode || []).map(id => id.toString()),
+        canDrawWhiteboard: (roomDoc.permissions?.canDrawWhiteboard || []).map(id => id.toString()),
+        canChangeProblem: (roomDoc.permissions?.canChangeProblem || []).map(id => id.toString())
       },
       lastActivity: roomDoc.lastActivity,
       createdAt: roomDoc.createdAt,

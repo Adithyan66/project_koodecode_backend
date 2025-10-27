@@ -19,6 +19,20 @@ export class MongoCoinPurchaseRepository implements ICoinPurchaseRepository {
         return purchases.map(this.mapToEntity);
     }
 
+    async findByUserIdPaginated(userId: string, page: number, limit: number): Promise<CoinPurchase[]> {
+        const skip = (page - 1) * limit;
+        const purchases = await CoinPurchaseModel
+            .find({ userId })
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
+        return purchases.map(this.mapToEntity);
+    }
+
+    async countByUserId(userId: string): Promise<number> {
+        return await CoinPurchaseModel.countDocuments({ userId });
+    }
+
     async findByExternalOrderId(externalOrderId: string): Promise<CoinPurchase | null> {
         const purchase = await CoinPurchaseModel.findOne({ externalOrderId });
         return purchase ? this.mapToEntity(purchase) : null;

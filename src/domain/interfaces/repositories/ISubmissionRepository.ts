@@ -12,4 +12,6 @@ export interface ISubmissionRepository {
   updateByJudge0Token(token: string, updates: Partial<Submission>): Promise<Submission>;
   delete(id: string): Promise<void>;
   findByStatus(status: string): Promise<Submission[]>;
+  findByUserIdPaginated(userId: string, page: number, limit: number, submissionType?: string): Promise<Submission[]>;
+  countByUserId(userId: string, submissionType?: string): Promise<number>;
 }
