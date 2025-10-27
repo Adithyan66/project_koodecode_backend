@@ -1,130 +1,11 @@
-
-
-// import { IPaymentGatewayService } from '../../../domain/interfaces/services/IPaymentGatewayService';
-// import { ICoinPurchaseRepository } from '../../../domain/interfaces/repositories/ICoinPurchaseRepository';
-// import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
-// import { ICoinTransactionRepository } from '../../../domain/interfaces/repositories/ICoinTransactionRepository';
-// import { CompletePurchaseDto } from '../../dto/coins/CoinPurchaseDto';
-// import { CoinTransaction, CoinTransactionType, CoinTransactionSource } from '../../../domain/entities/CoinTransaction';
-// import { AppError } from '../../../shared/exceptions/AppError';
-// import { HTTP_STATUS } from '../../../shared/constants/httpStatus';
-// import { inject, injectable } from 'tsyringe';
-// import { ICompleteCoinPurchaseUseCase } from '../../interfaces/ICoinUseCase';
-
-
-// @injectable()
-// export class CompleteCoinPurchaseUseCase implements ICompleteCoinPurchaseUseCase{
-
-//     constructor(
-//         @inject("IPaymentGatewayService") private paymentGatewayService: IPaymentGatewayService,
-//         @inject("ICoinPurchaseRepository") private coinPurchaseRepository: ICoinPurchaseRepository,
-//         @inject("IUserProfileRepository") private userProfileRepository: IUserProfileRepository,
-//         @inject("ICoinTransactionRepository") private coinTransactionRepository: ICoinTransactionRepository
-//     ) { }
-
-//     async execute(dto: CompletePurchaseDto): Promise<{ message: string; coins: number }> {
-
-//         const isValidSignature = await this.paymentGatewayService.verifyPaymentSignature(
-//             dto.orderId,
-//             dto.paymentId,
-//             dto.signature
-//         );
-
-//         if (!isValidSignature) {
-//             throw new AppError('Invalid payment signature', HTTP_STATUS.BAD_REQUEST);
-//         }
-
-//         const purchase = await this.coinPurchaseRepository.findByExternalOrderId(dto.orderId);
-//         if (!purchase) {
-//             throw new AppError('Purchase record not found', HTTP_STATUS.NOT_FOUND);
-//         }
-
-//         if (purchase.isCompleted()) {
-//             return {
-//                 message: 'Purchase already completed',
-//                 coins: purchase.coins
-//             };
-//         }
-
-//         try {
-
-//             purchase.externalPaymentId = dto.paymentId;
-//             purchase.markAsCompleted();
-//             await this.coinPurchaseRepository.update(purchase.id!, purchase);
-
-//             const userProfile = await this.userProfileRepository.findByUserId(purchase.userId);
-//             if (!userProfile) {
-//                 throw new AppError('User profile not found', HTTP_STATUS.NOT_FOUND);
-//             }
-
-//             userProfile.coinBalance += purchase.coins;
-//             await this.userProfileRepository.update(purchase.userId, {
-//                 coinBalance: userProfile.coinBalance
-//             });
-
-//             const coinTransaction = new CoinTransaction({
-//                 userId: purchase.userId,
-//                 amount: purchase.coins,
-//                 type: CoinTransactionType.EARN,
-//                 source: CoinTransactionSource.PREMIUM_UPGRADE,
-//                 description: `Purchased ${purchase.coins} coins for ₹${purchase.amount}`,
-//                 metadata: {
-//                     purchaseId: purchase.id,
-//                     paymentId: dto.paymentId,
-//                     orderId: dto.orderId,
-//                     amount: purchase.amount
-//                 }
-//             });
-//             await this.coinTransactionRepository.create(coinTransaction);
-
-//             return {
-//                 message: `Successfully added ${purchase.coins} coins to your account`,
-//                 coins: purchase.coins
-//             };
-
-//         } catch (error) {
-//             purchase.markAsFailed();
-//             await this.coinPurchaseRepository.update(purchase.id!, purchase);
-//             throw new AppError('Purchase completion failed', HTTP_STATUS.INTERNAL_SERVER_ERROR);
-//         }
-//     }
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+import mongoose from 'mongoose';
 import { IPaymentGatewayService } from '../../../domain/interfaces/services/IPaymentGatewayService';
 import { ICoinPurchaseRepository } from '../../../domain/interfaces/repositories/ICoinPurchaseRepository';
 import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
 import { ICoinTransactionRepository } from '../../../domain/interfaces/repositories/ICoinTransactionRepository';
 import { CompletePurchaseDto } from '../../dto/coins/CoinPurchaseDto';
 import { CoinTransaction, CoinTransactionType, CoinTransactionSource } from '../../../domain/entities/CoinTransaction';
+import { CoinPurchase, PaymentMethod, PurchaseStatus } from '../../../domain/entities/CoinPurchase';
 import { inject, injectable } from 'tsyringe';
 import { ICompleteCoinPurchaseUseCase } from '../../interfaces/ICoinUseCase';
 import { 
@@ -135,9 +16,10 @@ import {
   UserProfileNotFoundError,
   CoinBalanceUpdateError,
   TransactionRecordingError,
-  PurchaseRecordUpdateError
+  PurchaseRecordUpdateError,
+  PaymentNotCapturedError,
+  PaymentAmountMismatchError
 } from '../../../domain/errors/CoinErrors';
-
 import { MissingFieldsError } from '../../../domain/errors/AuthErrors';
 
 @injectable()
@@ -150,7 +32,7 @@ export class CompleteCoinPurchaseUseCase implements ICompleteCoinPurchaseUseCase
         @inject("ICoinTransactionRepository") private coinTransactionRepository: ICoinTransactionRepository
     ) { }
 
-    async execute(dto: CompletePurchaseDto): Promise<{ message: string; coins: number }> {
+    async execute(dto: CompletePurchaseDto): Promise<{ message: string; coins: number; paymentMethod: string }> {
 
         this.validateDto(dto);
 
@@ -174,15 +56,42 @@ export class CompleteCoinPurchaseUseCase implements ICompleteCoinPurchaseUseCase
         }
 
         try {
-            await this.completePurchaseTransaction(dto, purchase);
+          
+            const paymentDetails = await this.paymentGatewayService.getPaymentDetails(dto.paymentId);
+            
+            if (!paymentDetails) {
+                throw new PaymentNotCapturedError();
+            }
+
+        
+            if (paymentDetails.status !== 'captured') {
+                throw new PaymentNotCapturedError();
+            }
+
+
+            if (Math.abs(paymentDetails.amount - purchase.amount) > 0.01) {
+                throw new PaymentAmountMismatchError();
+            }
+
+            const paymentMethod = this.mapRazorpayMethodToPaymentMethod(paymentDetails.method);
+            const paymentMethodDetails = this.extractPaymentMethodDetails(paymentDetails.method, dto.paymentId);
+
+            await this.completePurchaseTransaction(dto, purchase, {
+                paymentMethod,
+                paymentMethodDetails,
+                razorpayOrderStatus: paymentDetails.status,
+                ipAddress: dto.ipAddress,
+                userAgent: dto.userAgent
+            });
 
             return {
                 message: `Successfully added ${purchase.coins} coins to your account`,
-                coins: purchase.coins
+                coins: purchase.coins,
+                paymentMethod: paymentMethod || PaymentMethod.CARD
             };
 
         } catch (error) {
-            await this.markPurchaseAsFailed(purchase);
+            await this.markPurchaseAsFailed(purchase, error instanceof Error ? error.message : 'Unknown error');
             
             if (error instanceof InvalidPaymentSignatureError ||
                 error instanceof PaymentOrderNotFoundError ||
@@ -190,7 +99,9 @@ export class CompleteCoinPurchaseUseCase implements ICompleteCoinPurchaseUseCase
                 error instanceof UserProfileNotFoundError ||
                 error instanceof CoinBalanceUpdateError ||
                 error instanceof TransactionRecordingError ||
-                error instanceof PurchaseRecordUpdateError) {
+                error instanceof PurchaseRecordUpdateError ||
+                error instanceof PaymentNotCapturedError ||
+                error instanceof PaymentAmountMismatchError) {
                 throw error;
             }
             
@@ -210,63 +121,97 @@ export class CompleteCoinPurchaseUseCase implements ICompleteCoinPurchaseUseCase
         }
     }
 
-    private async completePurchaseTransaction(dto: CompletePurchaseDto, purchase: any): Promise<void> {
+    private async completePurchaseTransaction(
+        dto: CompletePurchaseDto, 
+        purchase: CoinPurchase,
+        paymentInfo: { paymentMethod: PaymentMethod; paymentMethodDetails: Record<string, any>; razorpayOrderStatus: string; ipAddress?: string; userAgent?: string }
+    ): Promise<void> {
+        const session = await mongoose.startSession();
+        session.startTransaction();
+
         try {
+            // Update purchase record with all details
             purchase.externalPaymentId = dto.paymentId;
+            purchase.paymentMethod = paymentInfo.paymentMethod;
+            purchase.paymentMethodDetails = paymentInfo.paymentMethodDetails;
+            purchase.razorpayOrderStatus = paymentInfo.razorpayOrderStatus;
+            if (paymentInfo.ipAddress) purchase.ipAddress = paymentInfo.ipAddress;
+            if (paymentInfo.userAgent) purchase.userAgent = paymentInfo.userAgent;
             purchase.markAsCompleted();
+
             await this.coinPurchaseRepository.update(purchase.id!, purchase);
-        } catch (error) {
-            throw new PurchaseRecordUpdateError(purchase.id!);
-        }
 
-        await this.updateUserCoinBalance(purchase);
+            // Get user profile and update balance
+            const userProfile = await this.userProfileRepository.findByUserId(purchase.userId);
+            if (!userProfile) {
+                throw new UserProfileNotFoundError(purchase.userId);
+            }
 
-        await this.recordCoinTransaction(dto, purchase);
-    }
-
-    private async updateUserCoinBalance(purchase: any): Promise<void> {
-        const userProfile = await this.userProfileRepository.findByUserId(purchase.userId);
-        if (!userProfile) {
-            throw new UserProfileNotFoundError(purchase.userId);
-        }
-
-        try {
             userProfile.coinBalance += purchase.coins;
             await this.userProfileRepository.update(purchase.userId, {
                 coinBalance: userProfile.coinBalance
             });
-        } catch (error) {
-            throw new CoinBalanceUpdateError(purchase.userId);
-        }
-    }
 
-    private async recordCoinTransaction(dto: CompletePurchaseDto, purchase: any): Promise<void> {
-        try {
+            // Record coin transaction
             const coinTransaction = new CoinTransaction({
                 userId: purchase.userId,
                 amount: purchase.coins,
                 type: CoinTransactionType.EARN,
                 source: CoinTransactionSource.PREMIUM_UPGRADE,
-                description: `Purchased ${purchase.coins} coins for ₹${purchase.amount}`,
+                description: `Purchased ${purchase.coins} coins for ₹${purchase.amount} via ${paymentInfo.paymentMethod}`,
                 metadata: {
                     purchaseId: purchase.id,
                     paymentId: dto.paymentId,
                     orderId: dto.orderId,
-                    amount: purchase.amount
+                    amount: purchase.amount,
+                    paymentMethod: paymentInfo.paymentMethod,
+                    paymentMethodDetails: paymentInfo.paymentMethodDetails
                 }
             });
-            
+
             await this.coinTransactionRepository.create(coinTransaction);
+
+            await session.commitTransaction();
         } catch (error) {
-            throw new TransactionRecordingError(purchase.userId, purchase.coins);
+            await session.abortTransaction();
+            throw error;
+        } finally {
+            session.endSession();
         }
     }
 
-    private async markPurchaseAsFailed(purchase: any): Promise<void> {
+    private mapRazorpayMethodToPaymentMethod(razorpayMethod: string): PaymentMethod {
+        const methodLower = razorpayMethod.toLowerCase();
+        
+        if (methodLower === 'upi' || methodLower.includes('upi')) {
+            return PaymentMethod.UPI;
+        } else if (methodLower === 'card' || methodLower.includes('card')) {
+            return PaymentMethod.CARD;
+        } else if (methodLower === 'netbanking' || methodLower === 'net_banking') {
+            return PaymentMethod.NET_BANKING;
+        } else if (methodLower === 'wallet') {
+            return PaymentMethod.WALLET;
+        } else if (methodLower === 'emi') {
+            return PaymentMethod.EMI;
+        } else {
+            return PaymentMethod.CARD; 
+        }
+    }
+
+    private extractPaymentMethodDetails(method: string, paymentId: string): Record<string, any> {
+        return {
+            method,
+            paymentId,
+            provider: 'razorpay'
+        };
+    }
+
+    private async markPurchaseAsFailed(purchase: CoinPurchase, reason: string): Promise<void> {
         try {
-            purchase.markAsFailed();
+            purchase.markAsFailed(reason);
             await this.coinPurchaseRepository.update(purchase.id!, purchase);
         } catch (error) {
+            // Log error but don't throw - this is cleanup
             console.error(`Failed to mark purchase ${purchase.id} as failed:`, error);
         }
     }

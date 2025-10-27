@@ -57,6 +57,29 @@ export class MongoCoinPurchaseRepository implements ICoinPurchaseRepository {
         return !!result;
     }
 
+    async findPendingByUserId(userId: string): Promise<CoinPurchase[]> {
+        const purchases = await CoinPurchaseModel
+            .find({ userId, status: 'pending' })
+            .sort({ createdAt: -1 });
+        return purchases.map(this.mapToEntity);
+    }
+
+    async findStuckPurchases(minutesOld: number): Promise<CoinPurchase[]> {
+        const cutoffTime = new Date(Date.now() - minutesOld * 60 * 1000);
+        const purchases = await CoinPurchaseModel
+            .find({ 
+                status: 'pending', 
+                createdAt: { $lt: cutoffTime } 
+            })
+            .sort({ createdAt: 1 });
+        return purchases.map(this.mapToEntity);
+    }
+
+    async findByIdWithDetails(id: string): Promise<CoinPurchase | null> {
+        const purchase = await CoinPurchaseModel.findById(id);
+        return purchase ? this.mapToEntity(purchase) : null;
+    }
+
     private mapToEntity(doc: any): CoinPurchase {
         return new CoinPurchase({
             id: doc._id.toString(),
@@ -68,6 +91,16 @@ export class MongoCoinPurchaseRepository implements ICoinPurchaseRepository {
             paymentMethod: doc.paymentMethod,
             externalOrderId: doc.externalOrderId,
             externalPaymentId: doc.externalPaymentId,
+            receipt: doc.receipt,
+            completedAt: doc.completedAt,
+            failedAt: doc.failedAt,
+            failureReason: doc.failureReason,
+            paymentMethodDetails: doc.paymentMethodDetails,
+            ipAddress: doc.ipAddress,
+            userAgent: doc.userAgent,
+            razorpayOrderStatus: doc.razorpayOrderStatus,
+            webhookVerified: doc.webhookVerified,
+            reconciliationNotes: doc.reconciliationNotes,
             createdAt: doc.createdAt,
             updatedAt: doc.updatedAt
         });

@@ -15,7 +15,10 @@ export const expressAdapter = (controllerMethod: (httpRequest: IHttpRequest) => 
                 params: req.params,
                 query: req.query,
                 cookies: req.cookies,
-                user: req.user
+                user: req.user,
+                ip: req.ip || req.socket.remoteAddress,
+                hostname: req.hostname,
+                protocol: req.protocol
             };
 
             const httpResponse = await controllerMethod(httpRequest);

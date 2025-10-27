@@ -13,6 +13,7 @@ export interface ICompleteCoinPurchaseUseCase {
   execute(dto: CompletePurchaseDto): Promise<{
     message: string;
     coins: number;
+    paymentMethod: string;
   }>;
 }
 

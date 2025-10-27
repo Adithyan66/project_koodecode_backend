@@ -24,6 +24,7 @@ import adminUserRoute from './presentation/express/routes/admin/adminUserRoute'
 import { errorMiddleware } from './presentation/express/middlewares/errorHandler';
 import imageServiceRoute from './presentation/express/routes/shared/imageServiceRoute'
 import healthRoute from './presentation/express/routes/shared/healthRoute'
+import webhookRoute from './presentation/express/routes/webhooks/razorpayWebhookRoute'
 dotenv.config();
 const app = express();
 app.use(cookieParser());
@@ -43,6 +44,9 @@ cornjob.start()
 
 
 app.use("/api/auth", authRoutes);
+
+// Webhook route - no authentication
+app.use('/api/webhooks', webhookRoute);
 
 app.use('/api/user', userPofileRoutes);
 app.use('/api/user/coins', userCoinsRoute);

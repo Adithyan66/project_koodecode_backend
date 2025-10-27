@@ -37,10 +37,14 @@ export class CompletePurchaseDto {
     orderId: string;
     paymentId: string;
     signature: string;
+    ipAddress?: string;
+    userAgent?: string;
 
-    constructor(orderId: string, paymentId: string, signature: string) {
+    constructor(orderId: string, paymentId: string, signature: string, ipAddress?: string, userAgent?: string) {
         this.orderId = orderId;
         this.paymentId = paymentId;
         this.signature = signature;
+        this.ipAddress = ipAddress;
+        this.userAgent = userAgent;
     }
 }

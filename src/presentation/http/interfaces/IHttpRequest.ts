@@ -6,4 +6,7 @@ export interface IHttpRequest<B = any, H = any, P = any, Q = any, F = any, C = a
     params?: P;
     query?: Q;
     file?: F;
+    ip?: string;
+    hostname?: string;
+    protocol?: string;
 }

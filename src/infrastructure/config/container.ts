@@ -31,6 +31,8 @@ import { CompleteCoinPurchaseUseCase } from "../../application/usecases/coins/Co
 import { GetCoinBalanceUseCase } from "../../application/usecases/coins/GetCoinBalanceUseCase";
 import { GetCoinTransactionsUseCase } from "../../application/usecases/coins/GetCoinTransactionsUseCase";
 import { GetCoinStatsUseCase } from "../../application/usecases/coins/GetCoinStatsUseCase";
+import { HandleRazorpayWebhookUseCase } from "../../application/usecases/coins/HandleRazorpayWebhookUseCase";
+import { RazorpayWebhookController } from "../../presentation/http/controllers/webhooks/RazorpayWebhookController";
 import { MongoCoinTransactionRepository } from "../db/MongoCoinTransactionRepository";
 import { MongoUserProfileRepository } from "../db/MongoUserProfileRepository";
 import { RazorpayGatewayService } from "../services/RazorpayGatewayService";
@@ -226,6 +228,7 @@ container.registerSingleton("ICompleteCoinPurchaseUseCase", CompleteCoinPurchase
 container.registerSingleton("IGetCoinBalanceUseCase", GetCoinBalanceUseCase)
 container.registerSingleton("IGetCoinTransactionsUseCase", GetCoinTransactionsUseCase)
 container.registerSingleton("IGetCoinStatsUseCase", GetCoinStatsUseCase)
+container.registerSingleton("IHandleRazorpayWebhookUseCase", HandleRazorpayWebhookUseCase)
 
 container.registerSingleton("IUpdateUserProfileUseCase", UpdateUserProfileUseCase)
 container.registerSingleton("IGetUserEditableProfile", GetUserEditableProfile)
@@ -290,6 +293,7 @@ container.registerSingleton(AdminContestController)
 
 container.registerSingleton(ImageServiceController)
 container.registerSingleton(AdminUserController)
+container.registerSingleton(RazorpayWebhookController)
 
 
 export { container };

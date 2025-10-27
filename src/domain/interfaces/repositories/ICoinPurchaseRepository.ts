@@ -10,6 +10,9 @@ export interface ICoinPurchaseRepository {
     countByUserId(userId: string): Promise<number>;
     findByExternalOrderId(externalOrderId: string): Promise<CoinPurchase | null>;
     findByExternalPaymentId(externalPaymentId: string): Promise<CoinPurchase | null>;
+    findPendingByUserId(userId: string): Promise<CoinPurchase[]>;
+    findStuckPurchases(minutesOld: number): Promise<CoinPurchase[]>;
+    findByIdWithDetails(id: string): Promise<CoinPurchase | null>;
     update(id: string, purchase: Partial<CoinPurchase>): Promise<CoinPurchase | null>;
     delete(id: string): Promise<boolean>;
 }

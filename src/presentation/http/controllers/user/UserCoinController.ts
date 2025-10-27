@@ -10,6 +10,7 @@ import { HttpResponse } from "../../helper/HttpResponse";
 import { IHttpRequest } from "../../interfaces/IHttpRequest";
 import { IUserCoinController } from "../../interfaces/IUserCoinController";
 import { BadRequestError } from "../../../../application/errors/AppErrors";
+import { PaymentDataAdapter } from "../../../../infrastructure/services/PaymentDataAdapter";
 
 
 @injectable()
@@ -44,23 +45,34 @@ export class UserCoinController implements IUserCoinController {
 
     completePurchase = async (httpRequest: IHttpRequest) => {
 
-        const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = httpRequest.body;
+        try {
+            const paymentData = PaymentDataAdapter.normalizePaymentData(httpRequest.body);
+            
+            const ipAddress = httpRequest.ip || 'unknown';
+            const userAgent = httpRequest.headers?.['user-agent'] || 'unknown';
 
-        if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-            throw new BadRequestError('Payment verification data is required', {
-                razorpay_order_id: razorpay_order_id ? 'provided' : 'missing',
-                razorpay_payment_id: razorpay_payment_id ? 'provided' : 'missing',
-                razorpay_signature: razorpay_signature ? 'provided' : 'missing'
+            const dto = new CompletePurchaseDto(
+                paymentData.orderId,
+                paymentData.paymentId,
+                paymentData.signature,
+                ipAddress,
+                userAgent
+            );
+
+            const result = await this._completePurchaseUseCase.execute(dto);
+
+            return new HttpResponse(HTTP_STATUS.OK, {
+                ...buildResponse(true, result.message, { 
+                    coins: result.coins,
+                    paymentMethod: result.paymentMethod 
+                }),
             });
+        } catch (error) {
+            if (error instanceof Error && error.message.includes('Missing payment verification fields')) {
+                throw new BadRequestError(error.message);
+            }
+            throw error;
         }
-
-        const dto = new CompletePurchaseDto(razorpay_order_id, razorpay_payment_id, razorpay_signature);
-
-        const result = await this._completePurchaseUseCase.execute(dto);
-
-        return new HttpResponse(HTTP_STATUS.OK, {
-            ...buildResponse(true, result.message, { coins: result.coins }),
-        });
 
     };
 

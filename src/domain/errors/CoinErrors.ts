@@ -164,3 +164,30 @@ export class InvalidPaginationParametersError extends DomainError {
         super(`Invalid pagination parameters: ${reason}`);
     }
 }
+
+export class WebhookVerificationFailedError extends DomainError {
+    constructor() {
+        super("Webhook signature verification failed");
+    }
+}
+
+export class PaymentNotCapturedError extends DomainError {
+    constructor() {
+        super("Payment has not been captured yet");
+    }
+}
+
+export class PaymentAmountMismatchError extends DomainError {
+    constructor(expected?: number, actual?: number) {
+        const message = expected !== undefined && actual !== undefined
+            ? `Payment amount mismatch. Expected: ₹${expected}, Actual: ₹${actual}`
+            : "Payment amount does not match order amount";
+        super(message);
+    }
+}
+
+export class ReconciliationNotAllowedError extends DomainError {
+    constructor(reason: string) {
+        super(`Cannot reconcile purchase: ${reason}`);
+    }
+}
