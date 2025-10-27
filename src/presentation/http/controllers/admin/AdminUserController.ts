@@ -5,7 +5,7 @@ import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 import { buildResponse } from '../../../../infrastructure/utils/responseBuilder';
 import { BadRequestError, UnauthorizedError } from '../../../../application/errors/AppErrors';
 import { IGetAllUsersUseCase, IGetUserDetailForAdminUseCase } from '../../../../application/interfaces/IUserUseCase';
-import {  IBlockUserUseCase, IGetUserContestDataUseCase, IGetUserSubmissionDataUseCase, IGetUserFinancialDataUseCase, IGetUserStoreDataUseCase, IGetUserRoomDataUseCase, IResetUserPasswordUseCase } from '../../../../application/interfaces/IUserUseCase';
+import {  IBlockUserUseCase, IGetUserContestDataUseCase, IGetUserSubmissionDataUseCase, IGetUserFinancialDataUseCase, IGetUserStoreDataUseCase, IGetUserRoomDataUseCase, IResetUserPasswordUseCase, ISendMailToUserUseCase } from '../../../../application/interfaces/IUserUseCase';
 import { GetAllUsersRequestDto } from '../../../../application/dto/users/admin/GetAllUsersRequestDto';
 
 @injectable()
@@ -20,7 +20,8 @@ export class AdminUserController {
     @inject('IGetUserFinancialDataUseCase') private getUserFinancialDataUseCase: IGetUserFinancialDataUseCase,
     @inject('IGetUserStoreDataUseCase') private getUserStoreDataUseCase: IGetUserStoreDataUseCase,
     @inject('IGetUserRoomDataUseCase') private getUserRoomDataUseCase: IGetUserRoomDataUseCase,
-    @inject('IResetUserPasswordUseCase') private resetUserPasswordUseCase: IResetUserPasswordUseCase
+    @inject('IResetUserPasswordUseCase') private resetUserPasswordUseCase: IResetUserPasswordUseCase,
+    @inject('ISendMailToUserUseCase') private sendMailToUserUseCase: ISendMailToUserUseCase
 
   ) {}
 
@@ -252,6 +253,30 @@ export class AdminUserController {
 
     return new HttpResponse(HTTP_STATUS.OK, {
       ...buildResponse(true, result.message),
+    });
+  };
+
+  sendMailToUser = async (httpRequest: IHttpRequest) => {
+    if (!httpRequest.user || httpRequest.user.role !== 'admin') {
+      throw new UnauthorizedError('Admin access required');
+    }
+
+    const { userId } = httpRequest.params;
+    const { subject, message } = httpRequest.body;
+
+    if (!userId) {
+      throw new BadRequestError('User ID is required');
+    }
+
+    if (!subject || !message) {
+      throw new BadRequestError('Subject and message are required');
+    }
+
+    const mailData = { subject, message };
+    const result = await this.sendMailToUserUseCase.execute(userId, mailData);
+
+    return new HttpResponse(HTTP_STATUS.OK, {
+      ...buildResponse(true, result.message, result),
     });
   };
 }

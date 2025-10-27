@@ -132,6 +132,7 @@ import { GetUserFinancialDataUseCase } from '../../application/usecases/users/ad
 import { GetUserStoreDataUseCase } from '../../application/usecases/users/admin/GetUserStoreDataUseCase';
 import { GetUserRoomDataUseCase } from '../../application/usecases/users/admin/GetUserRoomDataUseCase';
 import { ResetUserPasswordUseCase } from '../../application/usecases/users/admin/ResetUserPasswordUseCase';
+import { SendMailToUserUseCase } from '../../application/usecases/users/admin/SendMailToUserUseCase';
 
 
 
@@ -273,6 +274,7 @@ container.registerSingleton('IGetUserFinancialDataUseCase', GetUserFinancialData
 container.registerSingleton('IGetUserStoreDataUseCase', GetUserStoreDataUseCase);
 container.registerSingleton('IGetUserRoomDataUseCase', GetUserRoomDataUseCase);
 container.registerSingleton('IResetUserPasswordUseCase', ResetUserPasswordUseCase);
+container.registerSingleton('ISendMailToUserUseCase', SendMailToUserUseCase);
 
 
 //   Register Controllers  //
