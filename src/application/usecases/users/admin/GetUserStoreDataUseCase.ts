@@ -44,10 +44,9 @@ export class GetUserStoreDataUseCase implements IGetUserStoreDataUseCase {
       };
     });
 
-    // Get current inventory
+
     const userInventory = await this.userInventoryRepository.findByUserId(userId);
 
-    // Map inventory with item details
     const inventory = await Promise.all(
       userInventory.map(async (inventoryItem) => {
         const storeItem = await this.storeItemRepository.findById(inventoryItem.itemId);
