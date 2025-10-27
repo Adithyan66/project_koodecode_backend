@@ -59,4 +59,31 @@ export class RazorpayGatewayService implements IPaymentGatewayService {
             return null;
         }
     }
+
+    async processRefund(paymentId: string, amount: number, notes?: string): Promise<{ refundId: string; status: string; amount: number }> {
+        try {
+            const refundData: any = {
+                amount: amount * 100
+            };
+
+            if (notes) {
+                refundData.notes = {
+                    reason: 'Refund request',
+                    notes: notes
+                };
+            }
+
+            const refund = await this.razorpay.payments.refund(paymentId, refundData);
+            console.log('refunddddddddddddddddddd',refund);
+            
+            return {
+                refundId: refund.id || '',
+                status: refund.status || 'processed',
+                amount: Number(refund.amount) / 100
+            };
+        } catch (error) {
+            console.error('Razorpay refund error:', error);
+            throw new Error(`Failed to process refund: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+    }
 }

@@ -59,6 +59,7 @@ app.use('/api/user/store', userStoreRoute);
 app.use('/api/admin/contests', adminContestRoute)
 app.use('/api/admin/problems', adminProblemRoute);
 app.use('/api/admin/users', adminUserRoute);
+app.use('/api/admin/coins', adminCoinsRoute);
 
 app.use('/api/image-service', imageServiceRoute)
 app.use('/api/health', healthRoute);

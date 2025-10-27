@@ -3,11 +3,11 @@
 
 
 import { inject, injectable } from 'tsyringe';
-import { CoinTransaction } from '../../../domain/entities/CoinTransaction';
-import { ICoinTransactionRepository } from '../../../domain/interfaces/repositories/ICoinTransactionRepository';
-import { IGetCoinTransactionsUseCase } from '../../interfaces/ICoinUseCase';
-import { CoinTransactionsRetrievalError, InvalidPaginationParametersError } from '../../../domain/errors/CoinErrors';
-import { MissingFieldsError } from '../../../domain/errors/AuthErrors';
+import { CoinTransaction } from '../../../../domain/entities/CoinTransaction';
+import { ICoinTransactionRepository } from '../../../../domain/interfaces/repositories/ICoinTransactionRepository';
+import { IGetCoinTransactionsUseCase } from '../../../interfaces/ICoinUseCase';
+import { CoinTransactionsRetrievalError, InvalidPaginationParametersError } from '../../../../domain/errors/CoinErrors';
+import { MissingFieldsError } from '../../../../domain/errors/AuthErrors';
 
 @injectable()
 export class GetCoinTransactionsUseCase implements IGetCoinTransactionsUseCase {

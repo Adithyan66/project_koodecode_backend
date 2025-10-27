@@ -1,9 +1,9 @@
 
 
 import mongoose from 'mongoose';
-import { CoinTransaction, CoinTransactionType, CoinTransactionSource } from '../../../domain/entities/CoinTransaction';
-import { ICoinTransactionRepository } from '../../../domain/interfaces/repositories/ICoinTransactionRepository';
-import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
+import { CoinTransaction, CoinTransactionType, CoinTransactionSource } from '../../../../domain/entities/CoinTransaction';
+import { ICoinTransactionRepository } from '../../../../domain/interfaces/repositories/ICoinTransactionRepository';
+import { IUserProfileRepository } from '../../../../domain/interfaces/repositories/IUserProfileRepository';
 import { inject, injectable } from 'tsyringe';
 
 

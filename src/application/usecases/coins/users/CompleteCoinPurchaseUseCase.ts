@@ -1,13 +1,13 @@
 import mongoose from 'mongoose';
-import { IPaymentGatewayService } from '../../../domain/interfaces/services/IPaymentGatewayService';
-import { ICoinPurchaseRepository } from '../../../domain/interfaces/repositories/ICoinPurchaseRepository';
-import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
-import { ICoinTransactionRepository } from '../../../domain/interfaces/repositories/ICoinTransactionRepository';
-import { CompletePurchaseDto } from '../../dto/coins/CoinPurchaseDto';
-import { CoinTransaction, CoinTransactionType, CoinTransactionSource } from '../../../domain/entities/CoinTransaction';
-import { CoinPurchase, PaymentMethod, PurchaseStatus } from '../../../domain/entities/CoinPurchase';
+import { IPaymentGatewayService } from '../../../../domain/interfaces/services/IPaymentGatewayService';
+import { ICoinPurchaseRepository } from '../../../../domain/interfaces/repositories/ICoinPurchaseRepository';
+import { IUserProfileRepository } from '../../../../domain/interfaces/repositories/IUserProfileRepository';
+import { ICoinTransactionRepository } from '../../../../domain/interfaces/repositories/ICoinTransactionRepository';
+import { CompletePurchaseDto } from '../../../dto/coins/CoinPurchaseDto';
+import { CoinTransaction, CoinTransactionType, CoinTransactionSource } from '../../../../domain/entities/CoinTransaction';
+import { CoinPurchase, PaymentMethod, PurchaseStatus } from '../../../../domain/entities/CoinPurchase';
 import { inject, injectable } from 'tsyringe';
-import { ICompleteCoinPurchaseUseCase } from '../../interfaces/ICoinUseCase';
+import { ICompleteCoinPurchaseUseCase } from '../../../interfaces/ICoinUseCase';
 import { 
   InvalidPaymentSignatureError,
   PaymentOrderNotFoundError,
@@ -19,8 +19,8 @@ import {
   PurchaseRecordUpdateError,
   PaymentNotCapturedError,
   PaymentAmountMismatchError
-} from '../../../domain/errors/CoinErrors';
-import { MissingFieldsError } from '../../../domain/errors/AuthErrors';
+} from '../../../../domain/errors/CoinErrors';
+import { MissingFieldsError } from '../../../../domain/errors/AuthErrors';
 
 @injectable()
 export class CompleteCoinPurchaseUseCase implements ICompleteCoinPurchaseUseCase {

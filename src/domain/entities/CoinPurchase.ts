@@ -21,6 +21,11 @@ export class CoinPurchase {
     public razorpayOrderStatus?: string;
     public webhookVerified?: boolean;
     public reconciliationNotes?: string;
+    public reconciledAt?: Date;
+    public refundedAt?: Date;
+    public refundNotes?: string;
+    public refundedBy?: string;
+    public notes?: Array<{ text: string; createdAt: Date; createdBy: string }>; // Stored as ObjectId in DB but handled as string in TypeScript
     public createdAt: Date;
     public updatedAt: Date;
 
@@ -44,6 +49,11 @@ export class CoinPurchase {
         razorpayOrderStatus,
         webhookVerified,
         reconciliationNotes,
+        reconciledAt,
+        refundedAt,
+        refundNotes,
+        refundedBy,
+        notes,
         createdAt = new Date(),
         updatedAt = new Date()
     }: {
@@ -66,6 +76,11 @@ export class CoinPurchase {
         razorpayOrderStatus?: string;
         webhookVerified?: boolean;
         reconciliationNotes?: string;
+        reconciledAt?: Date;
+        refundedAt?: Date;
+        refundNotes?: string;
+        refundedBy?: string;
+        notes?: Array<{ text: string; createdAt: Date; createdBy: string }>;
         createdAt?: Date;
         updatedAt?: Date;
     }) {
@@ -88,6 +103,11 @@ export class CoinPurchase {
         this.razorpayOrderStatus = razorpayOrderStatus;
         this.webhookVerified = webhookVerified;
         this.reconciliationNotes = reconciliationNotes;
+        this.reconciledAt = reconciledAt;
+        this.refundedAt = refundedAt;
+        this.refundNotes = refundNotes;
+        this.refundedBy = refundedBy;
+        this.notes = notes;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -124,13 +144,63 @@ export class CoinPurchase {
         const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
         return this.status === PurchaseStatus.PENDING && this.createdAt < thirtyMinutesAgo;
     }
+
+    public reconcile(notes?: string): void {
+        if (!this.canBeReconciled()) {
+            throw new Error('Purchase cannot be reconciled');
+        }
+        this.status = PurchaseStatus.COMPLETED;
+        this.completedAt = new Date();
+        this.reconciledAt = new Date();
+        this.reconciliationNotes = notes;
+        this.updatedAt = new Date();
+    }
+
+    public canBeRefunded(): boolean {
+        if (this.status !== PurchaseStatus.COMPLETED && this.status !== PurchaseStatus.REFUNDED) {
+            return false;
+        }
+        if (this.status === PurchaseStatus.REFUNDED) {
+            return false; // Already refunded
+        }
+        // Within 30 days
+        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+        return this.completedAt ? this.completedAt > thirtyDaysAgo : false;
+    }
+
+    public refund(notes: string, adminId: string): void {
+        if (!this.canBeRefunded()) {
+            throw new Error('Purchase cannot be refunded');
+        }
+        this.status = PurchaseStatus.REFUNDED;
+        this.refundedAt = new Date();
+        this.refundNotes = notes;
+        this.refundedBy = adminId;
+        this.updatedAt = new Date();
+    }
+
+    public addNote(text: string, adminId: string): void {
+        if (!text || text.trim().length === 0) {
+            throw new Error('Note text is required');
+        }
+        if (!this.notes) {
+            this.notes = [];
+        }
+        this.notes.push({
+            text: text.trim(),
+            createdAt: new Date(),
+            createdBy: adminId
+        });
+        this.updatedAt = new Date();
+    }
 }
 
 export enum PurchaseStatus {
     PENDING = 'pending',
     COMPLETED = 'completed',
     FAILED = 'failed',
-    CANCELLED = 'cancelled'
+    CANCELLED = 'cancelled',
+    REFUNDED = 'refunded'
 }
 
 export enum PaymentMethod {

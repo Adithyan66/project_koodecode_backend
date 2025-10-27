@@ -26,12 +26,12 @@ import { GitHubOAuthUseCase } from "../../application/usecases/auth/GitHubOAuthU
 import { SignupUseCase } from "../../application/usecases/auth/SignupUseCase";
 import { AuthController } from "../../presentation/http/controllers/authentication/AuthController";
 import { UserCoinController } from "../../presentation/http/controllers/user/UserCoinController";
-import { CreateCoinPurchaseOrderUseCase } from "../../application/usecases/coins/CreateCoinPurchaseOrderUseCase";
-import { CompleteCoinPurchaseUseCase } from "../../application/usecases/coins/CompleteCoinPurchaseUseCase";
-import { GetCoinBalanceUseCase } from "../../application/usecases/coins/GetCoinBalanceUseCase";
-import { GetCoinTransactionsUseCase } from "../../application/usecases/coins/GetCoinTransactionsUseCase";
+import { CreateCoinPurchaseOrderUseCase } from "../../application/usecases/coins/users/CreateCoinPurchaseOrderUseCase";
+import { CompleteCoinPurchaseUseCase } from "../../application/usecases/coins/users/CompleteCoinPurchaseUseCase";
+import { GetCoinBalanceUseCase } from "../../application/usecases/coins/users/GetCoinBalanceUseCase";
+import { GetCoinTransactionsUseCase } from "../../application/usecases/coins/users/GetCoinTransactionsUseCase";
 import { GetCoinStatsUseCase } from "../../application/usecases/coins/GetCoinStatsUseCase";
-import { HandleRazorpayWebhookUseCase } from "../../application/usecases/coins/HandleRazorpayWebhookUseCase";
+import { HandleRazorpayWebhookUseCase } from "../../application/usecases/coins/users/HandleRazorpayWebhookUseCase";
 import { RazorpayWebhookController } from "../../presentation/http/controllers/webhooks/RazorpayWebhookController";
 import { MongoCoinTransactionRepository } from "../db/MongoCoinTransactionRepository";
 import { MongoUserProfileRepository } from "../db/MongoUserProfileRepository";
@@ -135,6 +135,13 @@ import { GetUserStoreDataUseCase } from '../../application/usecases/users/admin/
 import { GetUserRoomDataUseCase } from '../../application/usecases/users/admin/GetUserRoomDataUseCase';
 import { ResetUserPasswordUseCase } from '../../application/usecases/users/admin/ResetUserPasswordUseCase';
 import { SendMailToUserUseCase } from '../../application/usecases/users/admin/SendMailToUserUseCase';
+import { GetAdminCoinPurchasesUseCase } from '../../application/usecases/coins/admin/GetAdminCoinPurchasesUseCase';
+import { GetAdminCoinPurchaseDetailUseCase } from '../../application/usecases/coins/admin/GetAdminCoinPurchaseDetailUseCase';
+import { ReconcileCoinPurchaseUseCase } from '../../application/usecases/coins/admin/ReconcileCoinPurchaseUseCase';
+import { RefundCoinPurchaseUseCase } from '../../application/usecases/coins/admin/RefundCoinPurchaseUseCase';
+import { AddNoteToPurchaseUseCase } from '../../application/usecases/coins/admin/AddNoteToPurchaseUseCase';
+import { AdminCoinController } from '../../presentation/http/controllers/admin/AdminCoinController';
+import { AwardCoinsUseCase } from '../../application/usecases/coins/AwardCoinsUseCase';
 
 
 
@@ -278,6 +285,12 @@ container.registerSingleton('IGetUserStoreDataUseCase', GetUserStoreDataUseCase)
 container.registerSingleton('IGetUserRoomDataUseCase', GetUserRoomDataUseCase);
 container.registerSingleton('IResetUserPasswordUseCase', ResetUserPasswordUseCase);
 container.registerSingleton('ISendMailToUserUseCase', SendMailToUserUseCase);
+container.registerSingleton('IGetAdminCoinPurchasesUseCase', GetAdminCoinPurchasesUseCase);
+container.registerSingleton('IGetAdminCoinPurchaseDetailUseCase', GetAdminCoinPurchaseDetailUseCase);
+container.registerSingleton('IReconcileCoinPurchaseUseCase', ReconcileCoinPurchaseUseCase);
+container.registerSingleton('IRefundCoinPurchaseUseCase', RefundCoinPurchaseUseCase);
+container.registerSingleton('IAddNoteToPurchaseUseCase', AddNoteToPurchaseUseCase);
+container.registerSingleton('IAwardCoinsUseCase', AwardCoinsUseCase);
 
 
 //   Register Controllers  //
@@ -294,6 +307,7 @@ container.registerSingleton(AdminContestController)
 container.registerSingleton(ImageServiceController)
 container.registerSingleton(AdminUserController)
 container.registerSingleton(RazorpayWebhookController)
+container.registerSingleton(AdminCoinController)
 
 
 export { container };

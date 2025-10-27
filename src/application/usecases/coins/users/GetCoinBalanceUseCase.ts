@@ -2,10 +2,10 @@
 
 
 import { inject, injectable } from 'tsyringe';
-import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
-import { IGetCoinBalanceUseCase } from '../../interfaces/ICoinUseCase';
-import { UserProfileNotFoundError } from '../../../domain/errors/CoinErrors';
-import { MissingFieldsError } from '../../../domain/errors/AuthErrors';
+import { IUserProfileRepository } from '../../../../domain/interfaces/repositories/IUserProfileRepository';
+import { IGetCoinBalanceUseCase } from '../../../interfaces/ICoinUseCase';
+import { UserProfileNotFoundError } from '../../../../domain/errors/CoinErrors';
+import { MissingFieldsError } from '../../../../domain/errors/AuthErrors';
 
 @injectable()
 export class GetCoinBalanceUseCase implements IGetCoinBalanceUseCase {

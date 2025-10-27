@@ -2,13 +2,13 @@
 
 
 import { inject, injectable } from 'tsyringe';
-import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
-import { ICheckSufficientBalanceUseCase } from '../../interfaces/ICoinUseCase';
+import { IUserProfileRepository } from '../../../../domain/interfaces/repositories/IUserProfileRepository';
+import { ICheckSufficientBalanceUseCase } from '../../../interfaces/ICoinUseCase';
 import { 
     InvalidBalanceAmountError,
     CoinBalanceRetrievalError 
-} from '../../../domain/errors/CoinErrors';
-import { MissingFieldsError, UserNotFoundError } from '../../../domain/errors/AuthErrors';
+} from '../../../../domain/errors/CoinErrors';
+import { MissingFieldsError, UserNotFoundError } from '../../../../domain/errors/AuthErrors';
 
 @injectable()
 export class CheckSufficientBalanceUseCase implements ICheckSufficientBalanceUseCase {

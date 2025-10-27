@@ -2,21 +2,21 @@
 
 
 
-import { IPaymentGatewayService } from '../../../domain/interfaces/services/IPaymentGatewayService';
-import { ICoinPurchaseRepository } from '../../../domain/interfaces/repositories/ICoinPurchaseRepository';
-import { ICoinService } from '../../../domain/interfaces/services/ICoinService';
-import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
-import { CoinPurchase } from '../../../domain/entities/CoinPurchase';
-import { CreateCoinPurchaseOrderDto, CoinPurchaseOrderResponseDto } from '../../dto/coins/CoinPurchaseDto';
+import { IPaymentGatewayService } from '../../../../domain/interfaces/services/IPaymentGatewayService';
+import { ICoinPurchaseRepository } from '../../../../domain/interfaces/repositories/ICoinPurchaseRepository';
+import { ICoinService } from '../../../../domain/interfaces/services/ICoinService';
+import { IUserProfileRepository } from '../../../../domain/interfaces/repositories/IUserProfileRepository';
+import { CoinPurchase } from '../../../../domain/entities/CoinPurchase';
+import { CreateCoinPurchaseOrderDto, CoinPurchaseOrderResponseDto } from '../../../dto/coins/CoinPurchaseDto';
 import { inject, injectable } from 'tsyringe';
-import { ICreateCoinPurchaseOrderUseCase } from '../../interfaces/ICoinUseCase';
+import { ICreateCoinPurchaseOrderUseCase } from '../../../interfaces/ICoinUseCase';
 import { 
     UserProfileNotFoundError,
     InvalidCoinPackageError,
     PaymentOrderCreationError,
     CoinPurchaseRecordError
-} from '../../../domain/errors/CoinErrors';
-import { MissingFieldsError } from '../../../domain/errors/AuthErrors';
+} from '../../../../domain/errors/CoinErrors';
+import { MissingFieldsError } from '../../../../domain/errors/AuthErrors';
 
 
 

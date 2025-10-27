@@ -68,5 +68,7 @@ export enum CoinTransactionSource {
     STORE_PURCHASE = "store_purchase",
     PREMIUM_UPGRADE = "premium_upgrade",
     HINT_PURCHASE = "hint_purchase",
-    REFUND = "refund"
+    REFUND = "refund",
+    MANUAL_RECONCILIATION = "manual_reconciliation",
+    PURCHASE_REFUND = "purchase_refund"
 }

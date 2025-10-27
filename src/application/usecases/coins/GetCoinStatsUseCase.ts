@@ -1,24 +1,5 @@
 
 
-// import { inject, injectable } from 'tsyringe';
-// import { ICoinTransactionRepository, UserCoinStats } from '../../../domain/interfaces/repositories/ICoinTransactionRepository';
-// import { IGetCoinStatsUseCase } from '../../interfaces/ICoinUseCase';
-
-
-// @injectable()
-// export class GetCoinStatsUseCase implements IGetCoinStatsUseCase{
-
-//     constructor(
-//         @inject("ICoinTransactionRepository") private coinTransactionRepository: ICoinTransactionRepository
-//     ) { }
-
-//     async execute(userId: string): Promise<UserCoinStats> {
-
-//         return await this.coinTransactionRepository.getUserTransactionStats(userId);
-//     }
-// }
-
-
 
 import { inject, injectable } from 'tsyringe';
 import { ICoinTransactionRepository, UserCoinStats } from '../../../domain/interfaces/repositories/ICoinTransactionRepository';
