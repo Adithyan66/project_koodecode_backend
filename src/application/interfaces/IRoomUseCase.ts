@@ -3,10 +3,12 @@
 
 
 
-import { CreateRoomDto, CreateRoomResponseDto } from "../dto/rooms/CreateRoomDto";
-import { JoinRoomDto, JoinRoomResponseDto, VerifyPrivateRoomDto, VerifyPrivateRoomResponseDto } from "../dto/rooms/JoinRoomDto";
-import { PublicRoomsResponseDto } from "../dto/rooms/PublicRoomsDto";
-import { KickUserDto, UpdateRoomPermissionsDto } from "../dto/rooms/UpdateRoomPermissionsDto";
+import { CreateRoomDto, CreateRoomResponseDto } from "../dto/rooms/users/CreateRoomDto";
+import { JoinRoomDto, JoinRoomResponseDto, VerifyPrivateRoomDto, VerifyPrivateRoomResponseDto } from "../dto/rooms/users/JoinRoomDto";
+import { PublicRoomsResponseDto } from "../dto/rooms/users/PublicRoomsDto";
+import { KickUserDto, UpdateRoomPermissionsDto } from "../dto/rooms/users/UpdateRoomPermissionsDto";
+import { AdminRoomListRequestDto } from "../dto/rooms/admin/AdminRoomListRequestDto";
+import { AdminRoomListResponseDto } from "../dto/rooms/admin/AdminRoomListResponseDto";
 
 export interface ICreateRoomUseCase {
     execute(createRoomDto: CreateRoomDto, userId: string): Promise<CreateRoomResponseDto>;
@@ -44,4 +46,8 @@ export interface IKickUserUseCase {
 
 export interface IVerifyPrivateRoomUseCase {
   execute(dto: VerifyPrivateRoomDto): Promise<VerifyPrivateRoomResponseDto>;
+}
+
+export interface IGetAllRoomsForAdminUseCase {
+  execute(request: AdminRoomListRequestDto): Promise<AdminRoomListResponseDto>;
 }

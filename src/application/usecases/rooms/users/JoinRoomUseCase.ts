@@ -1,15 +1,15 @@
 
-import { IRoomRepository } from '../../../domain/interfaces/repositories/IRoomRepository';
-import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
-import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
-import { IRoomActivityRepository } from '../../../domain/interfaces/repositories/IRoomActivityRepository';
-import { JoinRoomDto, JoinRoomResponseDto } from '../../dto/rooms/JoinRoomDto';
-import { ITokenService } from '../../../domain/interfaces/services/ITokenService';
-import { config } from '../../../infrastructure/config/config';
-import { ITestCaseRepository } from '../../../domain/interfaces/repositories/ITestCaseRepository';
-import { IPasswordService } from '../../../domain/interfaces/services/IPasswordService';
+import { IRoomRepository } from '../../../../domain/interfaces/repositories/IRoomRepository';
+import { IProblemRepository } from '../../../../domain/interfaces/repositories/IProblemRepository';
+import { IUserRepository } from '../../../../domain/interfaces/repositories/IUserRepository';
+import { IRoomActivityRepository } from '../../../../domain/interfaces/repositories/IRoomActivityRepository';
+import { JoinRoomDto, JoinRoomResponseDto } from '../../../dto/rooms/users/JoinRoomDto';
+import { ITokenService } from '../../../../domain/interfaces/services/ITokenService';
+import { config } from '../../../../infrastructure/config/config';
+import { ITestCaseRepository } from '../../../../domain/interfaces/repositories/ITestCaseRepository';
+import { IPasswordService } from '../../../../domain/interfaces/services/IPasswordService';
 import { inject, injectable } from 'tsyringe';
-import { IJoinRoomUseCase } from '../../interfaces/IRoomUseCase';
+import { IJoinRoomUseCase } from '../../../interfaces/IRoomUseCase';
 
 
 

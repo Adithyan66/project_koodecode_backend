@@ -20,6 +20,7 @@ import userRoomRoute from './presentation/express/routes/user/userRoomRoute'
 import userStoreRoute from './presentation/express/routes/user/userStoreRoute'
 import adminContestRoute from './presentation/express/routes/admin/adminContestRoute'
 import adminUserRoute from './presentation/express/routes/admin/adminUserRoute'
+import adminRoomRoute from './presentation/express/routes/admin/adminRoomRoute'
 
 import { errorMiddleware } from './presentation/express/middlewares/errorHandler';
 import imageServiceRoute from './presentation/express/routes/shared/imageServiceRoute'
@@ -45,7 +46,7 @@ cornjob.start()
 
 app.use("/api/auth", authRoutes);
 
-// Webhook route - no authentication
+
 app.use('/api/webhooks', webhookRoute);
 
 app.use('/api/user', userPofileRoutes);
@@ -59,6 +60,7 @@ app.use('/api/user/store', userStoreRoute);
 app.use('/api/admin/contests', adminContestRoute)
 app.use('/api/admin/problems', adminProblemRoute);
 app.use('/api/admin/users', adminUserRoute);
+app.use('/api/admin/rooms', adminRoomRoute);
 app.use('/api/admin/coins', adminCoinsRoute);
 
 app.use('/api/image-service', imageServiceRoute)

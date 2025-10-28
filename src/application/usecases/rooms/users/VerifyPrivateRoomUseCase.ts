@@ -1,12 +1,12 @@
 
 
-import { IRoomRepository } from '../../../domain/interfaces/repositories/IRoomRepository';
-import { PasswordService } from '../../services/PasswordService';
-import { VerifyPrivateRoomDto } from '../../dto/rooms/JoinRoomDto';
-import { VerifyPrivateRoomResponseDto } from '../../dto/rooms/JoinRoomDto';
-import { IPasswordService } from '../../../domain/interfaces/services/IPasswordService';
+import { IRoomRepository } from '../../../../domain/interfaces/repositories/IRoomRepository';
+import { PasswordService } from '../../../services/PasswordService';
+import { VerifyPrivateRoomDto } from '../../../dto/rooms/users/JoinRoomDto';
+import { VerifyPrivateRoomResponseDto } from '../../../dto/rooms/users/JoinRoomDto';
+import { IPasswordService } from '../../../../domain/interfaces/services/IPasswordService';
 import { inject, injectable } from 'tsyringe';
-import { IVerifyPrivateRoomUseCase } from '../../interfaces/IRoomUseCase';
+import { IVerifyPrivateRoomUseCase } from '../../../interfaces/IRoomUseCase';
 
 
 @injectable()

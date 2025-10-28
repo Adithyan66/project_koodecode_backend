@@ -1,9 +1,9 @@
 
 
 
-import { CreateRoomDto } from '../../../../application/dto/rooms/CreateRoomDto';
-import { JoinRoomDto } from '../../../../application/dto/rooms/JoinRoomDto';
-import { UpdateRoomPermissionsDto, KickUserDto } from '../../../../application/dto/rooms/UpdateRoomPermissionsDto';
+import { CreateRoomDto } from '../../../../application/dto/rooms/users/CreateRoomDto';
+import { JoinRoomDto } from '../../../../application/dto/rooms/users/JoinRoomDto';
+import { UpdateRoomPermissionsDto, KickUserDto } from '../../../../application/dto/rooms/users/UpdateRoomPermissionsDto';
 import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 import { IHttpRequest } from '../../interfaces/IHttpRequest';
 import { BadRequestError } from '../../../../application/errors/AppErrors';

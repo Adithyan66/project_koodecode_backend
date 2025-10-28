@@ -36,4 +36,18 @@ export interface IRoomRepository {
   // Room code management
   saveRoomCode(roomCode: RoomCode): Promise<void>;
   getRoomCode(roomId: string): Promise<RoomCode | null>;
+
+  // Admin
+  findAllRoomsForAdmin(params: {
+    page: number;
+    limit: number;
+    search?: string;
+    isPrivate?: boolean;
+    status?: 'waiting' | 'active' | 'inactive';
+    sortBy?: 'createdAt' | 'lastActivity' | 'roomNumber';
+    sortOrder?: 'asc' | 'desc';
+  }): Promise<{
+    rooms: any[];
+    total: number;
+  }>;
 }

@@ -1,9 +1,9 @@
 
-import { IRoomRepository } from '../../../domain/interfaces/repositories/IRoomRepository';
-import { IRoomActivityRepository } from '../../../domain/interfaces/repositories/IRoomActivityRepository';
-import { KickUserDto } from '../../dto/rooms/UpdateRoomPermissionsDto';
+import { IRoomRepository } from '../../../../domain/interfaces/repositories/IRoomRepository';
+import { IRoomActivityRepository } from '../../../../domain/interfaces/repositories/IRoomActivityRepository';
+import { KickUserDto } from '../../../dto/rooms/users/UpdateRoomPermissionsDto';
 import { inject, injectable } from 'tsyringe';
-import { IKickUserUseCase } from '../../interfaces/IRoomUseCase';
+import { IKickUserUseCase } from '../../../interfaces/IRoomUseCase';
 
 
 @injectable()

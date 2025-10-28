@@ -241,6 +241,142 @@ export class MongoRoomRepository implements IRoomRepository {
     });
   }
 
+  async findAllRoomsForAdmin(params: {
+    page: number;
+    limit: number;
+    search?: string;
+    isPrivate?: boolean;
+    status?: 'waiting' | 'active' | 'inactive';
+    sortBy?: 'createdAt' | 'lastActivity' | 'roomNumber';
+    sortOrder?: 'asc' | 'desc';
+  }): Promise<{
+    rooms: any[];
+    total: number;
+  }> {
+    const { page, limit, search, isPrivate, status, sortBy = 'createdAt', sortOrder = 'desc' } = params;
+    const skip = (page - 1) * limit;
+
+    const baseQuery: any = {};
+
+    if (isPrivate !== undefined) {
+      baseQuery.isPrivate = isPrivate;
+    }
+
+    if (status) {
+      baseQuery.status = status;
+    }
+
+    const sortDirection = sortOrder === 'asc' ? 1 : -1;
+    const sortField = sortBy === 'roomNumber' ? 'roomNumber' : 
+                      sortBy === 'lastActivity' ? 'lastActivity' : 'createdAt';
+
+    const pipeline: any[] = [
+      { $match: baseQuery },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'createdBy',
+          foreignField: '_id',
+          as: 'creator',
+          pipeline: [{
+            $project: {
+              _id: 1,
+              userName: 1
+            }
+          }]
+        }
+      },
+      { $unwind: { path: '$creator', preserveNullAndEmptyArrays: true } },
+      {
+        $addFields: {
+          participantCount: { $size: '$participants' },
+          onlineParticipants: {
+            $size: {
+              $filter: {
+                input: '$participants',
+                as: 'participant',
+                cond: { $eq: ['$$participant.isOnline', true] }
+              }
+            }
+          },
+          createdByStr: { $toString: '$createdBy' },
+          createdByUsername: { $ifNull: ['$creator.userName', 'Unknown'] }
+        }
+      }
+    ];
+
+    if (search && search.trim()) {
+      const searchValue = search.trim();
+      const searchRegex = { $regex: searchValue, $options: 'i' };
+      
+      pipeline.push({
+        $match: {
+          $or: [
+            { name: searchRegex },
+            { roomId: searchRegex },
+            { description: searchRegex },
+            { createdByUsername: searchRegex }
+          ]
+        }
+      });
+
+      const roomNumber = parseInt(searchValue);
+      if (!isNaN(roomNumber)) {
+        pipeline[pipeline.length - 1].$match.$or.push({ roomNumber });
+      }
+    }
+
+    pipeline.push({
+      $project: {
+        _id: 0,
+        id: { $toString: '$_id' },
+        roomNumber: 1,
+        roomId: 1,
+        name: 1,
+        thumbnail: 1,
+        createdBy: '$createdByStr',
+        createdByUsername: 1,
+        isPrivate: 1,
+        status: 1,
+        participantCount: 1,
+        onlineParticipants: 1,
+        lastActivity: 1,
+        createdAt: 1
+      }
+    });
+
+    const sortStage: any = {};
+    sortStage[sortField] = sortDirection;
+
+    const facetStage = {
+      $facet: {
+        data: [
+          { $sort: sortStage },
+          { $skip: skip },
+          { $limit: limit }
+        ],
+        totalCount: [{ $count: 'count' }]
+      }
+    };
+
+    pipeline.push(facetStage);
+
+    pipeline.push({
+      $project: {
+        rooms: '$data',
+        total: { $arrayElemAt: ['$totalCount.count', 0] }
+      }
+    });
+
+    const result = await RoomModel.aggregate(pipeline);
+    const resultData = result[0] || { rooms: [], total: 0 };
+
+    return {
+      rooms: resultData.rooms || [],
+      total: resultData.total || 0
+    };
+  }
+
   private mapToRoom(roomDoc: RoomDocument): Room {
     return {
       id: roomDoc._id.toString(),

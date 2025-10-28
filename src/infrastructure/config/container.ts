@@ -73,14 +73,16 @@ import { UpdateProfileImageUseCase } from "../../application/usecases/users/user
 import { MongoUserConnectionRepository } from "../db/MongoUserConnectionRepository";
 import { S3Service } from "../services/S3Service";
 import { ImageUploadService } from "../../application/services/ImageUploadService";
-import { CreateRoomUseCase } from "../../application/usecases/rooms/CreateRoomUseCase";
-import { JoinRoomUseCase } from "../../application/usecases/rooms/JoinRoomUseCase";
-import { GetPublicRoomsUseCase } from "../../application/usecases/rooms/GetPublicRoomsUseCase";
-import { UpdateRoomPermissionsUseCase } from "../../application/usecases/rooms/UpdateRoomPermissionsUseCase";
-import { KickUserUseCase } from "../../application/usecases/rooms/KickUserUseCase";
-import { VerifyPrivateRoomUseCase } from "../../application/usecases/rooms/VerifyPrivateRoomUseCase";
+import { CreateRoomUseCase } from "../../application/usecases/rooms/users/CreateRoomUseCase";
+import { JoinRoomUseCase } from "../../application/usecases/rooms/users/JoinRoomUseCase";
+import { GetPublicRoomsUseCase } from "../../application/usecases/rooms/users/GetPublicRoomsUseCase";
+import { UpdateRoomPermissionsUseCase } from "../../application/usecases/rooms/users/UpdateRoomPermissionsUseCase";
+import { KickUserUseCase } from "../../application/usecases/rooms/users/KickUserUseCase";
+import { VerifyPrivateRoomUseCase } from "../../application/usecases/rooms/users/VerifyPrivateRoomUseCase";
 import { MongoRoomRepository } from "../db/MongoRoomRepository";
 import { MongoRoomActivityRepository } from "../db/MongoRoomActivityRepository";
+import { GetAllRoomsForAdminUseCase } from "../../application/usecases/rooms/admin/GetAllRoomsForAdminUseCase";
+import { AdminRoomController } from "../../presentation/http/controllers/admin/AdminRoomController";
 import { UserStoreController } from "../../presentation/http/controllers/user/UserStoreController";
 import { GetStoreItemsUseCase } from "../../application/usecases/store/GetStoreItemsUseCase";
 import { PurchaseStoreItemUseCase } from "../../application/usecases/store/PurchaseStoreItemUseCase";
@@ -248,6 +250,7 @@ container.registerSingleton('IGetPublicRoomsUseCase', GetPublicRoomsUseCase)
 container.registerSingleton('IUpdateRoomPermissionsUseCase', UpdateRoomPermissionsUseCase)
 container.registerSingleton('IKickUserUseCase', KickUserUseCase)
 container.registerSingleton('IVerifyPrivateRoomUseCase', VerifyPrivateRoomUseCase)
+container.registerSingleton('IGetAllRoomsForAdminUseCase', GetAllRoomsForAdminUseCase)
 
 container.registerSingleton('IGetStoreItemsUseCase', GetStoreItemsUseCase)
 container.registerSingleton('IPurchaseStoreItemUseCase', PurchaseStoreItemUseCase)
@@ -306,6 +309,7 @@ container.registerSingleton(AdminContestController)
 
 container.registerSingleton(ImageServiceController)
 container.registerSingleton(AdminUserController)
+container.registerSingleton(AdminRoomController)
 container.registerSingleton(RazorpayWebhookController)
 container.registerSingleton(AdminCoinController)
 

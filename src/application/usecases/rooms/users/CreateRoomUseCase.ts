@@ -1,14 +1,14 @@
 
-import { IRoomRepository } from '../../../domain/interfaces/repositories/IRoomRepository';
-import { ICounterRepository } from '../../../domain/interfaces/repositories/ICounterRepository';
-import { IProblemRepository } from '../../../domain/interfaces/repositories/IProblemRepository';
-import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
-import { CreateRoomDto, CreateRoomResponseDto } from '../../dto/rooms/CreateRoomDto';
-import { Room } from '../../../domain/entities/Room';
-import { config } from '../../../infrastructure/config/config';
-import { IPasswordService } from '../../../domain/interfaces/services/IPasswordService';
+import { IRoomRepository } from '../../../../domain/interfaces/repositories/IRoomRepository';
+import { ICounterRepository } from '../../../../domain/interfaces/repositories/ICounterRepository';
+import { IProblemRepository } from '../../../../domain/interfaces/repositories/IProblemRepository';
+import { IUserRepository } from '../../../../domain/interfaces/repositories/IUserRepository';
+import { CreateRoomDto, CreateRoomResponseDto } from '../../../dto/rooms/users/CreateRoomDto';
+import { Room } from '../../../../domain/entities/Room';
+import { config } from '../../../../infrastructure/config/config';
+import { IPasswordService } from '../../../../domain/interfaces/services/IPasswordService';
 import { inject, injectable } from 'tsyringe';
-import { ICreateRoomUseCase } from '../../interfaces/IRoomUseCase';
+import { ICreateRoomUseCase } from '../../../interfaces/IRoomUseCase';
 
 
 

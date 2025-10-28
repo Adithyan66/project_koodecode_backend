@@ -1,9 +1,9 @@
 
 import { inject, injectable } from 'tsyringe';
-import { IRoomRepository } from '../../../domain/interfaces/repositories/IRoomRepository';
-import { PublicRoomsResponseDto } from '../../dto/rooms/PublicRoomsDto';
-import { IGetPublicRoomsUseCase } from '../../interfaces/IRoomUseCase';
-import { BadRequestError } from '../../errors/AppErrors';
+import { IRoomRepository } from '../../../../domain/interfaces/repositories/IRoomRepository';
+import { PublicRoomsResponseDto } from '../../../dto/rooms/users/PublicRoomsDto';
+import { IGetPublicRoomsUseCase } from '../../../interfaces/IRoomUseCase';
+import { BadRequestError } from '../../../errors/AppErrors';
 
 
 @injectable()
