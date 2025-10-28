@@ -1,5 +1,5 @@
 import { injectable, inject } from 'tsyringe';
-import { IRoomRepository } from '../../../domain/interfaces/repositories/IRoomRepository';
+import { IRoomRepository } from '../../../../domain/interfaces/repositories/IRoomRepository';
 import { IGetAllRoomsForAdminUseCase } from '../../../interfaces/IRoomUseCase';
 import { AdminRoomListRequestDto } from '../../../dto/rooms/admin/AdminRoomListRequestDto';
 import { AdminRoomListResponseDto } from '../../../dto/rooms/admin/AdminRoomListResponseDto';

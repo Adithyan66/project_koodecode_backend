@@ -7,6 +7,21 @@ export interface CreateRoomDto {
   scheduledTime?: string;
   problemNumber?: number;
   thumbnail?: string;
+  
+  maxParticipants?: number;
+  duration?: number;
+  difficulty?: 'easy' | 'medium' | 'hard';
+  config?: {
+    allowGuestJoins?: boolean;
+    autoStart?: boolean;
+    showLeaderboard?: boolean;
+    recordSession?: boolean;
+    maxCodeLength?: number;
+    allowedLanguages?: number[];
+    enableChat?: boolean;
+    enableVoice?: boolean;
+    enableVideo?: boolean;
+  };
 }
 
 export interface CreateRoomResponseDto {

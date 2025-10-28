@@ -9,7 +9,7 @@ import { BadRequestError, UnauthorizedError } from '../../../../application/erro
 import { MESSAGES } from '../../../../shared/constants/messages';
 import { ProblemNamesRequestDto } from '../../../../application/dto/problems/ProblemNamesDto';
 import { IUserProblemController } from '../../interfaces/IUserProblemController';
-import { ICreateSubmissionUseCase, IGetLanguagesUseCase, IGetProblemByIdUseCase, IGetProblemNamesUseCase, IGetProblemsListUseCase, IGetSubmissionResultUseCase, IRunCodeUseCase } from '../../../../application/interfaces/IProblemUseCase';
+import { ICreateSubmissionUseCase, IGetLanguagesUseCase, IGetProblemByIdUseCase, IGetProblemNamesUseCase, IGetProblemsListUseCase, IGetSubmissionResultUseCase, IRunCodeUseCase, IGetListPageDataUseCase } from '../../../../application/interfaces/IProblemUseCase';
 import { inject, injectable } from 'tsyringe';
 
 
@@ -25,7 +25,8 @@ export class UserProblemController implements IUserProblemController {
         @inject("IGetSubmissionResultUseCase") private _getSubmissionResultUseCase: IGetSubmissionResultUseCase,
         @inject("IRunCodeUseCase") private _runCodeUseCase: IRunCodeUseCase,
         @inject("IGetLanguagesUseCase") private _getLanguagesUseCase: IGetLanguagesUseCase,
-        @inject("IGetProblemNamesUseCase") private _getProblemNamesUseCase: IGetProblemNamesUseCase
+        @inject("IGetProblemNamesUseCase") private _getProblemNamesUseCase: IGetProblemNamesUseCase,
+        @inject("IGetListPageDataUseCase") private _getListPageDataUseCase: IGetListPageDataUseCase
     ) { }
 
     getProblemsWithFilters = async (httpRequest: IHttpRequest) => {
@@ -197,5 +198,18 @@ export class UserProblemController implements IUserProblemController {
 
     }
 
+    getListPageData = async (httpRequest: IHttpRequest) => {
+        const userId = httpRequest.user?.userId;
+
+        if (!userId) {
+            throw new UnauthorizedError(MESSAGES.UNAUTHORIZED_ACCESS);
+        }
+
+        const result = await this._getListPageDataUseCase.execute(userId);
+
+        return new HttpResponse(HTTP_STATUS.OK, {
+            ...buildResponse(true, 'List page data retrieved successfully', result),
+        });
+    }
 
 }

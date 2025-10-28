@@ -43,12 +43,14 @@ export class UserRoomController {
         }
 
         const result = await this.createRoomUseCase.execute(createRoomDto, userId!);
+        console.log(result);
 
         if (result.success) {
             return new HttpResponse(HTTP_STATUS.CREATED, {
                 ...buildResponse(true, 'room created  successfully', result.room),
             });
         } else {
+            
             return new HttpResponse(HTTP_STATUS.BAD_REQUEST, {
                 ...buildResponse(false, 'Failed to create room', result.room),
             }); 

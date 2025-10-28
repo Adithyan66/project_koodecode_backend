@@ -13,7 +13,8 @@ export class ProgrammingLanguage {
     83: { name: 'Swift', extension: 'swift' },
     51: { name: 'C#', extension: 'cs' },
     60: { name: 'Go', extension: 'go' },
-    72: { name: 'Ruby', extension: 'rb' }
+    72: { name: 'Ruby', extension: 'rb' },
+    84: { name: 'PostgreSQL', extension: 'sql' }
   };
 
   constructor(private readonly _id?: number) {

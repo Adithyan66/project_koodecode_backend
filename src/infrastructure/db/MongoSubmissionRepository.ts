@@ -93,14 +93,31 @@ export class MongoSubmissionRepository implements ISubmissionRepository {
     return await SubmissionModel.countDocuments(query);
   }
 
-  private mapToEntity(doc: any): Submission {
-    // Handle populated problemId - if it's an object, extract the ID or keep it as string
+  async findByUserIdAndDateRange(userId: string, startDate: Date, endDate: Date, submissionType?: string): Promise<Submission[]> {
+    const query: any = { 
+      userId,
+      createdAt: {
+        $gte: startDate,
+        $lte: endDate
+      }
+    };
+    
+    if (submissionType) {
+      query.submissionType = submissionType;
+    }
+    
+    const submissions = await SubmissionModel.find(query)
+      .sort({ createdAt: -1 });
+    
+    return submissions.map(this.mapToEntity);
+  }
+
+  private mapToEntity(doc: any): any {
     const problemId = typeof doc.problemId === 'object' && doc.problemId._id 
       ? doc.problemId._id.toString() 
       : doc.problemId;
-console.log(doc);
 
-    return {
+    const result: any = {
       id: doc._id.toString(),
       userId: doc.userId,
       problemId,
@@ -121,5 +138,14 @@ console.log(doc);
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt
     };
+
+    if (typeof doc.problemId === 'object' && doc.problemId.title) {
+      result.problemId = {
+        _id: doc.problemId._id.toString(),
+        title: doc.problemId.title
+      };
+    }
+
+    return result;
   }
 }

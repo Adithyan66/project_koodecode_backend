@@ -26,6 +26,25 @@ export class CreateRoomUseCase implements ICreateRoomUseCase{
     async execute(createRoomDto: CreateRoomDto, userId: string): Promise<CreateRoomResponseDto> {
 
         try {
+            console.log("hoiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+            
+            if (createRoomDto.maxParticipants !== undefined) {
+                if (createRoomDto.maxParticipants < 1 || createRoomDto.maxParticipants > 1000) {
+                    return { success: false, error: 'Max participants must be between 1 and 1000' };
+                }
+            }
+
+            if (createRoomDto.duration !== undefined) {
+                if (createRoomDto.duration < 1 || createRoomDto.duration > 1440) {
+                    return { success: false, error: 'Duration must be between 1 and 1440 minutes (24 hours)' };
+                }
+            }
+
+            if (createRoomDto.difficulty !== undefined) {
+                if (!['easy', 'medium', 'hard'].includes(createRoomDto.difficulty)) {
+                    return { success: false, error: 'Difficulty must be easy, medium, or hard' };
+                }
+            }
 
             const user = await this.userRepository.findById(userId);
 
@@ -69,6 +88,22 @@ export class CreateRoomUseCase implements ICreateRoomUseCase{
                 isPrivate: createRoomDto.isPrivate,
                 password: createRoomDto.isPrivate ? password : undefined,
                 scheduledTime,
+                
+                maxParticipants: createRoomDto.maxParticipants,
+                duration: createRoomDto.duration,
+                difficulty: createRoomDto.difficulty,
+                config: createRoomDto.config || {
+                    allowGuestJoins: true,
+                    autoStart: false,
+                    showLeaderboard: false,
+                    recordSession: false,
+                    enableChat: true,
+                    enableVoice: false,
+                    enableVideo: false
+                },
+                sessionStartTime: status === 'active' ? new Date() : undefined,
+                sessionEndTime: undefined,
+                
                 problemNumber: createRoomDto.problemNumber || 1,
                 status,
                 participants: [],

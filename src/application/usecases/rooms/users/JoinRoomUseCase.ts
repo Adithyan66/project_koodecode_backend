@@ -44,6 +44,15 @@ export class JoinRoomUseCase implements IJoinRoomUseCase {
         return { success: false, error: 'Room creator will begin shortly' };
       }
 
+      if (room.maxParticipants && room.participants.length >= room.maxParticipants) {
+        if (room.createdBy !== userId) {
+          return { 
+            success: false, 
+            error: `Room is full (${room.maxParticipants}/${room.maxParticipants} participants)` 
+          };
+        }
+      }
+
       if (room.createdBy !== userId) {
         if (room.isPrivate) {
           if (!joinRoomDto.password) {
@@ -87,12 +96,23 @@ export class JoinRoomUseCase implements IJoinRoomUseCase {
         };
 
         await this.roomRepository.addParticipant(room.roomId, participant);
+        
+        if (room.participants.length === 0 && room.config?.autoStart && room.status === 'waiting') {
+          await this.roomRepository.update(room.id, { 
+            status: 'active',
+            sessionStartTime: new Date()
+          });
+        }
       }
 
-      // if (room.createdBy === userId && room.status === 'waiting') {
       if (room.createdBy === userId) {
-
-        await this.roomRepository.update(room.id, { status: 'active' });
+        const updates: any = { status: 'active' };
+        
+        if (!room.sessionStartTime) {
+          updates.sessionStartTime = new Date();
+        }
+        
+        await this.roomRepository.update(room.id, updates);
 
         userPermissions = {
           canEditCode: true,

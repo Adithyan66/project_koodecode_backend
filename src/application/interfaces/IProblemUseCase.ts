@@ -13,6 +13,7 @@ import { UpdateProblemPayload } from "../dto/problems/UpdateProblemDto";
 import { ExecuteCodeDto } from "../dto/submissions/ExecuteCodeDto";
 import { RunCodeDto, RunCodeResponseDto } from "../dto/submissions/RunCodeDto";
 import { SubmissionResponseDto } from "../dto/submissions/SubmissionResponseDto";
+import { ListPageDataResponseDto } from "../dto/problems/users/ListPageDataDto";
 
 export interface IGetProblemsListUseCase {
   execute(filters?: {
@@ -74,4 +75,8 @@ export interface IGetAllProgrammingLanguages {
 
 export interface IGetProblemDetailForAdminUseCase {
   execute(problemId: string): Promise<AdminProblemDetailResponse>;
+}
+
+export interface IGetListPageDataUseCase {
+  execute(userId: string): Promise<ListPageDataResponseDto>;
 }

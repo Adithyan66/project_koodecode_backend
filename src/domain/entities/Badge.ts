@@ -40,7 +40,7 @@ export const BADGE_DEFINITIONS = [
         type: BadgeType.PROBLEM_SOLVER,
         category: BadgeCategory.ACHIEVEMENT,
         rarity: BadgeRarity.COMMON,
-        iconUrl: "/badges/first-steps.svg",
+        iconUrl: "https://png.pngtree.com/png-clipart/20210322/ourmid/pngtree-golden-shield-vector-png-image_3105840.jpg",
         criteria: new BadgeCriteria("problems_solved", 1, "Solve 1 problem")
     },
     {

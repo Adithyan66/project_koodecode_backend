@@ -63,6 +63,7 @@ import { GetSubmissionResultUseCase } from "../../application/usecases/submissio
 import { RunCodeUseCase } from "../../application/usecases/submissions/RunCodeUseCase";
 import { GetLanguagesUseCase } from "../../application/usecases/submissions/GetLanguagesUseCase";
 import { GetProblemNamesUseCase } from "../../application/usecases/problems/user/GetProblemNamesUseCase";
+import { GetListPageDataUseCase } from "../../application/usecases/problems/user/GetListPageDataUseCase";
 import { AdminProblemController } from "../../presentation/http/controllers/admin/AdminProblemController";
 import { CreateProblemUseCase } from "../../application/usecases/problems/admin/CreateProblemUseCase";
 import { UserProfileController } from "../../presentation/http/controllers/user/UserProfileController";
@@ -123,6 +124,7 @@ import { ImageServiceController } from '../../presentation/http/controllers/shar
 import { GetAllUsersUseCase } from '../../application/usecases/users/admin/GetAllUsersUseCase';
 import { GetUserDetailsForAdminUseCase } from '../../application/usecases/users/admin/GetUserDetailsForAdminUseCase';
 import { GetUserDetailForAdminUseCase } from '../../application/usecases/users/admin/GetUserDetailForAdminUseCase';
+import { GetUserProfileUseCase } from '../../application/usecases/users/user/GetUserProfileUseCase';
 import { AdminUserController } from '../../presentation/http/controllers/admin/AdminUserController';
 import { ProfileImageMigrationService } from '../../application/services/ProfileImageMigrationService';
 import { UserStatsService } from '../services/UserStatsService';
@@ -221,6 +223,7 @@ container.registerSingleton("IGetSubmissionResultUseCase", GetSubmissionResultUs
 container.registerSingleton("IRunCodeUseCase", RunCodeUseCase)
 container.registerSingleton("IGetLanguagesUseCase", GetLanguagesUseCase)
 container.registerSingleton("IGetProblemNamesUseCase", GetProblemNamesUseCase)
+container.registerSingleton("IGetListPageDataUseCase", GetListPageDataUseCase)
 container.registerSingleton("ICreateProblemUseCase", CreateProblemUseCase)
 
 container.registerSingleton("IRegisterForContestUseCase", RegisterForContestUseCase);
@@ -277,7 +280,7 @@ container.registerSingleton("IGenerateImageUploadUrlUseCase", GenerateImageUploa
 container.registerSingleton("IConfirmImageUploadUseCase", ConfirmImageUploadUseCase);
 
 container.registerSingleton("IGetAllUsersUseCase", GetAllUsersUseCase);
-container.registerSingleton("IGetUserProfileForUserUseCase", GetUserDetailsForAdminUseCase);
+container.registerSingleton("IGetUserProfileForUserUseCase", GetUserProfileUseCase);
 container.registerSingleton("IGetUserDetailForAdminUseCase", GetUserDetailForAdminUseCase);
 
 container.registerSingleton('IBlockUserUseCase', BlockUserUseCase);

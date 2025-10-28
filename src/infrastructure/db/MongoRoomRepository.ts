@@ -338,6 +338,11 @@ export class MongoRoomRepository implements IRoomRepository {
         createdByUsername: 1,
         isPrivate: 1,
         status: 1,
+        maxParticipants: 1,
+        duration: 1,
+        difficulty: 1,
+        sessionStartTime: 1,
+        sessionEndTime: 1,
         participantCount: 1,
         onlineParticipants: 1,
         lastActivity: 1,
@@ -389,6 +394,14 @@ export class MongoRoomRepository implements IRoomRepository {
       isPrivate: roomDoc.isPrivate,
       password: roomDoc.password,
       scheduledTime: roomDoc.scheduledTime,
+      
+      maxParticipants: roomDoc.maxParticipants,
+      duration: roomDoc.duration,
+      difficulty: roomDoc.difficulty,
+      config: roomDoc.config,
+      sessionStartTime: roomDoc.sessionStartTime,
+      sessionEndTime: roomDoc.sessionEndTime,
+      
       problemNumber: roomDoc.problemNumber,
       status: roomDoc.status,
       participants: roomDoc.participants.map(p => {

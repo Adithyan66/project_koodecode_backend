@@ -12,61 +12,38 @@ export interface UserProfileDto {
 
 export interface UserProfileResponseDto {
     user: {
-        id: string;
-        fullName: string;
-        userName: string;
-        email: string;
-        profilePicKey?: string;
-    };
-    profile: {
+        profileImage: string;
+        name: string;
+        username: string;
         bio?: string;
         location?: string;
-        birthdate?: string;
-        gender?: string;
         githubUrl?: string;
         linkedinUrl?: string;
-        isPremium: boolean;
-        ranking?: number;
-        coinBalance: number;
+        languages: Array<{ name: string; count: number }>;
     };
     stats: {
-        followersCount: number;
-        followingCount: number;
-        totalProblems: number;
-        problemsByDifficulty: {
-            easy: number;
-            medium: number;
-            hard: number;
-        };
-        totalSubmissions: number;
-        acceptedSubmissions: number;
-        rejectedSubmissions: number;
-        problemsAttempted: number;
-        problemsSolved: number;
-        firstSolveDate?: string;
-        lastSolveDate?: string;
-        averageSolveTime?: number;
-        languagesUsed: Record<string, number>;
-        streak: {
-            current: number;
-            max: number;
-            lastActiveDate?: string;
-        };
-        badges: number;
-        acceptanceRate: number;
-        contestRating: number;
-        activeDays: number;
+        easy: { solved: number; total: number };
+        medium: { solved: number; total: number };
+        hard: { solved: number; total: number };
+        attempting: number;
     };
-    activities: Record<string, number>;
-    recentBadges: Array<{
-        badgeId: string;
-        name: string;
-        description: string;
-        iconUrl: string;
-        badgeType: string;
-        rarity: string;
-        awardedAt: string;
-    }>;
+    badges: {
+        total: number;
+        list: Array<{ id: string; imageUrl: string }>;
+        recent?: {
+            imageUrl: string;
+            title: string;
+            year: number;
+        };
+    };
+    heatmap: {
+        data: Array<{ date: string; count: number }>;
+        totalSubmissions: number;
+        activeDays: number;
+        maxStreak: number;
+        currentStreak: number;
+    };
+    recentSubmissions: Array<{ id: string; title: string; timeAgo: string }>;
 }
 
 export interface UpdateProfileDto {

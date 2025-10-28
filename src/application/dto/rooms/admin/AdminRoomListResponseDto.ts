@@ -7,6 +7,11 @@ export interface AdminRoomDto {
   createdByUsername: string;
   isPrivate: boolean;
   status: 'waiting' | 'active' | 'inactive';
+  maxParticipants?: number;
+  duration?: number;
+  difficulty?: 'easy' | 'medium' | 'hard';
+  sessionStartTime?: Date;
+  sessionEndTime?: Date;
   participantCount: number;
   onlineParticipants: number;
   lastActivity: Date;

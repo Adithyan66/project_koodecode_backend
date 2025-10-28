@@ -13,6 +13,25 @@ export interface RoomDocument extends Document {
     isPrivate: boolean;
     password?: string;
     scheduledTime?: Date;
+    
+    maxParticipants?: number;
+    duration?: number;
+    difficulty?: 'easy' | 'medium' | 'hard';
+    config?: {
+        allowGuestJoins?: boolean;
+        autoStart?: boolean;
+        showLeaderboard?: boolean;
+        recordSession?: boolean;
+        maxCodeLength?: number;
+        allowedLanguages?: number[];
+        enableChat?: boolean;
+        enableVoice?: boolean;
+        enableVideo?: boolean;
+        [key: string]: any;
+    };
+    sessionStartTime?: Date;
+    sessionEndTime?: Date;
+    
     problemNumber?: number;
     status: 'waiting' | 'active' | 'inactive';
     participants: {
@@ -64,6 +83,20 @@ const RoomSchema = new Schema({
     isPrivate: { type: Boolean, default: false },
     password: { type: String },
     scheduledTime: { type: Date },
+    
+    maxParticipants: { type: Number },
+    duration: { type: Number },
+    difficulty: { 
+        type: String, 
+        enum: ['easy', 'medium', 'hard']
+    },
+    config: {
+        type: Schema.Types.Mixed,
+        default: {}
+    },
+    sessionStartTime: { type: Date },
+    sessionEndTime: { type: Date },
+    
     problemNumber: { type: Number },
     status: {
         type: String,
@@ -82,5 +115,7 @@ RoomSchema.index({ createdBy: 1 });
 RoomSchema.index({ status: 1 });
 RoomSchema.index({ isPrivate: 1 });
 RoomSchema.index({ lastActivity: 1 });
+RoomSchema.index({ difficulty: 1 });
+RoomSchema.index({ sessionStartTime: 1 });
 
 export const RoomModel = mongoose.model<RoomDocument>('Room', RoomSchema);

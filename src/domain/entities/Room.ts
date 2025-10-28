@@ -1,3 +1,16 @@
+export interface RoomConfig {
+  allowGuestJoins?: boolean;
+  autoStart?: boolean;
+  showLeaderboard?: boolean;
+  recordSession?: boolean;
+  maxCodeLength?: number;
+  allowedLanguages?: number[];
+  enableChat?: boolean;
+  enableVoice?: boolean;
+  enableVideo?: boolean;
+  [key: string]: any;
+}
+
 export interface Room {
   _id: string | undefined;
   id: string;
@@ -10,6 +23,14 @@ export interface Room {
   isPrivate: boolean;
   password?: string;
   scheduledTime?: Date;
+  
+  maxParticipants?: number;
+  duration?: number;
+  difficulty?: 'easy' | 'medium' | 'hard';
+  config?: RoomConfig;
+  sessionStartTime?: Date;
+  sessionEndTime?: Date;
+  
   problemNumber?: number;
   status: 'waiting' | 'active' | 'inactive';
   participants: Participant[];
