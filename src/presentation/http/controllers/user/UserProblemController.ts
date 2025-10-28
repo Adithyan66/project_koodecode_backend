@@ -30,42 +30,37 @@ export class UserProblemController implements IUserProblemController {
     ) { }
 
     getProblemsWithFilters = async (httpRequest: IHttpRequest) => {
+        const userId = httpRequest.user?.userId;
 
-        const {
-            page = '1',
-            limit = '10',
-            search,
-            difficulty,
-            tags,
-            languageId,
-            status
-        } = httpRequest.query;
-
-
-        const parsedPage = parseInt(page as string, 10) || 1;
-        const parsedLimit = Math.min(parseInt(limit as string, 10) || 10, 100);
-        const parsedLanguageId = languageId ? parseInt(languageId as string, 10) : undefined;
-
-
-        let parsedTags: string[] | undefined;
-        if (tags && typeof tags === 'string') {
-            parsedTags = tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+        if (!userId) {
+            throw new UnauthorizedError(MESSAGES.UNAUTHORIZED_ACCESS);
         }
 
+        const {
+            page,
+            limit,
+            search,
+            difficulty,
+            sortBy
+        } = httpRequest.query;
+
+        const parsedPage = page ? parseInt(page as string, 10) : undefined;
+        const parsedLimit = limit ? Math.min(parseInt(limit as string, 10), 100) : undefined;
+
         const filters = {
-            search: search as string,
-            difficulty: difficulty as 'easy' | 'medium' | 'hard',
-            tags: parsedTags,
-            languageId: parsedLanguageId,
-            status: status as "Draft" | "Published",
             page: parsedPage,
             limit: parsedLimit,
+            search: search as string,
+            difficulty: difficulty as 'Easy' | 'Med.' | 'Hard' | 'all',
+            sortBy: sortBy as 'none' | 'acceptance-asc' | 'acceptance-desc'
         };
 
-        const result = await this._getProblemsListUseCase.execute(filters);
+        const result = await this._getProblemsListUseCase.execute(userId, filters);
 
         return new HttpResponse(HTTP_STATUS.OK, {
-            ...buildResponse(true, 'Problems retrieved successfully', result),
+            success: true,
+            data: result.data,
+            pagination: result.pagination
         });
     }
 

@@ -14,18 +14,16 @@ import { ExecuteCodeDto } from "../dto/submissions/ExecuteCodeDto";
 import { RunCodeDto, RunCodeResponseDto } from "../dto/submissions/RunCodeDto";
 import { SubmissionResponseDto } from "../dto/submissions/SubmissionResponseDto";
 import { ListPageDataResponseDto } from "../dto/problems/users/ListPageDataDto";
+import { ProblemListApiResponseDto, ProblemListQueryDto } from "../dto/problems/users/ProblemListQueryDto";
 
 export interface IGetProblemsListUseCase {
-  execute(filters?: {
-    difficulty?: 'easy' | 'medium' | 'hard';
+  execute(userId: string, filters?: {
+    difficulty?: 'Easy' | 'Med.' | 'Hard' | 'all';
     search?: string;
     page?: number;
     limit?: number;
-    tags?: string[];
-    languageId?: number;
-    status?: "Draft" | "Published";
-    isActive?: boolean;
-  }): Promise<ProblemListResponseDto>;
+    sortBy?: 'none' | 'acceptance-asc' | 'acceptance-desc';
+  }): Promise<ProblemListApiResponseDto>;
 }
 
 export interface IGetProblemByIdUseCase {
