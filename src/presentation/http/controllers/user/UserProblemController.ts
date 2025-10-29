@@ -69,12 +69,13 @@ export class UserProblemController implements IUserProblemController {
     getProblemDetail = async (httpRequest: IHttpRequest) => {
 
         const { slug } = httpRequest.params;
+        const userId = httpRequest.user?.userId;
 
         if (!slug) {
             throw new BadRequestError("problem id required")
         }
 
-        const problemDetail = await this._getProblemDetailUseCase.execute(slug);
+        const problemDetail = await this._getProblemDetailUseCase.execute(slug, userId);
 
         return new HttpResponse(HTTP_STATUS.OK, {
             ...buildResponse(true, 'problem fetched successfully', problemDetail),

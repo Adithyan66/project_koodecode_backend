@@ -17,7 +17,8 @@ export interface ProblemResponseDto {
             isSample?: boolean;
         }[];
         likes: number;
-        hasUserLiked?: boolean; // User-specific field
+        hasUserLiked?: boolean;
+        isSolved?: boolean;
         totalSubmissions: number;
         acceptedSubmissions: number;
         uniqueSolvers: number;
