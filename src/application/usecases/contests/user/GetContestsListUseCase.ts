@@ -35,7 +35,7 @@ export class GetContestsListUseCase implements IGetContestsListUseCase{
                 contests = await this.contestRepository.findUpcoming();
                 break;
             case 'past':
-                contests = await this.contestRepository.findByState(type);
+                contests = await this.contestRepository.findByState('ended');
                 break;
             default:
                 throw new Error('Invalid contest list type');
