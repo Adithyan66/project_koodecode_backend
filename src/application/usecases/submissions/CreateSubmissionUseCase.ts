@@ -12,6 +12,7 @@ import { ICodeExecutionHelperService } from '../../interfaces/ICodeExecutionHelp
 import { ICreateSubmissionUseCase } from '../../interfaces/IProblemUseCase';
 import { ProgrammingLanguage } from '../../../domain/value-objects/ProgrammingLanguage';
 import { IPostSubmissionHandler } from '../../interfaces/IPostSubmissionHandler';
+import { ISubmissionDistributionService } from '../../interfaces/ISubmissionDistributionService';
 
 import {
   ProblemNotFoundError,
@@ -47,7 +48,8 @@ export class CreateSubmissionUseCase implements ICreateSubmissionUseCase {
     @inject('IProblemRepository') private problemRepository: IProblemRepository,
     @inject('ITestCaseRepository') private testCaseRepository: ITestCaseRepository,
     @inject('ICodeExecutionHelperService') private codeExecutionHelperService: ICodeExecutionHelperService,
-    @inject('IPostSubmissionHandler') private postSubmissionHandler: IPostSubmissionHandler
+    @inject('IPostSubmissionHandler') private postSubmissionHandler: IPostSubmissionHandler,
+    @inject('ISubmissionDistributionService') private distributionService: ISubmissionDistributionService
   ) { }
 
   async execute(params: ExecuteCodeDto): Promise<SubmissionResponseDto> {
@@ -87,7 +89,7 @@ export class CreateSubmissionUseCase implements ICreateSubmissionUseCase {
 
       await this.handlePostSubmissionProcessing(params, updatedSubmission, finalResults);
 
-      return this.buildSubmissionResponse(params, updatedSubmission, testCaseResults, finalResults);
+      return await this.buildSubmissionResponse(params, updatedSubmission, testCaseResults, finalResults);
 
     } catch (error) {
       if (submissionId) {
@@ -324,15 +326,15 @@ export class CreateSubmissionUseCase implements ICreateSubmissionUseCase {
   }
 
 
-  private buildSubmissionResponse(
+  private async buildSubmissionResponse(
     params: ExecuteCodeDto,
     submission: any,
     testCaseResults: TestCaseResult[],
     finalResults: any
-  ): SubmissionResponseDto {
+  ): Promise<SubmissionResponseDto> {
     const languageInfo = ProgrammingLanguage.getLanguageInfo(params.languageId);
 
-    return {
+    const response: SubmissionResponseDto = {
       id: submission.id,
       language: {
         id: params.languageId,
@@ -344,12 +346,45 @@ export class CreateSubmissionUseCase implements ICreateSubmissionUseCase {
       score: finalResults.score,
       status: finalResults.verdict,
       submittedAt: submission.createdAt,
-      testCaseResults: testCaseResults,
       testCasesPassed: testCaseResults.filter(tc => tc.status === 'passed').length,
       totalExecutionTime: finalResults.totalTime,
       totalTestCases: testCaseResults.length,
-      userId: params.userId
+      userId: params.userId,
+      code: params.sourceCode
     };
+
+    if (finalResults.verdict === 'Wrong Answer') {
+      const firstFailedTestCase = testCaseResults.find(tc => tc.status === 'failed');
+      if (firstFailedTestCase) {
+        response.testCaseResults = [firstFailedTestCase];
+      }
+    }
+
+    if (finalResults.verdict === 'Accepted' && finalResults.score === 100) {
+      try {
+        const runtimeDistribution = await this.distributionService.calculateRuntimeDistribution(
+          params.problemId,
+          finalResults.totalTime
+        );
+        
+        const memoryDistribution = await this.distributionService.calculateMemoryDistribution(
+          params.problemId,
+          submission.maxMemoryUsage
+        );
+
+        if (runtimeDistribution) {
+          response.runtimeDistribution = runtimeDistribution;
+        }
+
+        if (memoryDistribution) {
+          response.memoryDistribution = memoryDistribution;
+        }
+      } catch (error) {
+        console.error('Error calculating distributions:', error);
+      }
+    }
+
+    return response;
   }
 
   private async handlePostSubmissionProcessing(

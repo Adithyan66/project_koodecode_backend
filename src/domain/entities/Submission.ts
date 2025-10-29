@@ -19,7 +19,7 @@ export interface Submission {
   problemId: string;
   sourceCode: string;
   languageId: number;
-  status: 'pending' | 'processing' | 'accepted' | 'rejected' | 'error' | 'time_limit_exceeded' | 'memory_limit_exceeded' | 'compilation_error' | 'partially_accepted';
+  status: 'pending' | 'processing' | 'accepted' | 'rejected' | 'error' | 'time_limit_exceeded' | 'memory_limit_exceeded' | 'compilation_error';
   overallVerdict: string;
   testCaseResults: TestCaseResult[];
   testCasesPassed: number;

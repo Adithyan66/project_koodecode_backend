@@ -15,4 +15,5 @@ export interface ISubmissionRepository {
   findByUserIdPaginated(userId: string, page: number, limit: number, submissionType?: string): Promise<Submission[]>;
   countByUserId(userId: string, submissionType?: string): Promise<number>;
   findByUserIdAndDateRange(userId: string, startDate: Date, endDate: Date, submissionType?: string): Promise<Submission[]>;
+  findAcceptedByProblemId(problemId: string): Promise<Submission[]>;
 }

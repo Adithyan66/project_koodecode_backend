@@ -28,7 +28,7 @@ const SubmissionSchema = new Schema({
   languageId: { type: Number, required: true },
   status: {
     type: String,
-    enum: ['pending', 'processing', 'accepted', 'rejected', 'error', 'time_limit_exceeded', 'memory_limit_exceeded', 'compilation_error', 'partially_accepted'],
+    enum: ['pending', 'processing', 'accepted', 'rejected', 'error', 'time_limit_exceeded', 'memory_limit_exceeded', 'compilation_error'],
     required: true
   },
   overallVerdict: { type: String, required: true },
@@ -45,5 +45,6 @@ const SubmissionSchema = new Schema({
 
 SubmissionSchema.index({ userId: 1, problemId: 1 });
 SubmissionSchema.index({ status: 1 });
+SubmissionSchema.index({ problemId: 1, overallVerdict: 1, status: 1 });
 
 export const SubmissionModel = mongoose.model<SubmissionDocument>('Submission', SubmissionSchema);

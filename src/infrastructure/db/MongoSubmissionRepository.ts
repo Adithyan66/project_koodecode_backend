@@ -112,6 +112,18 @@ export class MongoSubmissionRepository implements ISubmissionRepository {
     return submissions.map(this.mapToEntity);
   }
 
+  async findAcceptedByProblemId(problemId: string): Promise<Submission[]> {
+    const submissions = await SubmissionModel.find({
+      problemId,
+      overallVerdict: 'Accepted',
+      status: 'accepted'
+    })
+      .select('totalExecutionTime maxMemoryUsage')
+      .lean();
+    
+    return submissions.map(this.mapToEntity);
+  }
+
   private mapToEntity(doc: any): any {
     const problemId = typeof doc.problemId === 'object' && doc.problemId._id 
       ? doc.problemId._id.toString() 

@@ -9,22 +9,43 @@ export interface TestCaseResultDto {
   actualOutput?: string; // Only if test case failed and is visible
 }
 
+export interface DistributionDataPoint {
+  runtime?: number;
+  memory?: number;
+  percentage: number;
+}
+
+export interface RuntimeDistribution {
+  data: DistributionDataPoint[];
+  userRuntime: number;
+  beats: number;
+}
+
+export interface MemoryDistribution {
+  data: DistributionDataPoint[];
+  userMemory: number;
+  beats: number;
+}
+
 export interface SubmissionResponseDto {
   id: string;
   userId: string;
   problemId: string;
   status: string;
   overallVerdict: string;
-  testCaseResults: TestCaseResultDto[];
+  testCaseResults?: TestCaseResultDto[];
   testCasesPassed: number;
   totalTestCases: number;
   score: number;
   totalExecutionTime: number;
   maxMemoryUsage: number;
   submittedAt: Date;
+  code: string;
   language: {
     id: number;
     name: string;
     
   };
+  runtimeDistribution?: RuntimeDistribution;
+  memoryDistribution?: MemoryDistribution;
 }

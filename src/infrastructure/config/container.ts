@@ -146,6 +146,8 @@ import { RefundCoinPurchaseUseCase } from '../../application/usecases/coins/admi
 import { AddNoteToPurchaseUseCase } from '../../application/usecases/coins/admin/AddNoteToPurchaseUseCase';
 import { AdminCoinController } from '../../presentation/http/controllers/admin/AdminCoinController';
 import { AwardCoinsUseCase } from '../../application/usecases/coins/AwardCoinsUseCase';
+import { SubmissionDistributionService } from '../../application/services/SubmissionDistributionService';
+import { DistributionCacheService } from '../services/DistributionCacheService';
 
 
 
@@ -176,6 +178,8 @@ container.registerSingleton("IJudge0HealthService", Judge0HealthService);
 container.registerSingleton("IProfileImageMigrationService", ProfileImageMigrationService);
 container.registerSingleton("IUserStatsService", UserStatsService);
 container.registerSingleton("IPostSubmissionHandler", PostSubmissionHandler);
+container.registerSingleton("ISubmissionDistributionService", SubmissionDistributionService);
+container.registerSingleton("IDistributionCacheService", DistributionCacheService);
 
 container.registerSingleton("ICoinTransactionRepository", MongoCoinTransactionRepository)
 container.registerSingleton("IUserProfileRepository", MongoUserProfileRepository)

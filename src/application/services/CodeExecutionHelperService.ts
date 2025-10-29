@@ -12,7 +12,7 @@ export type SubmissionStatus =
   | "time_limit_exceeded"
   | "memory_limit_exceeded"
   | "compilation_error"
-  | "partially_accepted";
+;
 
 
 @injectable()
@@ -182,9 +182,6 @@ export class CodeExecutionHelperService implements ICodeExecutionHelperService {
     } else if (passedCount === totalCount) {
       verdict = 'Accepted';
       status = 'accepted';
-    } else if (passedCount > 0) {
-      verdict = `Partially Accepted (${passedCount}/${totalCount})`;
-      status = 'partially_accepted';
     } else {
       verdict = 'Wrong Answer';
       status = 'rejected';

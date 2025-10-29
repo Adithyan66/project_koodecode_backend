@@ -27,7 +27,7 @@ export interface IGetProblemsListUseCase {
 }
 
 export interface IGetProblemByIdUseCase {
-  execute(slug: string): Promise<ProblemResponseDto>;
+  execute(slug: string, userId: string): Promise<ProblemResponseDto>;
 }
 
 export interface ICreateSubmissionUseCase {
