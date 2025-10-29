@@ -75,6 +75,8 @@ export class CreateSubmissionUseCase implements ICreateSubmissionUseCase {
         submissionId
       );
 
+      
+
       const finalResults = this.calculateFinalResults(testCaseResults);
 
       const updatedSubmission = await this.updateSubmissionWithResults(
@@ -127,7 +129,6 @@ export class CreateSubmissionUseCase implements ICreateSubmissionUseCase {
     }
   }
 
-  // ✅ Updated validation using ProgrammingLanguage value object
   private validateExecutionParams(params: ExecuteCodeDto): void {
     if (!params.userId || params.userId.trim().length === 0) {
       throw new BadRequestError("User ID is required");

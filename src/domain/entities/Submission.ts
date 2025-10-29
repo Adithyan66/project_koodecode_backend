@@ -6,7 +6,7 @@ export interface TestCaseResult {
   input: string;
   expectedOutput: string;
   actualOutput?: string;
-  status: 'passed' | 'failed' | 'error' | 'time_limit_exceeded' | 'memory_limit_exceeded';
+  status: 'passed' | 'failed' | 'error' | 'time_limit_exceeded' | 'memory_limit_exceeded' | 'compilation_error';
   executionTime?: number;
   memoryUsage?: number;
   judge0Token?: string;

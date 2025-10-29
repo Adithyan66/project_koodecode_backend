@@ -57,12 +57,10 @@ export class CodeExecutionHelperService implements ICodeExecutionHelperService {
   determineTestCaseStatus(
     judge0Result: any,
     expectedOutput: string
-  ): 'passed' | 'failed' | 'error' | 'time_limit_exceeded' | 'memory_limit_exceeded' {
-
-    console.log("outttttttttttttttttttttttttttttttttttttttttttt");
-
+  ): 'passed' | 'failed' | 'error' | 'time_limit_exceeded' | 'memory_limit_exceeded'|'compilation_error' {
 
     const statusId = judge0Result.status?.id || judge0Result.status_id;
+    console.log(`Judge0 status ID: ${statusId}, description: ${judge0Result.status?.description || 'N/A'}`);
 
     switch (statusId) {
       case 3: // Accepted
@@ -75,7 +73,8 @@ export class CodeExecutionHelperService implements ICodeExecutionHelperService {
       case 18: // Memory Limit Exceeded (wall time)
         return 'memory_limit_exceeded';
       case 6: // Compilation Error
-        return 'error';
+        console.log('COMPILATION ERROR DETECTED - returning compilation_error status');
+        return 'compilation_error';
       case 7: // Runtime Error (SIGSEGV)
       case 8: // Runtime Error (SIGXFSZ)`
       case 9: // Runtime Error (SIGFPE)
@@ -152,14 +151,18 @@ export class CodeExecutionHelperService implements ICodeExecutionHelperService {
   }
 
   calculateResults(testCaseResults: TestCaseResult[], totalPoints: number) {
-
+    console.log('Calculating results for test cases:', testCaseResults.map(tc => ({ id: tc.testCaseId, status: tc.status })));
 
     const passedCount = testCaseResults.filter(tc => tc.status === 'passed').length;
     const totalCount = testCaseResults.length;
-    const hasCompilationError = testCaseResults.some(tc => tc.status === 'error' && tc.errorMessage?.toLowerCase().includes('compilation'));
-    const hasRuntimeError = testCaseResults.some(tc => tc.status === 'error' && !tc.errorMessage?.toLowerCase().includes('compilation'));
+    
+    // Check for compilation errors by status, not by error message
+    const hasCompilationError = testCaseResults.some(tc => tc.status === 'compilation_error');
+    const hasRuntimeError = testCaseResults.some(tc => tc.status === 'error');
     const hasTimeLimit = testCaseResults.some(tc => tc.status === 'time_limit_exceeded');
     const hasMemoryLimit = testCaseResults.some(tc => tc.status === 'memory_limit_exceeded');
+
+    console.log('Error flags:', { hasCompilationError, hasRuntimeError, hasTimeLimit, hasMemoryLimit });
 
     let verdict: string;
     let status: SubmissionStatus;
@@ -186,6 +189,8 @@ export class CodeExecutionHelperService implements ICodeExecutionHelperService {
       verdict = 'Wrong Answer';
       status = 'rejected';
     }
+
+    console.log('Final verdict:', verdict, 'status:', status);
 
     const score = Math.round((passedCount / totalCount) * totalPoints);
     const totalTime = testCaseResults.reduce((sum, tc) => sum + (tc.executionTime || 0), 0);

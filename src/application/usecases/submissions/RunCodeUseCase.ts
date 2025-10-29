@@ -66,6 +66,7 @@ export class RunCodeUseCase {
         this.timeLimit,
         this.memoryLimit
       );
+      
 
       const { verdict, status, score, totalTime, maxMemory } = this.codeExecutionHelperService.calculateResults(
         testCaseResults,
@@ -141,26 +142,23 @@ export class RunCodeUseCase {
     timeLimit: number,
     memoryLimit: number
   ): Promise<TestCaseResult[]> {
-    try {
-      const submissions = await this.submitAllTestCases(
-        sourceCode,
-        languageId,
-        testCases,
-        timeLimit,
-        memoryLimit
-      );
+    const submissions = await this.submitAllTestCases(
+      sourceCode,
+      languageId,
+      testCases,
+      timeLimit,
+      memoryLimit
+    );
 
-      const results = await Promise.all(
-        submissions.map(async (submission, index) => {
-          return await this.processTestCaseResult(submission, testCases[index], index);
-        })
-      );
+    const results = await Promise.all(
+      submissions.map(async (submission, index) => {
+        return await this.processTestCaseResult(submission, testCases[index], index);
+      })
+    );
+    
+    console.log('Test case results:', JSON.stringify(results, null, 2));
 
-      return results;
-
-    } catch (error) {
-      throw new CodeExecutionError('Failed to execute test cases');
-    }
+    return results;
   }
 
   private async submitAllTestCases(
@@ -194,8 +192,12 @@ export class RunCodeUseCase {
   private async processTestCaseResult(submission: any, testCase: any, index: number): Promise<TestCaseResult> {
     try {
       const result = await this.codeExecutionHelperService.waitForResult(submission.token);
+      console.log(`Judge0 result for test case ${index}:`, JSON.stringify(result, null, 2));
+      
       const expectedOut = this.codeExecutionHelperService.formatExpectedOutput(testCase.expectedOutput);
       const status = this.codeExecutionHelperService.determineTestCaseStatus(result, expectedOut);
+      
+      console.log(`Test case ${index} status: ${status}`);
 
       return {
         testCaseId: testCase.id,
@@ -210,6 +212,7 @@ export class RunCodeUseCase {
       };
 
     } catch (error) {
+      console.error(`Error processing test case ${index}:`, error);
       throw new TestCaseExecutionError(testCase.id);
     }
   }
