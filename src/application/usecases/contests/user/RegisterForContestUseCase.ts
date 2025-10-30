@@ -49,7 +49,8 @@ export class RegisterForContestUseCase implements IRegisterForContestUseCase{
       userId,
       assignedProblemId: randomProblemId,
       registrationTime: new Date(),
-      status: ParticipantStatus.REGISTERED
+      status: ParticipantStatus.REGISTERED,
+      canContinue: true
     });
 
     const createdParticipant = await this.participantRepository.create(participant);

@@ -17,6 +17,7 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
       rank: participant.rank,
       coinsEarned: participant.coinsEarned,
       status: participant.status,
+      canContinue: participant.canContinue,
       isDeleted: participant.isDeleted,
       createdAt: participant.createdAt,
       updatedAt: participant.updatedAt
@@ -334,6 +335,7 @@ export class MongoContestParticipantRepository implements IContestParticipantRep
       rank: participantDoc.rank,
       coinsEarned: participantDoc.coinsEarned,
       status: participantDoc.status,
+      canContinue: participantDoc.canContinue ?? true,
       isDeleted: participantDoc.isDeleted || false,
       createdAt: participantDoc.createdAt,
       updatedAt: participantDoc.updatedAt

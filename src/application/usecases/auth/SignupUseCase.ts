@@ -89,7 +89,8 @@ export class SignupUseCase implements ISignupUseCase {
             });
             await this.userProfileRepository.create(userProfile);
         } catch (error) {
-            // Note: User creation rollback not implemented as deleteUser method doesn't exist
+            console.log(error);
+            
             throw new Error("Failed to create user profile. Please contact support.");
         }
 

@@ -40,7 +40,7 @@ export class MongoUserProfileRepository implements IUserProfileRepository {
             firstSolveDate: profile.firstSolveDate,
             lastSolveDate: profile.lastSolveDate,
             averageSolveTime: profile.averageSolveTime,
-            languagesUsed: profile.languagesUsed ? Object.fromEntries(profile.languagesUsed) as Record<number, number> : {},
+            languagesUsed: profile.languagesUsed || {},
             streak: profile.streak,
             activeDays: profile.activeDays,
             isPremium: profile.isPremium,
@@ -90,7 +90,7 @@ export class MongoUserProfileRepository implements IUserProfileRepository {
             firstSolveDate: profile.firstSolveDate,
             lastSolveDate: profile.lastSolveDate,
             averageSolveTime: profile.averageSolveTime,
-            languagesUsed: profile.languagesUsed ? Object.fromEntries(profile.languagesUsed) as Record<number, number> : {},
+            languagesUsed: profile.languagesUsed || {},
             streak: new UserStreak(
                 profile.streak.currentCount,
                 profile.streak.maxCount,

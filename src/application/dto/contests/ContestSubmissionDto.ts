@@ -4,6 +4,7 @@ export interface ContestSubmissionDto {
   contestNumber: number;
   sourceCode: string;
   languageId: number;
+  autoSubmit?: boolean;
 }
 
 export interface ContestSubmissionResponseDto {
@@ -15,5 +16,6 @@ export interface ContestSubmissionResponseDto {
   totalScore: number;
   rank?: number;
   message: string;
-  result:any
+  result:any;
+  canContinue: boolean;
 }

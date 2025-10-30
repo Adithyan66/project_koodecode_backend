@@ -93,6 +93,36 @@ export class MongoContestRepository implements IContestRepository {
     return contests.map(contest => this.mapToEntity(contest));
   }
 
+  async findByStateWithPagination(
+    state: string,
+    page: number,
+    limit: number,
+    search?: string
+  ): Promise<{ contests: Contest[], total: number }> {
+    const query: any = { state, isDeleted: { $ne: true } };
+
+    if (search) {
+      query.title = { $regex: search, $options: 'i' };
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [contests, total] = await Promise.all([
+      ContestModel.find(query)
+        .populate('problems', 'title difficulty')
+        .populate('createdBy', 'username')
+        .sort({ startTime: -1 })
+        .skip(skip)
+        .limit(limit),
+      ContestModel.countDocuments(query)
+    ]);
+
+    return {
+      contests: contests.map(contest => this.mapToEntity(contest)),
+      total
+    };
+  }
+
   async findUpcoming(): Promise<Contest[]> {
     const contests = await ContestModel.find({
       state: { $in: ['upcoming', 'registration_open'] },

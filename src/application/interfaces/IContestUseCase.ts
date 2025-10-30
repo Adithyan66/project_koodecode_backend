@@ -5,7 +5,7 @@ import { ContestRegistrationResponseDto } from "../dto/contests/ContestRegistrat
 import { AssignedProblemDto } from "../dto/contests/ContestResponseDto";
 import { ContestSubmissionDto, ContestSubmissionResponseDto } from "../dto/contests/ContestSubmissionDto";
 import { CreateContestDto } from "../dto/contests/CreateContestDto";
-import { ContestListResponseDto, ContestListType } from "../usecases/contests/user/GetContestsListUseCase";
+import { ContestListResponseDto, ContestListType, PaginatedContestListResponse } from "../usecases/contests/user/GetContestsListUseCase";
 
 
 export interface IRegisterForContestUseCase {
@@ -21,7 +21,7 @@ export interface IGetContestLeaderboardUseCase {
 }
 
 export interface IGetContestsListUseCase {
-  execute(type: ContestListType, userId: string): Promise<ContestListResponseDto[]>;
+  execute(type: ContestListType, userId: string, page?: number, limit?: number, search?: string): Promise<ContestListResponseDto[] | PaginatedContestListResponse>;
 }
 
 export interface IGetContestDetailUseCase {

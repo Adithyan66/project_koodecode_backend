@@ -10,6 +10,7 @@ export interface IContestRepository {
   findByNumber(contestNumber: number): Promise<Contest | null>;
   findAll(page: number, limit: number, filters?: ContestFilters): Promise<Contest[]>;
   findByState(state: string): Promise<Contest[]>;
+  findByStateWithPagination(state: string, page: number, limit: number, search?: string): Promise<{ contests: Contest[], total: number }>;
   findUpcoming(): Promise<Contest[]>;
   findActive(): Promise<Contest[]>;
   findByCreator(creatorId: string): Promise<Contest[]>;

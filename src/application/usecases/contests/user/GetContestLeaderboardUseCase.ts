@@ -29,7 +29,6 @@ export class GetContestLeaderboardUseCase implements IGetContestLeaderboardUseCa
     const rankings: LeaderboardEntryDto[] = await Promise.all(
       participants.map(async (participant, index) => {
         const user = await this.userRepository.findById(participant.userId);
-        console.log("hiiiiiiiiii", participant);
 
         return {
           rank: index + 1,

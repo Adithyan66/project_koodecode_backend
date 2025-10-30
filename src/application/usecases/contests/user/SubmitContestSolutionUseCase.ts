@@ -31,6 +31,8 @@ export class SubmitContestSolutionUseCase implements ISubmitContestSolutionUseCa
   ) { }
 
   async execute(dto: ContestSubmissionDto, userId: string): Promise<ContestSubmissionResponseDto> {
+    console.log("submitsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss", userId);
+    
     try {
 
       const contest = await this.contestRepository.findByNumber(dto.contestNumber);
@@ -47,6 +49,10 @@ export class SubmitContestSolutionUseCase implements ISubmitContestSolutionUseCa
 
       if (!participant) {
         throw new Error('Not registered for this contest');
+      }
+
+      if (participant.canContinue === false) {
+        throw new Error('You are not allowed to submit anymore');
       }
 
       if (participant.status === ParticipantStatus.COMPLETED) {
@@ -73,10 +79,12 @@ export class SubmitContestSolutionUseCase implements ISubmitContestSolutionUseCa
       if (timeTaken >= timeLimitSeconds) {
         participant.status = ParticipantStatus.TIME_UP;
         participant.endTime = new Date();
+        participant.canContinue = false;
 
         await this.participantRepository.update(participant.id, {
           status: participant.status,
-          endTime: participant.endTime
+          endTime: participant.endTime,
+          canContinue: false
         });
 
         throw new Error('Time limit exceeded');
@@ -112,9 +120,24 @@ export class SubmitContestSolutionUseCase implements ISubmitContestSolutionUseCa
       participant.addSubmission(contestSubmission);
       participant.updateScore(newScore);
 
-      if (isCorrect) {
+      let newCanContinue = participant.canContinue;
+      
+      if (dto.autoSubmit) {
         participant.status = ParticipantStatus.COMPLETED;
         participant.endTime = new Date();
+        newCanContinue = false;
+        participant.canContinue = false;
+      } else if (isCorrect) {
+        participant.status = ParticipantStatus.COMPLETED;
+        participant.endTime = new Date();
+        newCanContinue = false;
+        participant.canContinue = false;
+      } else if (attemptNumber >= contest.maxAttempts) {
+        newCanContinue = false;
+        participant.canContinue = false;
+      } else if (timeTaken >= timeLimitSeconds) {
+        newCanContinue = false;
+        participant.canContinue = false;
       }
 
       await this.participantRepository.update(participant.id, {
@@ -122,6 +145,7 @@ export class SubmitContestSolutionUseCase implements ISubmitContestSolutionUseCa
         totalScore: participant.totalScore,
         status: participant.status,
         endTime: participant.endTime,
+        canContinue: newCanContinue,
         updatedAt: new Date()
       });
 
@@ -140,6 +164,17 @@ export class SubmitContestSolutionUseCase implements ISubmitContestSolutionUseCa
       const updatedParticipant = await this.participantRepository.findById(participant.id);
       const rank = updatedParticipant?.rank || undefined;
 
+      let responseCanContinue = false;
+      if (participant.canContinue === false) {
+        responseCanContinue = false;
+      } else {
+        const timeLimitSeconds = contest.problemTimeLimit * 60;
+        responseCanContinue = !isCorrect && 
+                             attemptNumber < contest.maxAttempts && 
+                             timeTaken < timeLimitSeconds &&
+                             contest.isActive();
+      }
+
       return {
         submissionId: executionResult.id,
         result: executionResult,
@@ -149,7 +184,8 @@ export class SubmitContestSolutionUseCase implements ISubmitContestSolutionUseCa
         penaltyApplied,
         totalScore: newScore,
         rank,
-        message: this.getResponseMessage(isCorrect, attemptNumber, contest.maxAttempts)
+        message: this.getResponseMessage(isCorrect, attemptNumber, contest.maxAttempts),
+        canContinue: responseCanContinue
       };
 
     } catch (error) {

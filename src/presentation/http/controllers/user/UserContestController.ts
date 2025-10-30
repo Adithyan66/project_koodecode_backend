@@ -17,7 +17,7 @@ import { IUserContestController } from '../../interfaces/IUserContestController'
 
 
 @injectable()
-export class UserContestController implements IUserContestController{
+export class UserContestController implements IUserContestController {
     constructor(
         @inject('IRegisterForContestUseCase') private _registerForContestUseCase: IRegisterForContestUseCase,
         @inject('IStartContestProblemUseCase') private _startContestProblemUseCase: IStartContestProblemUseCase,
@@ -56,7 +56,7 @@ export class UserContestController implements IUserContestController{
         const problem = await this._startContestProblemUseCase.execute(+contestNumber, userId);
 
         return new HttpResponse(HTTP_STATUS.OK, {
-            ...buildResponse(true, 'Contest problem retrieved',  problem ),
+            ...buildResponse(true, 'Contest problem retrieved', problem),
         });
     }
 
@@ -87,10 +87,28 @@ export class UserContestController implements IUserContestController{
             throw new UnauthorizedError()
         }
 
-        const contests = await this._getContestsListUseCase.execute(state, userId);
+        const page = httpRequest.query?.page ? parseInt(httpRequest.query.page as string) : undefined;
+        const limit = httpRequest.query?.limit ? parseInt(httpRequest.query.limit as string) : undefined;
+        const search = httpRequest.query?.search as string | undefined;
+
+        const result = await this._getContestsListUseCase.execute(state, userId, page, limit, search);
+
+        const messages = {
+            past: 'Past contests retrieved successfully',
+            active: 'Active contests retrieved successfully',
+            upcoming: 'Upcoming contests retrieved successfully'
+        };
+
+        const message = messages[state] || 'Contests fetched successfully';
+
+        if (state === 'past') {
+            return new HttpResponse(HTTP_STATUS.OK, {
+                ...buildResponse(true, message, result),
+            });
+        }
 
         return new HttpResponse(HTTP_STATUS.OK, {
-            ...buildResponse(true, 'Active contests fetched successfully', { contests }),
+            ...buildResponse(true, message, { contests: result }),
         });
     }
 
@@ -120,8 +138,8 @@ export class UserContestController implements IUserContestController{
 
     submitSolution = async (httpRequest: IHttpRequest) => {
 
-        const { contestNumber, sourceCode, languageId } = httpRequest.body;
-        const userId = httpRequest.user?.userId;
+        const { contestNumber, sourceCode, languageId, autoSubmit } = httpRequest.body;
+        const userId = httpRequest.user?.userId || httpRequest.body.userId;
 
         if (!userId) {
             throw new UnauthorizedError()
@@ -132,12 +150,12 @@ export class UserContestController implements IUserContestController{
         }
 
         const result = await this._submitContestSolutionUseCase.execute(
-            { contestNumber, sourceCode, languageId },
+            { contestNumber, sourceCode, languageId, autoSubmit },
             userId
         );
 
         return new HttpResponse(HTTP_STATUS.OK, {
-            ...buildResponse(true, 'Contest details fetched successfully',  result ),
+            ...buildResponse(true, 'Contest details fetched successfully', result),
         });
     }
 

@@ -14,6 +14,7 @@ export class ContestParticipant {
   public rank: number | null;
   public coinsEarned: number;
   public status: ParticipantStatus;
+  public canContinue: boolean;
   public isDeleted: boolean;
   public createdAt: Date;
   public updatedAt: Date;
@@ -31,6 +32,7 @@ export class ContestParticipant {
     rank = null,
     coinsEarned = 0,
     status = ParticipantStatus.REGISTERED,
+    canContinue = true,
     isDeleted = false,
     createdAt = new Date(),
     updatedAt = new Date()
@@ -47,6 +49,7 @@ export class ContestParticipant {
     rank?: number | null;
     coinsEarned?: number;
     status?: ParticipantStatus;
+    canContinue?: boolean;
     isDeleted?: boolean;
     createdAt?: Date;
     updatedAt?: Date;
@@ -63,6 +66,7 @@ export class ContestParticipant {
     this.rank = rank;
     this.coinsEarned = coinsEarned;
     this.status = status;
+    this.canContinue = canContinue;
     this.isDeleted = isDeleted;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;

@@ -55,5 +55,8 @@ export interface ContestDetailDto {
   coinRewards: CoinRewardDto[];
   state: string;
   isUserRegistered: boolean;
+  isParticipantCompleted: boolean;
+  canContinue: boolean;
+  participantsCount: number;
   userSubmission?: SubmissionDto; 
 }

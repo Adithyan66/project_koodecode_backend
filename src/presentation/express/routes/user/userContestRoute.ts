@@ -22,7 +22,7 @@ router.get('/:contestNumber/start', authenticate, expressAdapter(userContestCont
 router.post('/submit-solution', authenticate, expressAdapter(userContestController.submitSolution));
 router.get('/:contestNumber/leaderboard', authenticate, expressAdapter(userContestController.getLeaderboard));
 router.get('/state/:state', authenticate, expressAdapter(userContestController.getActiveContests));
-
+router.post('/auto-submit-solution', expressAdapter(userContestController.submitSolution));
 
 
 

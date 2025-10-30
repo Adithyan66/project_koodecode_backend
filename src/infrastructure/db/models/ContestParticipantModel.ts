@@ -1,13 +1,12 @@
 
 
 import mongoose, { Schema, Document } from 'mongoose';
-import { ContestParticipant, ContestSubmission, ParticipantStatus } from '../../../domain/entities/ContestParticipant';
+import { ContestParticipant, ParticipantStatus } from '../../../domain/entities/ContestParticipant';
 
-export interface ContestParticipantDocument extends ContestParticipant, Document {
+export interface ContestParticipantDocument extends Omit<ContestParticipant, 'id'>, Document {
   _id: string;
 }
-
-const ContestSubmissionSchema = new Schema<ContestSubmission>({
+const ContestSubmissionSchema = new Schema({
   submissionId: { type: Schema.Types.ObjectId, ref: 'Submission', required: true },
   submittedAt: { type: Date, required: true },
   isCorrect: { type: Boolean, required: true },
@@ -16,7 +15,7 @@ const ContestSubmissionSchema = new Schema<ContestSubmission>({
   penaltyApplied: { type: Number, required: true }
 });
 
-const ContestParticipantSchema = new Schema<ContestParticipantDocument>({
+const ContestParticipantSchema = new Schema({
   contestId: { type: Schema.Types.ObjectId, ref: 'Contest', required: true },
   userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   assignedProblemId: { type: Schema.Types.ObjectId, ref: 'Problem', required: true },
@@ -28,6 +27,7 @@ const ContestParticipantSchema = new Schema<ContestParticipantDocument>({
   rank: { type: Number },
   coinsEarned: { type: Number, default: 0 },
   status: { type: String, enum: Object.values(ParticipantStatus), default: ParticipantStatus.REGISTERED },
+  canContinue: { type: Boolean, default: true },
   isDeleted: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }

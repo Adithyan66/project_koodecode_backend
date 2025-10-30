@@ -33,13 +33,20 @@ export class GetContestDetailUseCase implements IGetContestDetailUseCase{
     }
 
     let isUserRegistered = false;
+    let isParticipantCompleted = false;
+    let canContinue = true;
     let userSubmission = null;
     let participant;
+
+    const contestStats = await this.contestParticipantRepository.getContestStats(contest.id);
+    const participantsCount = contestStats.totalParticipants;
 
     if (userId) {
       participant = await this.contestParticipantRepository
         .findByContestAndUser(contest.id, userId);
       isUserRegistered = !!participant;
+      isParticipantCompleted = participant?.status === 'completed';
+      canContinue = participant?.canContinue ?? false;
 
       if (participant?.assignedProblemId) {
         const submissions = await this.submissionRepository
@@ -60,7 +67,7 @@ export class GetContestDetailUseCase implements IGetContestDetailUseCase{
       }
     }
 
-    return this.mapToDto(contest, isUserRegistered, userSubmission);
+    return this.mapToDto(contest, isUserRegistered, isParticipantCompleted, canContinue, participantsCount, userSubmission);
   }
 
   private mapSubmissionToDto(submission: any): SubmissionDto {
@@ -80,7 +87,7 @@ export class GetContestDetailUseCase implements IGetContestDetailUseCase{
     };
   }
 
-  private mapToDto(contest: Contest, isUserRegistered: boolean, userSubmission: SubmissionDto | null): ContestDetailDto {
+  private mapToDto(contest: Contest, isUserRegistered: boolean, isParticipantCompleted: boolean, canContinue: boolean, participantsCount: number, userSubmission: SubmissionDto | null): ContestDetailDto {
     const coinRewards: CoinRewardDto[] = contest.coinRewards.map(reward => ({
       rank: reward.rank,
       coins: reward.coins
@@ -101,6 +108,9 @@ export class GetContestDetailUseCase implements IGetContestDetailUseCase{
       coinRewards,
       state: contest.state,
       isUserRegistered,
+      isParticipantCompleted,
+      canContinue,
+      participantsCount,
       ...(userSubmission && { userSubmission })
     };
   }
