@@ -6,6 +6,7 @@ interface IStoreItemDocument extends Document {
     type: StoreItemType;
     price: number;
     description: string;
+    imageUrl: string;
     isActive: boolean;
     componentId: string;
     metadata?: Record<string, any>;
@@ -22,6 +23,7 @@ const storeItemSchema = new Schema<IStoreItemDocument>({
     },
     price: { type: Number, required: true, min: 0 },
     description: { type: String, required: true },
+    imageUrl: { type: String, required: true },
     isActive: { type: Boolean, default: true },
     componentId: { type: String, required: true },
     metadata: { type: Schema.Types.Mixed, default: {} }

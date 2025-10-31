@@ -247,6 +247,60 @@ export class UserProfile {
         
         return mostUsedLanguage;
     }
+
+    public hasActivityOnDate(date: string): boolean {
+        return this.activities.some(activity => activity.date === date);
+    }
+
+    public getMissedDaysInCurrentMonth(): string[] {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        
+        const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+        const missedDays: string[] = [];
+        
+        for (let day = new Date(firstDayOfMonth); day < today; day.setDate(day.getDate() + 1)) {
+            const dateStr = day.toISOString().split('T')[0];
+            if (!this.hasActivityOnDate(dateStr)) {
+                missedDays.push(dateStr);
+            }
+        }
+        
+        return missedDays;
+    }
+
+    public canFillDate(dateStr: string): { canFill: boolean; reason?: string } {
+        const targetDate = new Date(dateStr + 'T00:00:00Z');
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+        
+        if (targetDate >= today) {
+            return { canFill: false, reason: 'Cannot fill today or future dates' };
+        }
+        
+        if (targetDate.getMonth() !== currentMonth || targetDate.getFullYear() !== currentYear) {
+            return { canFill: false, reason: 'Can only fill dates in the current month' };
+        }
+        
+        if (this.hasActivityOnDate(dateStr)) {
+            return { canFill: false, reason: 'This date already has activity' };
+        }
+        
+        return { canFill: true };
+    }
+
+    public fillMissedDay(dateStr: string): void {
+        const validation = this.canFillDate(dateStr);
+        if (!validation.canFill) {
+            throw new Error(validation.reason);
+        }
+        
+        this.addActivity(new Date(dateStr), ActivityType.TIME_TRAVEL_USED, 1);
+    }
 }
 
 export class UserStreak {
@@ -353,5 +407,6 @@ export enum ActivityType {
     STREAK_MAINTAINED = "streak_maintained",
     LOGIN = "login",
     HINT_USED = "hint_used",
-    BADGE_EARNED = "badge_earned"
+    BADGE_EARNED = "badge_earned",
+    TIME_TRAVEL_USED = "time_travel_used"
 }

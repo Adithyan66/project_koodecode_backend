@@ -23,6 +23,20 @@ export class MongoStoreItemRepository implements IStoreItemRepository {
         return items.map(this.mapToEntity);
     }
 
+    async findAllWithPagination(page: number, limit: number): Promise<{ items: StoreItem[]; total: number }> {
+        const skip = (page - 1) * limit;
+        
+        const [items, total] = await Promise.all([
+            StoreItemModel.find().sort({ createdAt: -1 }).skip(skip).limit(limit),
+            StoreItemModel.countDocuments()
+        ]);
+
+        return {
+            items: items.map(this.mapToEntity),
+            total
+        };
+    }
+
     async create(storeItem: StoreItem): Promise<StoreItem> {
         const item = new StoreItemModel(storeItem);
         const savedItem = await item.save();
@@ -50,6 +64,7 @@ export class MongoStoreItemRepository implements IStoreItemRepository {
             type: doc.type,
             price: doc.price,
             description: doc.description,
+            imageUrl: doc.imageUrl,
             isActive: doc.isActive,
             componentId: doc.componentId,
             metadata: doc.metadata,

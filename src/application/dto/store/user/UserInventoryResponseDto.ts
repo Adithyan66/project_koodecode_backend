@@ -1,5 +1,5 @@
 
-import { StoreItemType } from '../../../domain/entities/StoreItem';
+import { StoreItemType } from '../../../../domain/entities/StoreItem';
 
 export class UserInventoryItemDto {
     id: string;

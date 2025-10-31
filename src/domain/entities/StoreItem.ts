@@ -6,8 +6,9 @@ export class StoreItem {
     public type: StoreItemType;
     public price: number;
     public description: string;
+    public imageUrl: string;
     public isActive: boolean;
-    public componentId: string; // React component identifier
+    public componentId: string;
     public metadata?: Record<string, any>;
     public createdAt: Date;
     public updatedAt: Date;
@@ -18,6 +19,7 @@ export class StoreItem {
         type,
         price,
         description,
+        imageUrl,
         isActive = true,
         componentId,
         metadata,
@@ -29,6 +31,7 @@ export class StoreItem {
         type: StoreItemType;
         price: number;
         description: string;
+        imageUrl: string;
         isActive?: boolean;
         componentId: string;
         metadata?: Record<string, any>;
@@ -40,6 +43,7 @@ export class StoreItem {
         this.type = type;
         this.price = price;
         this.description = description;
+        this.imageUrl = imageUrl;
         this.isActive = isActive;
         this.componentId = componentId;
         this.metadata = metadata;
@@ -48,17 +52,14 @@ export class StoreItem {
     }
 
     public isConsumable(): boolean {
-        return this.type === StoreItemType.TIME_TRAVEL_TICKET || 
-               this.type === StoreItemType.PROBLEM_SUBMIT_TICKET;
+        return this.type === StoreItemType.TIME_TRAVEL_TICKET;
     }
 
     public isPermanent(): boolean {
-        return this.type === StoreItemType.PROFILE_FRAME;
+        return false;
     }
 }
 
 export enum StoreItemType {
-    PROFILE_FRAME = "profile_frame",
-    TIME_TRAVEL_TICKET = "time_travel_ticket",
-    PROBLEM_SUBMIT_TICKET = "problem_submit_ticket"
+    TIME_TRAVEL_TICKET = "time_travel_ticket"
 }

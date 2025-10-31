@@ -1,14 +1,14 @@
 
-import { IStoreItemRepository } from '../../../domain/interfaces/repositories/IStoreItemRepository';
-import { IUserInventoryRepository } from '../../../domain/interfaces/repositories/IUserInventoryRepository';
-import { IUserProfileRepository } from '../../../domain/interfaces/repositories/IUserProfileRepository';
-import { ICoinTransactionRepository } from '../../../domain/interfaces/repositories/ICoinTransactionRepository';
-import { PurchaseItemDto } from '../../dto/store/PurchaseItemDto';
-import { AppError } from '../../errors/AppError';
-import { HTTP_STATUS } from '../../../shared/constants/httpStatus';
-import { UserInventory } from '../../../domain/entities/UserInventory';
-import { CoinTransaction, CoinTransactionType, CoinTransactionSource } from '../../../domain/entities/CoinTransaction';
-import { IPurchaseStoreItemUseCase } from '../../interfaces/IStoreUseCase';
+import { IStoreItemRepository } from '../../../../domain/interfaces/repositories/IStoreItemRepository';
+import { IUserInventoryRepository } from '../../../../domain/interfaces/repositories/IUserInventoryRepository';
+import { IUserProfileRepository } from '../../../../domain/interfaces/repositories/IUserProfileRepository';
+import { ICoinTransactionRepository } from '../../../../domain/interfaces/repositories/ICoinTransactionRepository';
+import { PurchaseItemDto } from '../../../dto/store/user/PurchaseItemDto';
+import { AppError } from '../../../errors/AppError';
+import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
+import { UserInventory } from '../../../../domain/entities/UserInventory';
+import { CoinTransaction, CoinTransactionType, CoinTransactionSource } from '../../../../domain/entities/CoinTransaction';
+import { IPurchaseStoreItemUseCase } from '../../../interfaces/IStoreUseCase';
 import { inject, injectable } from 'tsyringe';
 
 

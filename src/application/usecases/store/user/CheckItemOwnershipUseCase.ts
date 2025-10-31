@@ -1,6 +1,6 @@
 import { inject, injectable } from 'tsyringe';
-import { IUserInventoryRepository } from '../../../domain/interfaces/repositories/IUserInventoryRepository';
-import { ICheckItemOwnershipUseCase } from '../../interfaces/IStoreUseCase';
+import { IUserInventoryRepository } from '../../../../domain/interfaces/repositories/IUserInventoryRepository';
+import { ICheckItemOwnershipUseCase } from '../../../interfaces/IStoreUseCase';
 
 
 @injectable()

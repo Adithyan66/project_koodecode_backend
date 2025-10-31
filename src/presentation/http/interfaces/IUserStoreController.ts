@@ -8,4 +8,6 @@ export interface IUserStoreController {
     purchaseItem(httpRequest: IHttpRequest): Promise<IHttpResponse>;
     getUserInventory(httpRequest: IHttpRequest): Promise<IHttpResponse>;
     checkItemOwnership(httpRequest: IHttpRequest): Promise<IHttpResponse>;
+    useTimeTravelTicket(httpRequest: IHttpRequest): Promise<IHttpResponse>;
+    getMissedDays(httpRequest: IHttpRequest): Promise<IHttpResponse>;
 }

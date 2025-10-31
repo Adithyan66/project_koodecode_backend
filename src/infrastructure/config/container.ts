@@ -85,10 +85,16 @@ import { MongoRoomActivityRepository } from "../db/MongoRoomActivityRepository";
 import { GetAllRoomsForAdminUseCase } from "../../application/usecases/rooms/admin/GetAllRoomsForAdminUseCase";
 import { AdminRoomController } from "../../presentation/http/controllers/admin/AdminRoomController";
 import { UserStoreController } from "../../presentation/http/controllers/user/UserStoreController";
-import { GetStoreItemsUseCase } from "../../application/usecases/store/GetStoreItemsUseCase";
-import { PurchaseStoreItemUseCase } from "../../application/usecases/store/PurchaseStoreItemUseCase";
-import { GetUserInventoryUseCase } from "../../application/usecases/store/GetUserInventoryUseCase";
-import { CheckItemOwnershipUseCase } from "../../application/usecases/store/CheckItemOwnershipUseCase";
+import { GetStoreItemsUseCase } from "../../application/usecases/store/user/GetStoreItemsUseCase";
+import { PurchaseStoreItemUseCase } from "../../application/usecases/store/user/PurchaseStoreItemUseCase";
+import { GetUserInventoryUseCase } from "../../application/usecases/store/user/GetUserInventoryUseCase";
+import { CheckItemOwnershipUseCase } from "../../application/usecases/store/user/CheckItemOwnershipUseCase";
+import { UseTimeTravelTicketUseCase } from "../../application/usecases/store/user/UseTimeTravelTicketUseCase";
+import { GetMissedDaysUseCase } from "../../application/usecases/store/user/GetMissedDaysUseCase";
+import { UpdateStoreItemUseCase } from "../../application/usecases/store/admin/UpdateStoreItemUseCase";
+import { ToggleStoreItemActiveUseCase } from "../../application/usecases/store/admin/ToggleStoreItemActiveUseCase";
+import { GetAllStoreItemsForAdminUseCase } from "../../application/usecases/store/admin/GetAllStoreItemsForAdminUseCase";
+import { AdminStoreController } from "../../presentation/http/controllers/admin/AdminStoreController";
 import { MongoStoreItemRepository } from "../db/MongoStoreItemRepository";
 import { MongoUserInventoryRepository } from "../db/MongoUserInventoryRepository";
 import { Judge0HealthService } from "../services/Judge0HealthService";
@@ -156,6 +162,10 @@ import { UnsubscribeFromPushUseCase } from '../../application/usecases/notificat
 import { SendAdminNotificationUseCase } from '../../application/usecases/notifications/SendAdminNotificationUseCase';
 import { SendUserNotificationUseCase } from '../../application/usecases/notifications/SendUserNotificationUseCase';
 import { NotificationController } from '../../presentation/http/controllers/notifications/NotificationController';
+
+import { GetAllSubmissionsForAdminUseCase } from '../../application/usecases/submissions/admin/GetAllSubmissionsForAdminUseCase';
+import { GetSubmissionDetailForAdminUseCase } from '../../application/usecases/submissions/admin/GetSubmissionDetailForAdminUseCase';
+import { AdminSubmissionController } from '../../presentation/http/controllers/admin/AdminSubmissionController';
 
 
 
@@ -271,6 +281,11 @@ container.registerSingleton('IGetStoreItemsUseCase', GetStoreItemsUseCase)
 container.registerSingleton('IPurchaseStoreItemUseCase', PurchaseStoreItemUseCase)
 container.registerSingleton('IGetUserInventoryUseCase', GetUserInventoryUseCase)
 container.registerSingleton('ICheckItemOwnershipUseCase', CheckItemOwnershipUseCase)
+container.registerSingleton('IUseTimeTravelTicketUseCase', UseTimeTravelTicketUseCase)
+container.registerSingleton('IGetMissedDaysUseCase', GetMissedDaysUseCase)
+container.registerSingleton('IUpdateStoreItemUseCase', UpdateStoreItemUseCase)
+container.registerSingleton('IToggleStoreItemActiveUseCase', ToggleStoreItemActiveUseCase)
+container.registerSingleton('IGetAllStoreItemsForAdminUseCase', GetAllStoreItemsForAdminUseCase)
 container.registerSingleton('ICreateContestUseCase', CreateContestUseCase)
 container.registerSingleton('IGetAdminActiveContestsUseCase', GetAdminActiveContestsUseCase)
 container.registerSingleton('IGetAdminUpcomingContestsUseCase', GetAdminUpcomingContestsUseCase)
@@ -315,6 +330,9 @@ container.registerSingleton('IUnsubscribeFromPushUseCase', UnsubscribeFromPushUs
 container.registerSingleton('ISendAdminNotificationUseCase', SendAdminNotificationUseCase);
 container.registerSingleton('ISendUserNotificationUseCase', SendUserNotificationUseCase);
 
+container.registerSingleton('IGetAllSubmissionsForAdminUseCase', GetAllSubmissionsForAdminUseCase);
+container.registerSingleton('IGetSubmissionDetailForAdminUseCase', GetSubmissionDetailForAdminUseCase);
+
 
 //   Register Controllers  //
 // ----------------------- //
@@ -333,6 +351,7 @@ container.registerSingleton(AdminRoomController)
 container.registerSingleton(RazorpayWebhookController)
 container.registerSingleton(AdminCoinController)
 container.registerSingleton(NotificationController)
+container.registerSingleton(AdminSubmissionController)
 
 
 export { container };

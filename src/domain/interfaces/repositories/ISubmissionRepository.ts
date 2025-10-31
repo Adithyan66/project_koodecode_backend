@@ -1,6 +1,31 @@
 
 import { Submission } from '../../entities/Submission';
 
+export interface AdminSubmissionFilters {
+  status?: string;
+  problemId?: string;
+  userId?: string;
+  submissionType?: 'problem' | 'contest';
+  startDate?: Date;
+  endDate?: Date;
+  search?: string;
+}
+
+export interface AdminSubmissionSort {
+  sortBy?: 'createdAt' | 'score' | 'totalExecutionTime' | 'maxMemoryUsage';
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface AdminSubmissionPagination {
+  page: number;
+  limit: number;
+}
+
+export interface AdminSubmissionsResult {
+  submissions: any[];
+  total: number;
+}
+
 export interface ISubmissionRepository {
   create(submission: Omit<Submission, 'id' | 'createdAt' | 'updatedAt'>): Promise<Submission>;
   findById(id: string): Promise<Submission | null>;
@@ -16,4 +41,9 @@ export interface ISubmissionRepository {
   countByUserId(userId: string, submissionType?: string): Promise<number>;
   findByUserIdAndDateRange(userId: string, startDate: Date, endDate: Date, submissionType?: string): Promise<Submission[]>;
   findAcceptedByProblemId(problemId: string): Promise<Submission[]>;
+  findAllForAdmin(
+    filters: AdminSubmissionFilters,
+    pagination: AdminSubmissionPagination,
+    sort: AdminSubmissionSort
+  ): Promise<AdminSubmissionsResult>;
 }

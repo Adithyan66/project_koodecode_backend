@@ -1,6 +1,6 @@
 
 
-import { ISubmissionRepository } from '../../domain/interfaces/repositories/ISubmissionRepository';
+import { ISubmissionRepository, AdminSubmissionFilters, AdminSubmissionPagination, AdminSubmissionSort, AdminSubmissionsResult } from '../../domain/interfaces/repositories/ISubmissionRepository';
 import { Submission } from '../../domain/entities/Submission';
 import { SubmissionModel } from './models/SubmissionModel';
 
@@ -122,6 +122,63 @@ export class MongoSubmissionRepository implements ISubmissionRepository {
       .lean();
     
     return submissions.map(this.mapToEntity);
+  }
+
+  async findAllForAdmin(
+    filters: AdminSubmissionFilters,
+    pagination: AdminSubmissionPagination,
+    sort: AdminSubmissionSort
+  ): Promise<AdminSubmissionsResult> {
+    const query: any = {};
+
+    if (filters.status) {
+      query.status = filters.status;
+    }
+
+    if (filters.problemId) {
+      query.problemId = filters.problemId;
+    }
+
+    if (filters.userId) {
+      query.userId = filters.userId;
+    }
+
+    if (filters.submissionType) {
+      query.submissionType = filters.submissionType;
+    }
+
+    if (filters.startDate || filters.endDate) {
+      query.createdAt = {};
+      if (filters.startDate) {
+        query.createdAt.$gte = filters.startDate;
+      }
+      if (filters.endDate) {
+        query.createdAt.$lte = filters.endDate;
+      }
+    }
+
+    const sortField = sort.sortBy || 'createdAt';
+    const sortOrder = sort.sortOrder === 'asc' ? 1 : -1;
+    const sortObj: any = {};
+    sortObj[sortField] = sortOrder;
+
+    const skip = (pagination.page - 1) * pagination.limit;
+
+    const [submissions, total] = await Promise.all([
+      SubmissionModel.find(query)
+        .populate('userId', 'username email')
+        .populate('problemId', 'title slug')
+        .sort(sortObj)
+        .skip(skip)
+        .limit(pagination.limit)
+        .lean(),
+      SubmissionModel.countDocuments(query)
+    ]);
+
+    return {
+      submissions,
+      total
+    };
   }
 
   private mapToEntity(doc: any): any {
