@@ -8,6 +8,7 @@ import { config } from '../config/config';
 import { ITestCaseRepository } from '../../domain/interfaces/repositories/ITestCaseRepository';
 import { IRealtimeService } from '../../domain/interfaces/services/IRealtimeService';
 import { inject, injectable } from 'tsyringe';
+import { IUserRepository } from '../../domain/interfaces/repositories/IUserRepository';
 
 
 
@@ -20,9 +21,10 @@ export class SocketService implements IRealtimeService {
         @inject('IRoomRepository') private roomRepository: IRoomRepository,
         @inject('IProblemRepository') private problemRepository: IProblemRepository,
         @inject('IRoomActivityRepository') private roomActivityRepository: IRoomActivityRepository,
-        @inject('ITestCaseRepository') private testCaseRepository: ITestCaseRepository
+        @inject('ITestCaseRepository') private testCaseRepository: ITestCaseRepository,
+        @inject("IUserRepository") private userRepository: IUserRepository,
     ) {
-       
+
     }
 
     initialize(server: HttpServer): void {
@@ -90,7 +92,7 @@ export class SocketService implements IRealtimeService {
 
     private setupEventHandlers(): void {
 
-        this.io.on('connection', (socket) => {
+        this.io.on('connection', async (socket) => {
 
             const { userId, roomId } = socket.data;
 
@@ -115,18 +117,30 @@ export class SocketService implements IRealtimeService {
             // Update user online status
             this.updateUserOnlineStatus(roomId, userId, true);
 
+            const userDetails = await this.userRepository.findById(userId)
+
             // Notify others that user joined
             socket.to(`room_${roomId}`).emit('user-joined', {
                 userId,
+                username: userDetails?.userName,
+                fullName: userDetails?.fullName,
+                email: userDetails?.email,
+                profilePicKey: userDetails?.profilePicKey,
                 timestamp: new Date()
             });
 
             // Handle problem change
             socket.on('change-problem', async (data: { problemNumber: number }) => {
-                if (!socket.data.permissions.canChangeProblem) {
+                // if (!socket.data.permissions.canChangeProblem) {
+                //     socket.emit('error', { message: 'No permission to change problem' });
+                //     return;
+                // }
+                const roomData = await this.roomRepository.findByRoomId(roomId)
+                if (!roomData?.permissions?.canChangeProblem.some(id => id.toString() === userId)) {
                     socket.emit('error', { message: 'No permission to change problem' });
                     return;
                 }
+
 
                 try {
                     const problem = await this.problemRepository.findByProblemNumber(data.problemNumber);
@@ -196,11 +210,18 @@ export class SocketService implements IRealtimeService {
                 //     problemNumber: data.problemNumber
                 // });
 
-                if (!socket.data.permissions.canEditCode) {
-                    console.log("❌ No permission to edit code");
+                // if (!socket.data.permissions.canEditCode) {
+                //     console.log("❌ No permission to edit code");
+                //     socket.emit('error', { message: 'No permission to edit code' });
+                //     return;
+                // }
+
+                const roomData = await this.roomRepository.findByRoomId(roomId)
+                if (!roomData?.permissions?.canEditCode.some(id => id.toString() === userId)) {
                     socket.emit('error', { message: 'No permission to edit code' });
                     return;
                 }
+
 
                 try {
                     // console.log("✅ Permission check passed, saving code...");
@@ -245,7 +266,7 @@ export class SocketService implements IRealtimeService {
 
 
             // Handle whiteboard updates
-            socket.on('whiteboard-update', (data: any) => {
+            socket.on('whiteboard-update', async (data: any) => {
                 // console.log("=== BACKEND received white-board update ===");
                 // console.log("From user:", userId, "in room:", roomId);
                 // console.log("Socket data:", {
@@ -257,10 +278,23 @@ export class SocketService implements IRealtimeService {
                 //     data.elements
                 // );
 
-                if (!socket.data.permissions.canDrawWhiteboard) {
+
+
+
+
+                // if (!socket.data.permissions.canDrawWhiteboard) {
+                //     socket.emit('error', { message: 'No permission to draw on whiteboard' });
+                //     return;
+                // }
+
+                const roomData = await this.roomRepository.findByRoomId(roomId)
+                if (!roomData?.permissions?.canDrawWhiteboard.some(id => id.toString() === userId)) {
                     socket.emit('error', { message: 'No permission to draw on whiteboard' });
                     return;
                 }
+
+
+
 
                 // Broadcast to other users in the room
                 socket.to(`room_${roomId}_board`).emit('whiteboard-changed', {
@@ -297,12 +331,14 @@ export class SocketService implements IRealtimeService {
                         return;
                     }
 
+                    const user = await this.userRepository.findById(userId)
+
                     // Create message object
                     const message = {
                         id: Date.now().toString() + '_' + userId,
                         userId,
                         username: participant.username,
-                        profilePicture: participant.profilePicUrl || null,
+                        profilePicture: user?.profilePicKey || null,
                         content: data.content,
                         type: data.type,
                         language: data.language,
@@ -335,52 +371,105 @@ export class SocketService implements IRealtimeService {
             });
 
             // Handle typing indicators
-            socket.on('typing-start', () => {
+            socket.on('typing-start', async () => {
+                const user = await this.userRepository.findById(userId)
                 socket.to(`room_${roomId}`).emit('user-typing', {
                     userId,
-                    username: socket.data.username,
+                    username: user.userName,
                     isTyping: true
                 });
             });
-
-            socket.on('typing-stop', () => {
+            
+            socket.on('typing-stop',async () => {
+                const user = await this.userRepository.findById(userId)
                 socket.to(`room_${roomId}`).emit('user-typing', {
                     userId,
-                    username: socket.data.username,
+                    username: user.userName,
                     isTyping: false
                 });
             });
 
 
             // Handle permission updates
+            // socket.on('update-permissions', async (data: { targetUserId: string; permissions: any }) => {
+            //     const room = await this.roomRepository.findByRoomId(roomId);
+
+            //     if (!room || room.createdBy !== userId) {
+            //         socket.emit('error', { message: 'Only room creator can update permissions' });
+            //         return;
+            //     }
+
+            //     try {
+            //         // Update permissions in database
+            //         const updatedPermissions = { ...room.permissions };
+
+            //         // Update based on new permissions
+            //         Object.keys(data.permissions).forEach(permission => {
+            //             if (data.permissions[permission]) {
+            //                 if (!updatedPermissions[permission].includes(data.targetUserId)) {
+            //                     updatedPermissions[permission].push(data.targetUserId);
+            //                 }
+            //             } else {
+            //                 updatedPermissions[permission] = updatedPermissions[permission].filter(
+            //                     id => id !== data.targetUserId
+            //                 );
+            //             }
+            //         });
+
+            //         await this.roomRepository.updatePermissions(roomId, updatedPermissions);
+
+            //         // Notify all users about permission change
+            //         this.io.to(`room_${roomId}`).emit('permissions-updated', {
+            //             targetUserId: data.targetUserId,
+            //             permissions: data.permissions,
+            //             updatedBy: userId,
+            //             timestamp: new Date()
+            //         });
+
+            //         // Log activity
+            //         await this.roomActivityRepository.create({
+            //             roomId,
+            //             userId,
+            //             action: 'permissions_updated',
+            //             details: { targetUserId: data.targetUserId, permissions: data.permissions },
+            //             timestamp: new Date()
+            //         });
+
+            //     } catch (error) {
+            //         socket.emit('error', { message: 'Failed to update permissions' });
+            //     }
+            // });
+
             socket.on('update-permissions', async (data: { targetUserId: string; permissions: any }) => {
+                console.log("receivedddddddddddddddddddddd", data);
+
                 const room = await this.roomRepository.findByRoomId(roomId);
 
-                if (!room || room.createdBy !== userId) {
+                if (!room || room.createdBy.toString() !== userId) {
                     socket.emit('error', { message: 'Only room creator can update permissions' });
                     return;
                 }
 
                 try {
-                    // Update permissions in database
                     const updatedPermissions = { ...room.permissions };
 
-                    // Update based on new permissions
                     Object.keys(data.permissions).forEach(permission => {
-                        if (data.permissions[permission]) {
-                            if (!updatedPermissions[permission].includes(data.targetUserId)) {
-                                updatedPermissions[permission].push(data.targetUserId);
+                        if (permission in updatedPermissions) {
+                            const key = permission as 'canEditCode' | 'canDrawWhiteboard' | 'canChangeProblem';
+                            if (data.permissions[permission]) {
+                                if (!updatedPermissions[key].includes(data.targetUserId)) {
+                                    updatedPermissions[key].push(data.targetUserId);
+                                }
+                            } else {
+                                updatedPermissions[key] = updatedPermissions[key].filter(
+                                    id => id.toString() !== data.targetUserId
+                                );
                             }
-                        } else {
-                            updatedPermissions[permission] = updatedPermissions[permission].filter(
-                                id => id !== data.targetUserId
-                            );
                         }
                     });
 
                     await this.roomRepository.updatePermissions(roomId, updatedPermissions);
 
-                    // Notify all users about permission change
                     this.io.to(`room_${roomId}`).emit('permissions-updated', {
                         targetUserId: data.targetUserId,
                         permissions: data.permissions,
@@ -388,7 +477,6 @@ export class SocketService implements IRealtimeService {
                         timestamp: new Date()
                     });
 
-                    // Log activity
                     await this.roomActivityRepository.create({
                         roomId,
                         userId,

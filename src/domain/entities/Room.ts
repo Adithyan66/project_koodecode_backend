@@ -41,6 +41,7 @@ export interface Room {
 }
 
 export interface Participant {
+  profilePicUrl: null;
   userId: string;
   username: string;
   joinedAt: Date;

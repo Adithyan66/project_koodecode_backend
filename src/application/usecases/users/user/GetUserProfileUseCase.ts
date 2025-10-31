@@ -55,6 +55,7 @@ export class GetUserProfileUseCase implements IGetUserProfileForUserUseCase {
                 count 
             };
         }).sort((a, b) => b.count - a.count);
+        console.log("jiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",languages);            
 
         const heatmapData = profile.activities
             .filter(activity => activity.date.startsWith(year.toString()))

@@ -132,7 +132,7 @@ export class UserRoomController {
 
         const { roomId } = httpRequest.params;
         const updateDto: UpdateRoomPermissionsDto = httpRequest.body;
-        const requesterId = httpRequest.user!.id;
+        const requesterId = httpRequest.user.userId;
 
         if (!updateDto.userId || !updateDto.permissions) {
             throw new BadRequestError('User ID and permissions are required')

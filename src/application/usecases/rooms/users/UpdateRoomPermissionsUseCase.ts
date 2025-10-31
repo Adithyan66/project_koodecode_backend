@@ -24,13 +24,12 @@ export class UpdateRoomPermissionsUseCase implements IUpdateRoomPermissionsUseCa
       if (!room) {
         return { success: false, error: 'Room not found' };
       }
-
-      // Only room creator can update permissions
+      console.log(room.createdBy ,"anddddddddddddddddddddddddddddddddddd", requesterId);
+      
       if (room.createdBy !== requesterId) {
         return { success: false, error: 'Only room creator can update permissions' };
       }
 
-      // Update permissions in room
       const updatedPermissions = { ...room.permissions };
 
       if (updateDto.permissions.canEditCode) {

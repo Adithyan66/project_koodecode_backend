@@ -169,7 +169,7 @@ const UserProfileSchema = new Schema<IUserProfile>({
     firstSolveDate: { type: Date },
     lastSolveDate: { type: Date },
     averageSolveTime: { type: Number, default: 0 },
-    languagesUsed: { type: Map, of: Number, default: new Map() },
+    languagesUsed: { type: Object, of: Number, default: new Map() },
     
     // Streak Information
     streak: { type: StreakSchema, default: () => ({}) },

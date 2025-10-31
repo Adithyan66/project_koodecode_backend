@@ -83,18 +83,18 @@ export class ContestTimerService {
         contest.state = newState;
         await this.contestRepository.update(contest.id, { state: newState });
 
-        console.log(`[ContestTimerService] Contest ${contest.title} updated from ${currentState} to ${newState}`);
+        // console.log(`[ContestTimerService] Contest ${contest.title} updated from ${currentState} to ${newState}`);
 
         // If contest just ended, distribute rewards immediately
         if (newState === ContestState.ENDED && currentState !== ContestState.ENDED) {
           try {
-            console.log(`[ContestTimerService] Distributing rewards for contest ${contest.title}`);
+            // console.log(`[ContestTimerService] Distributing rewards for contest ${contest.title}`);
             const result = await this.distributeContestRewardsUseCase.execute(contest.id);
 
-            console.log(`[ContestTimerService] Rewards distributed: ${result.rewardsGiven} participants received coins out of ${result.totalParticipants} total participants`);
+            // console.log(`[ContestTimerService] Rewards distributed: ${result.rewardsGiven} participants received coins out of ${result.totalParticipants} total participants`);
 
             if (!result.distributed && result.reason) {
-              console.log(`[ContestTimerService] Reward distribution skipped: ${result.reason}`);
+              // console.log(`[ContestTimerService] Reward distribution skipped: ${result.reason}`);
             }
           } catch (error) {
             console.error(`[ContestTimerService] Failed to distribute rewards for contest ${contest.title}:`, error);
