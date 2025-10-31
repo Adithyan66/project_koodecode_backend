@@ -21,6 +21,8 @@ import userStoreRoute from './presentation/express/routes/user/userStoreRoute'
 import adminContestRoute from './presentation/express/routes/admin/adminContestRoute'
 import adminUserRoute from './presentation/express/routes/admin/adminUserRoute'
 import adminRoomRoute from './presentation/express/routes/admin/adminRoomRoute'
+import userNotificationRoute from './presentation/express/routes/user/userNotificationRoute'
+import adminNotificationRoute from './presentation/express/routes/admin/adminNotificationRoute'
 
 import { errorMiddleware } from './presentation/express/middlewares/errorHandler';
 import imageServiceRoute from './presentation/express/routes/shared/imageServiceRoute'
@@ -55,6 +57,7 @@ app.use('/api/user/contests', userContestRoute)
 app.use('/api/user/problems', userProblemRoute)
 app.use('/api/user/rooms', userRoomRoute);
 app.use('/api/user/store', userStoreRoute);
+app.use('/api/user/notifications', userNotificationRoute);
 
 
 app.use('/api/admin/contests', adminContestRoute)
@@ -62,6 +65,7 @@ app.use('/api/admin/problems', adminProblemRoute);
 app.use('/api/admin/users', adminUserRoute);
 app.use('/api/admin/rooms', adminRoomRoute);
 app.use('/api/admin/coins', adminCoinsRoute);
+app.use('/api/admin/notifications', adminNotificationRoute);
 
 app.use('/api/image-service', imageServiceRoute)
 app.use('/api/health', healthRoute);

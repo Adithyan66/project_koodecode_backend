@@ -149,7 +149,13 @@ import { AwardCoinsUseCase } from '../../application/usecases/coins/AwardCoinsUs
 import { SubmissionDistributionService } from '../../application/services/SubmissionDistributionService';
 import { DistributionCacheService } from '../services/DistributionCacheService';
 
-
+import { MongoPushSubscriptionRepository } from '../db/MongoPushSubscriptionRepository';
+import { WebPushService } from '../services/WebPushService';
+import { SubscribeToPushUseCase } from '../../application/usecases/notifications/SubscribeToPushUseCase';
+import { UnsubscribeFromPushUseCase } from '../../application/usecases/notifications/UnsubscribeFromPushUseCase';
+import { SendAdminNotificationUseCase } from '../../application/usecases/notifications/SendAdminNotificationUseCase';
+import { SendUserNotificationUseCase } from '../../application/usecases/notifications/SendUserNotificationUseCase';
+import { NotificationController } from '../../presentation/http/controllers/notifications/NotificationController';
 
 
 
@@ -207,6 +213,8 @@ container.registerSingleton('IStoreItemRepository', MongoStoreItemRepository)
 container.registerSingleton('IUserInventoryRepository', MongoUserInventoryRepository)
 
 container.registerSingleton('IRealtimeService', SocketService)
+container.registerSingleton('IPushSubscriptionRepository', MongoPushSubscriptionRepository)
+container.registerSingleton('IWebPushService', WebPushService)
 
 
 //   Register Use Cases  //
@@ -302,6 +310,11 @@ container.registerSingleton('IRefundCoinPurchaseUseCase', RefundCoinPurchaseUseC
 container.registerSingleton('IAddNoteToPurchaseUseCase', AddNoteToPurchaseUseCase);
 container.registerSingleton('IAwardCoinsUseCase', AwardCoinsUseCase);
 
+container.registerSingleton('ISubscribeToPushUseCase', SubscribeToPushUseCase);
+container.registerSingleton('IUnsubscribeFromPushUseCase', UnsubscribeFromPushUseCase);
+container.registerSingleton('ISendAdminNotificationUseCase', SendAdminNotificationUseCase);
+container.registerSingleton('ISendUserNotificationUseCase', SendUserNotificationUseCase);
+
 
 //   Register Controllers  //
 // ----------------------- //
@@ -319,6 +332,7 @@ container.registerSingleton(AdminUserController)
 container.registerSingleton(AdminRoomController)
 container.registerSingleton(RazorpayWebhookController)
 container.registerSingleton(AdminCoinController)
+container.registerSingleton(NotificationController)
 
 
 export { container };

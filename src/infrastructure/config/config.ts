@@ -60,6 +60,11 @@ export const config = {
     }
   },
   
+  webPush: {
+    publicKey: process.env.VAPID_PUBLIC_KEY || 'BC1M9PhYAVleQGo2LYUjhNVwQ9xbKh0EUEcc21qVySO_e4ebQqmZx8TsGh4jl9BE9TT9bYQ8dKukHrHfVJnRKro',
+    privateKey: process.env.VAPID_PRIVATE_KEY || '2-ZOCjuUdxYIpw1PYBh1Gu9qjvghZA1ABkgNg1rvCcE',
+    subject: process.env.VAPID_SUBJECT || 'mailto:admin@koodecode.com'
+  },
 
   RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID || 'rzp_test_RRHkLeStNJBD5F',
   RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET || "22iHcFu7sZHrYLEHP9a6Uh8m",

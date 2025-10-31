@@ -6,12 +6,19 @@ import { Contest, ContestState } from '../../domain/entities/Contest';
 import { ContestParticipant, ParticipantStatus } from '../../domain/entities/ContestParticipant';
 import { IContestRepository } from '../../domain/interfaces/repositories/IContestRepository';
 import { IDistributeContestRewardsUseCase } from '../interfaces/IContestUseCase';
+import { IPushSubscriptionRepository } from '../../domain/interfaces/repositories/IPushSubscriptionRepository';
+import { IWebPushService } from '../../domain/interfaces/services/IWebPushService';
+import { IContestParticipantRepository } from '../../domain/interfaces/repositories/IContestParticipantRepository';
+import { NotificationType } from '../../shared/constants/NotificationTypes';
 
 @injectable()
 export class ContestTimerService {
   constructor(
     @inject("IContestRepository") private contestRepository: IContestRepository,
-    @inject("IDistributeContestRewardsUseCase") private distributeContestRewardsUseCase: IDistributeContestRewardsUseCase
+    @inject("IDistributeContestRewardsUseCase") private distributeContestRewardsUseCase: IDistributeContestRewardsUseCase,
+    @inject("IPushSubscriptionRepository") private pushSubscriptionRepository: IPushSubscriptionRepository,
+    @inject("IWebPushService") private webPushService: IWebPushService,
+    @inject("IContestParticipantRepository") private contestParticipantRepository: IContestParticipantRepository
   ) { }
 
   checkContestStatus(contest: Contest): ContestState {
@@ -79,23 +86,25 @@ export class ContestTimerService {
       const newState = this.checkContestStatus(contest);
 
       if (newState !== currentState) {
-        // Update contest state
         contest.state = newState;
         await this.contestRepository.update(contest.id, { state: newState });
 
-        // console.log(`[ContestTimerService] Contest ${contest.title} updated from ${currentState} to ${newState}`);
+        if (newState === ContestState.REGISTRATION_OPEN && currentState === ContestState.UPCOMING) {
+          await this.sendRegistrationOpenNotification(contest);
+        }
 
-        // If contest just ended, distribute rewards immediately
-        if (newState === ContestState.ENDED && currentState !== ContestState.ENDED) {
+        if (newState === ContestState.ACTIVE && currentState === ContestState.REGISTRATION_OPEN) {
+          await this.sendContestStartNotification(contest);
+        }
+
+        if (newState === ContestState.ENDED && currentState === ContestState.ACTIVE) {
           try {
-            // console.log(`[ContestTimerService] Distributing rewards for contest ${contest.title}`);
             const result = await this.distributeContestRewardsUseCase.execute(contest.id);
 
-            // console.log(`[ContestTimerService] Rewards distributed: ${result.rewardsGiven} participants received coins out of ${result.totalParticipants} total participants`);
-
             if (!result.distributed && result.reason) {
-              // console.log(`[ContestTimerService] Reward distribution skipped: ${result.reason}`);
             }
+
+            await this.sendContestEndNotification(contest);
           } catch (error) {
             console.error(`[ContestTimerService] Failed to distribute rewards for contest ${contest.title}:`, error);
           }
@@ -104,6 +113,88 @@ export class ContestTimerService {
     });
 
     await Promise.all(updates);
+  }
+
+  private async sendRegistrationOpenNotification(contest: Contest): Promise<void> {
+    try {
+      const allSubscriptions = await this.pushSubscriptionRepository.findAll();
+
+      if (allSubscriptions.length === 0) return;
+
+      await this.webPushService.sendBulkNotifications(allSubscriptions, {
+        title: `New Contest: "${contest.title}"`,
+        body: 'Registration is now open! Register now to participate.',
+        icon: '📢',
+        data: {
+          type: NotificationType.ADMIN_ANNOUNCEMENT,
+          contestId: contest.id,
+        },
+      });
+
+      console.log(`[ContestTimerService] Sent registration open notifications for contest ${contest.title} to ${allSubscriptions.length} subscriptions`);
+    } catch (error) {
+      console.error(`[ContestTimerService] Failed to send registration open notification:`, error);
+    }
+  }
+
+  private async sendContestStartNotification(contest: Contest): Promise<void> {
+    try {
+      const participants = await this.contestParticipantRepository.findByContestId(contest.id);
+      const userIds = participants.map(p => p.userId.toString());
+      
+      if (userIds.length === 0) return;
+
+      const subscriptions = await Promise.all(
+        userIds.map(userId => this.pushSubscriptionRepository.findByUserId(userId))
+      );
+      const allSubscriptions = subscriptions.flat();
+
+      if (allSubscriptions.length === 0) return;
+
+      await this.webPushService.sendBulkNotifications(allSubscriptions, {
+        title: `Contest "${contest.title}" has started!`,
+        body: 'Join now and start solving problems!',
+        icon: '🏁',
+        data: {
+          type: NotificationType.CONTEST_STARTING,
+          contestId: contest.id,
+        },
+      });
+
+      console.log(`[ContestTimerService] Sent start notifications for contest ${contest.title} to ${allSubscriptions.length} subscriptions`);
+    } catch (error) {
+      console.error(`[ContestTimerService] Failed to send contest start notification:`, error);
+    }
+  }
+
+  private async sendContestEndNotification(contest: Contest): Promise<void> {
+    try {
+      const participants = await this.contestParticipantRepository.findByContestId(contest.id);
+      const userIds = participants.map(p => p.userId.toString());
+      
+      if (userIds.length === 0) return;
+
+      const subscriptions = await Promise.all(
+        userIds.map(userId => this.pushSubscriptionRepository.findByUserId(userId))
+      );
+      const allSubscriptions = subscriptions.flat();
+
+      if (allSubscriptions.length === 0) return;
+
+      await this.webPushService.sendBulkNotifications(allSubscriptions, {
+        title: `Contest "${contest.title}" - Results Published!`,
+        body: 'Check the leaderboard to see your rank and rewards!',
+        icon: '🎉',
+        data: {
+          type: NotificationType.CONTEST_ENDED,
+          contestId: contest.id,
+        },
+      });
+
+      console.log(`[ContestTimerService] Sent results published notifications for contest ${contest.title} to ${allSubscriptions.length} subscriptions`);
+    } catch (error) {
+      console.error(`[ContestTimerService] Failed to send contest end notification:`, error);
+    }
   }
 
   // Manual method to distribute rewards for a specific contest

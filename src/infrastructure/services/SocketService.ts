@@ -389,57 +389,6 @@ export class SocketService implements IRealtimeService {
                 });
             });
 
-
-            // Handle permission updates
-            // socket.on('update-permissions', async (data: { targetUserId: string; permissions: any }) => {
-            //     const room = await this.roomRepository.findByRoomId(roomId);
-
-            //     if (!room || room.createdBy !== userId) {
-            //         socket.emit('error', { message: 'Only room creator can update permissions' });
-            //         return;
-            //     }
-
-            //     try {
-            //         // Update permissions in database
-            //         const updatedPermissions = { ...room.permissions };
-
-            //         // Update based on new permissions
-            //         Object.keys(data.permissions).forEach(permission => {
-            //             if (data.permissions[permission]) {
-            //                 if (!updatedPermissions[permission].includes(data.targetUserId)) {
-            //                     updatedPermissions[permission].push(data.targetUserId);
-            //                 }
-            //             } else {
-            //                 updatedPermissions[permission] = updatedPermissions[permission].filter(
-            //                     id => id !== data.targetUserId
-            //                 );
-            //             }
-            //         });
-
-            //         await this.roomRepository.updatePermissions(roomId, updatedPermissions);
-
-            //         // Notify all users about permission change
-            //         this.io.to(`room_${roomId}`).emit('permissions-updated', {
-            //             targetUserId: data.targetUserId,
-            //             permissions: data.permissions,
-            //             updatedBy: userId,
-            //             timestamp: new Date()
-            //         });
-
-            //         // Log activity
-            //         await this.roomActivityRepository.create({
-            //             roomId,
-            //             userId,
-            //             action: 'permissions_updated',
-            //             details: { targetUserId: data.targetUserId, permissions: data.permissions },
-            //             timestamp: new Date()
-            //         });
-
-            //     } catch (error) {
-            //         socket.emit('error', { message: 'Failed to update permissions' });
-            //     }
-            // });
-
             socket.on('update-permissions', async (data: { targetUserId: string; permissions: any }) => {
                 console.log("receivedddddddddddddddddddddd", data);
 
