@@ -31,8 +31,8 @@ export const config = {
     password: process.env.EMAIL_PASSWORD || ''
   },
   judge0: {
-    apiUrl: process.env.JUDGE0_API_URL || 'http://localhost:2358',
-    rapidApiHost: process.env.JUDGE0_RAPIDAPI_HOST || 'judge0-ce.p.rapidapi.com',
+    apiUrl: process.env.JUDGE0_API_URL || '',
+    rapidApiHost: process.env.JUDGE0_RAPIDAPI_HOST || '',
     rapidApiKey: process.env.JUDGE0_RAPIDAPI_KEY || '',
     authToken: process.env.JUDGE0_AUTH_TOKEN || undefined,
     useSelfHosted: process.env.USE_SELF_HOSTED_JUDGE0 === 'true',
@@ -47,7 +47,6 @@ export const config = {
     region: process.env.AWS_REGION || "",
     s3BucketName: process.env.S3_BUCKET_NAME || ""
   },
-
   jitsi: {
     domain: process.env.JITSI_DOMAIN,
     apiSecret: process.env.JITSI_API_SECRET || 'your-secret'

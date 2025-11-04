@@ -1,6 +1,6 @@
 
-
 import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
+import { MESSAGES } from '../../../../shared/constants/messages';
 import { IHttpRequest } from '../../interfaces/IHttpRequest';
 import { HttpResponse } from '../../helper/HttpResponse';
 import { buildResponse } from '../../../../infrastructure/utils/responseBuilder';
@@ -42,7 +42,7 @@ export class AdminProblemController implements IAdminProblemController {
     createProblem = async (httpRequest: IHttpRequest) => {
 
         if (!httpRequest.user || httpRequest.user.role !== 'admin') {
-            throw new UnauthorizedError('Admin access required')
+            throw new UnauthorizedError(MESSAGES.ADMIN_ACCESS_REQUIRED)
         }
 
         const {
@@ -65,7 +65,7 @@ export class AdminProblemController implements IAdminProblemController {
 
 
         if (!title || !difficulty || !description || !testCases || !templates || !supportedLanguages) {
-            throw new BadRequestError('Missing required fields: title, difficulty, description, testCases')
+            throw new BadRequestError(MESSAGES.MISSING_REQUIRED_FIELDS)
         }
 
         const createProblemDto: CreateProblemDto = {
@@ -93,7 +93,7 @@ export class AdminProblemController implements IAdminProblemController {
         );
 
         return new HttpResponse(HTTP_STATUS.CREATED, {
-            ...buildResponse(true, 'Problem Created succesfully', {
+            ...buildResponse(true, MESSAGES.PROBLEM_CREATED_SUCCESSFULLY, {
                 id: problem.id,
                 title: problem.title,
                 slug: problem.slug,
@@ -128,19 +128,19 @@ export class AdminProblemController implements IAdminProblemController {
         };
 
         if (request.page && request.page < 1) {
-            throw new BadRequestError('Page must be greater than 0');
+            throw new BadRequestError(MESSAGES.PAGE_MUST_BE_GREATER_THAN_ZERO);
         }
 
         if (request.limit && (request.limit < 1 || request.limit > 100)) {
-            throw new BadRequestError('Limit must be between 1 and 100');
+            throw new BadRequestError(MESSAGES.LIMIT_MUST_BE_BETWEEN_1_AND_100);
         }
 
         if (request.difficulty && !['easy', 'medium', 'hard'].includes(request.difficulty)) {
-            throw new BadRequestError('Invalid difficulty. Must be easy, medium, or hard');
+            throw new BadRequestError(MESSAGES.INVALID_DIFFICULTY);
         }
 
         if (request.status && !['active', 'inactive'].includes(request.status)) {
-            throw new BadRequestError('Invalid status. Must be active or inactive');
+            throw new BadRequestError(MESSAGES.INVALID_STATUS);
         }
 
         const validSortFields = ['problemNumber', 'title', 'difficulty', 'createdAt', 'acceptanceRate', 'totalSubmissions'];
@@ -149,13 +149,13 @@ export class AdminProblemController implements IAdminProblemController {
         }
 
         if (request.sortOrder && !['asc', 'desc'].includes(request.sortOrder)) {
-            throw new BadRequestError('Invalid sortOrder. Must be asc or desc');
+            throw new BadRequestError(MESSAGES.INVALID_SORT_ORDER);
         }
 
         const result = await this._getAllProblemsForAdminUseCase.execute(request);
 
         return new HttpResponse(HTTP_STATUS.OK, {
-            ...buildResponse(true, 'Problems retrieved successfully', result),
+            ...buildResponse(true, MESSAGES.PROBLEMS_RETRIEVED_SUCCESSFULLY, result),
         });
     }
 
@@ -164,7 +164,7 @@ export class AdminProblemController implements IAdminProblemController {
         const result = await this._getAllProgrammingLanguages.execute();
 
         return new HttpResponse(HTTP_STATUS.OK, {
-            ...buildResponse(true, 'languages retrieved successfully', result),
+            ...buildResponse(true, MESSAGES.LANGUAGES_RETRIEVED_SUCCESSFULLY, result),
         });
     }
 
@@ -174,14 +174,14 @@ export class AdminProblemController implements IAdminProblemController {
         const { slug } = httpRequest.params;
 
         if (!slug) {
-            throw new BadRequestError('Problem slug is required');
+            throw new BadRequestError(MESSAGES.PROBLEM_SLUG_REQUIRED);
         }
 
         const result = await this._getProblemDetailForAdminUseCase.execute(slug);
 
 
         return new HttpResponse(HTTP_STATUS.OK, {
-            ...buildResponse(true, 'Problem details retrieved successfully', result),
+            ...buildResponse(true, MESSAGES.PROBLEM_DETAILS_RETRIEVED, result),
         });
 
     }
@@ -192,7 +192,7 @@ export class AdminProblemController implements IAdminProblemController {
         const { page, limit, isSample } = httpRequest.query;
 
         if (!slug) {
-            throw new BadRequestError('Problem slug is required');
+            throw new BadRequestError(MESSAGES.PROBLEM_SLUG_REQUIRED);
         }
 
         const request: TestCaseListRequestDto = {
@@ -203,120 +203,120 @@ export class AdminProblemController implements IAdminProblemController {
         };
 
         if (request.page && request.page < 1) {
-            throw new BadRequestError('Page must be greater than 0');
+            throw new BadRequestError(MESSAGES.PAGE_MUST_BE_GREATER_THAN_ZERO);
         }
 
         if (request.limit && (request.limit < 1 || request.limit > 100)) {
-            throw new BadRequestError('Limit must be between 1 and 100');
+            throw new BadRequestError(MESSAGES.LIMIT_MUST_BE_BETWEEN_1_AND_100);
         }
 
         const result = await this._getProblemTestCasesForAdminUseCase.execute(request);
 
         return new HttpResponse(HTTP_STATUS.OK, {
-            ...buildResponse(true, 'Test cases retrieved successfully', result),
+            ...buildResponse(true, MESSAGES.TEST_CASES_RETRIEVED, result),
         });
     }
 
     updateProblem = async (httpRequest: IHttpRequest) => {
 
         if (!httpRequest.user || httpRequest.user.role !== 'admin') {
-            throw new UnauthorizedError('Admin access required')
+            throw new UnauthorizedError(MESSAGES.ADMIN_ACCESS_REQUIRED)
         }
 
         const { slug } = httpRequest.params;
         const updateData: UpdateProblemPayload = httpRequest.body;
 
         if (!slug) {
-            throw new BadRequestError('Problem slug is required');
+            throw new BadRequestError(MESSAGES.PROBLEM_SLUG_REQUIRED);
         }
 
         const result = await this._updateProblemUseCase.execute(slug, updateData, httpRequest.user.userId);
 
         return new HttpResponse(HTTP_STATUS.OK, {
-            ...buildResponse(true, 'Problem updated successfully', result),
+            ...buildResponse(true, MESSAGES.PROBLEM_UPDATED_SUCCESSFULLY, result),
         });
     }
 
     updateTestCase = async (httpRequest: IHttpRequest) => {
         
         if (!httpRequest.user || httpRequest.user.role !== 'admin') {
-            throw new UnauthorizedError('Admin access required')
+            throw new UnauthorizedError(MESSAGES.ADMIN_ACCESS_REQUIRED)
         }
 
         const { slug, testCaseId } = httpRequest.params;
         const updateData: UpdateTestCasePayload = httpRequest.body;
 
         if (!slug) {
-            throw new BadRequestError('Problem slug is required');
+            throw new BadRequestError(MESSAGES.PROBLEM_SLUG_REQUIRED);
         }
 
         if (!testCaseId) {
-            throw new BadRequestError('Test case ID is required');
+            throw new BadRequestError(MESSAGES.TEST_CASE_ID_REQUIRED);
         }
 
         await this._updateTestCaseUseCase.execute(slug, testCaseId, updateData, httpRequest.user.userId);
 
         return new HttpResponse(HTTP_STATUS.OK, {
-            ...buildResponse(true, 'Test case updated successfully'),
+            ...buildResponse(true, MESSAGES.TEST_CASE_UPDATED_SUCCESSFULLY),
         });
     }
 
     addTestCase = async (httpRequest: IHttpRequest) => {
         if (!httpRequest.user || httpRequest.user.role !== 'admin') {
-            throw new UnauthorizedError('Admin access required')
+            throw new UnauthorizedError(MESSAGES.ADMIN_ACCESS_REQUIRED)
         }
 
         const { slug } = httpRequest.params;
         const testCaseData: AddTestCasePayload = httpRequest.body;
 
         if (!slug) {
-            throw new BadRequestError('Problem slug is required');
+            throw new BadRequestError(MESSAGES.PROBLEM_SLUG_REQUIRED);
         }
 
         await this._addTestCaseUseCase.execute(slug, testCaseData, httpRequest.user.userId);
 
         return new HttpResponse(HTTP_STATUS.CREATED, {
-            ...buildResponse(true, 'Test case added successfully'),
+            ...buildResponse(true, MESSAGES.TEST_CASE_ADDED_SUCCESSFULLY),
         });
     }
 
     deleteTestCase = async (httpRequest: IHttpRequest) => {
         if (!httpRequest.user || httpRequest.user.role !== 'admin') {
-            throw new UnauthorizedError('Admin access required')
+            throw new UnauthorizedError(MESSAGES.ADMIN_ACCESS_REQUIRED)
         }
 
         const { slug, testCaseId } = httpRequest.params;
 
         if (!slug) {
-            throw new BadRequestError('Problem slug is required');
+            throw new BadRequestError(MESSAGES.PROBLEM_SLUG_REQUIRED);
         }
 
         if (!testCaseId) {
-            throw new BadRequestError('Test case ID is required');
+            throw new BadRequestError(MESSAGES.TEST_CASE_ID_REQUIRED);
         }
 
         await this._deleteTestCaseUseCase.execute(slug, testCaseId, httpRequest.user.userId);
 
         return new HttpResponse(HTTP_STATUS.OK, {
-            ...buildResponse(true, 'Test case deleted successfully'),
+            ...buildResponse(true, MESSAGES.TEST_CASE_DELETED_SUCCESSFULLY),
         });
     }
 
     deleteProblem = async (httpRequest: IHttpRequest) => {
         if (!httpRequest.user || httpRequest.user.role !== 'admin') {
-            throw new UnauthorizedError('Admin access required')
+            throw new UnauthorizedError(MESSAGES.ADMIN_ACCESS_REQUIRED)
         }
 
         const { slug } = httpRequest.params;
 
         if (!slug) {
-            throw new BadRequestError('Problem slug is required');
+            throw new BadRequestError(MESSAGES.PROBLEM_SLUG_REQUIRED);
         }
 
         await this._deleteProblemUseCase.execute(slug, httpRequest.user.userId);
 
         return new HttpResponse(HTTP_STATUS.OK, {
-            ...buildResponse(true, 'Problem deleted successfully'),
+            ...buildResponse(true, MESSAGES.PROBLEM_DELETED_SUCCESSFULLY),
         });
     }
 

@@ -2,6 +2,7 @@ import { inject, injectable } from 'tsyringe';
 import { IHttpRequest } from '../../interfaces/IHttpRequest';
 import { HttpResponse } from '../../helper/HttpResponse';
 import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
+import { MESSAGES } from '../../../../shared/constants/messages';
 import { buildResponse } from '../../../../infrastructure/utils/responseBuilder';
 import { UnauthorizedError } from '../../../../application/errors/AppErrors';
 import { IGetAdminActiveContestsUseCase } from '../../../../application/interfaces/IAdminContestUseCase';
@@ -37,7 +38,7 @@ export class AdminContestController {
     const contest = await this.createContestUseCase.execute(createContestDto, adminUserId);
 
     return new HttpResponse(HTTP_STATUS.CREATED, {
-      ...buildResponse(true, 'Contest created successfully', contest),
+      ...buildResponse(true, MESSAGES.CONTEST_CREATED_SUCCESSFULLY, contest),
     });
   };
 
@@ -50,210 +51,210 @@ export class AdminContestController {
 
     const result = await this.getActiveContestsUseCase.execute();
 
-    const activeContestsResponse = {
-  success: true,
-  message: "Active contests retrieved successfully",
-  data: {
-    contests: [
-      {
-        id: "contest_123456789",
-        contestNumber: 15,
-        title: "Weekly Coding Challenge #15",
-        description:
-          "A challenging contest featuring algorithms and data structures problems",
-        createdBy: "admin_user_123",
-        startTime: "2024-01-15T10:00:00.000Z",
-        endTime: "2024-01-15T12:00:00.000Z",
-        thumbnail:
-          "https://s3.amazonaws.com/contest-thumbnails/weekly-challenge-15.jpg",
-        registrationDeadline: "2024-01-15T09:30:00.000Z",
-        problemTimeLimit: 30,
-        maxAttempts: 3,
-        wrongSubmissionPenalty: 10,
-        coinRewards: [
-          { rank: 1, coins: 100 },
-          { rank: 2, coins: 75 },
-          { rank: 3, coins: 50 },
-        ],
-        state: "ACTIVE",
-        createdAt: "2024-01-10T08:00:00.000Z",
-        updatedAt: "2024-01-15T10:00:00.000Z",
-        stats: {
-          totalParticipants: 45,
-          completedParticipants: 12,
-          inProgressParticipants: 33,
-          averageScore: 67.5,
-          totalProblems: 3,
-          maxPossibleScore: 1000,
-          isActive: true,
-          timeRemaining: 3600000,
-        },
-        problems: [
-          {
-            id: "problem_001",
-            problemNumber: 1,
-            title: "Two Sum",
-            description:
-              "Find two numbers in an array that add up to a target value",
-            difficulty: "easy",
-            tags: ["array", "hash-table"],
-            totalSubmissions: 45,
-            acceptedSubmissions: 38,
-            acceptanceRate: 84,
-            isActive: true,
-          },
-          {
-            id: "problem_002",
-            problemNumber: 2,
-            title: "Binary Tree Traversal",
-            description:
-              "Implement inorder, preorder, and postorder traversal",
-            difficulty: "medium",
-            tags: ["tree", "recursion"],
-            totalSubmissions: 32,
-            acceptedSubmissions: 18,
-            acceptanceRate: 56,
-            isActive: true,
-          },
-        ],
-        topPerformers: [
-          {
-            rank: 1,
-            username: "alice_coder",
-            profileImage: "https://s3.amazonaws.com/profile-pics/alice.jpg",
-            totalScore: 950,
-            timeTaken: "1h 23m 45s",
-            attempts: 5,
-            status: "In Progress",
-            coinsEarned: 100,
-          },
-          {
-            rank: 2,
-            username: "bob_programmer",
-            profileImage: "https://s3.amazonaws.com/profile-pics/bob.jpg",
-            totalScore: 875,
-            timeTaken: "1h 45m 12s",
-            attempts: 7,
-            status: "In Progress",
-            coinsEarned: 75,
-          },
-        ],
-        status: {
-          currentState: "ACTIVE",
-          timeUntilStart: null,
-          timeUntilEnd: 3600000,
-          timeUntilRegistrationDeadline: null,
-          isRegistrationOpen: false,
-          isActive: true,
-          isEnded: false,
-          canRegister: false,
-          hasStarted: true,
-          hasEnded: false,
-        },
-      },
-      {
-        id: "contest_123456789",
-        contestNumber: 15,
-        title: "Weekly Coding Challenge #15",
-        description:
-          "A challenging contest featuring algorithms and data structures problems",
-        createdBy: "admin_user_123",
-        startTime: "2024-01-15T10:00:00.000Z",
-        endTime: "2024-01-15T12:00:00.000Z",
-        thumbnail:
-          "https://s3.amazonaws.com/contest-thumbnails/weekly-challenge-15.jpg",
-        registrationDeadline: "2024-01-15T09:30:00.000Z",
-        problemTimeLimit: 30,
-        maxAttempts: 3,
-        wrongSubmissionPenalty: 10,
-        coinRewards: [
-          { rank: 1, coins: 100 },
-          { rank: 2, coins: 75 },
-          { rank: 3, coins: 50 },
-        ],
-        state: "ACTIVE",
-        createdAt: "2024-01-10T08:00:00.000Z",
-        updatedAt: "2024-01-15T10:00:00.000Z",
-        stats: {
-          totalParticipants: 45,
-          completedParticipants: 12,
-          inProgressParticipants: 33,
-          averageScore: 67.5,
-          totalProblems: 3,
-          maxPossibleScore: 1000,
-          isActive: true,
-          timeRemaining: 3600000,
-        },
-        problems: [
-          {
-            id: "problem_001",
-            problemNumber: 1,
-            title: "Two Sum",
-            description:
-              "Find two numbers in an array that add up to a target value",
-            difficulty: "easy",
-            tags: ["array", "hash-table"],
-            totalSubmissions: 45,
-            acceptedSubmissions: 38,
-            acceptanceRate: 84,
-            isActive: true,
-          },
-          {
-            id: "problem_002",
-            problemNumber: 2,
-            title: "Binary Tree Traversal",
-            description:
-              "Implement inorder, preorder, and postorder traversal",
-            difficulty: "medium",
-            tags: ["tree", "recursion"],
-            totalSubmissions: 32,
-            acceptedSubmissions: 18,
-            acceptanceRate: 56,
-            isActive: true,
-          },
-        ],
-        topPerformers: [
-          {
-            rank: 1,
-            username: "alice_coder",
-            profileImage: "https://s3.amazonaws.com/profile-pics/alice.jpg",
-            totalScore: 950,
-            timeTaken: "1h 23m 45s",
-            attempts: 5,
-            status: "In Progress",
-            coinsEarned: 100,
-          },
-          {
-            rank: 2,
-            username: "bob_programmer",
-            profileImage: "https://s3.amazonaws.com/profile-pics/bob.jpg",
-            totalScore: 875,
-            timeTaken: "1h 45m 12s",
-            attempts: 7,
-            status: "In Progress",
-            coinsEarned: 75,
-          },
-        ],
-        status: {
-          currentState: "ACTIVE",
-          timeUntilStart: null,
-          timeUntilEnd: 3600000,
-          timeUntilRegistrationDeadline: null,
-          isRegistrationOpen: false,
-          isActive: true,
-          isEnded: false,
-          canRegister: false,
-          hasStarted: true,
-          hasEnded: false,
-        },
-      },
-    ],
-  },
-};
+//     const activeContestsResponse = {
+//   success: true,
+//   message: MESSAGES.ACTIVE_CONTESTS_RETRIEVED,
+//   data: {
+//     contests: [
+//       {
+//         id: "contest_123456789",
+//         contestNumber: 15,
+//         title: "Weekly Coding Challenge #15",
+//         description:
+//           "A challenging contest featuring algorithms and data structures problems",
+//         createdBy: "admin_user_123",
+//         startTime: "2024-01-15T10:00:00.000Z",
+//         endTime: "2024-01-15T12:00:00.000Z",
+//         thumbnail:
+//           "https://s3.amazonaws.com/contest-thumbnails/weekly-challenge-15.jpg",
+//         registrationDeadline: "2024-01-15T09:30:00.000Z",
+//         problemTimeLimit: 30,
+//         maxAttempts: 3,
+//         wrongSubmissionPenalty: 10,
+//         coinRewards: [
+//           { rank: 1, coins: 100 },
+//           { rank: 2, coins: 75 },
+//           { rank: 3, coins: 50 },
+//         ],
+//         state: "ACTIVE",
+//         createdAt: "2024-01-10T08:00:00.000Z",
+//         updatedAt: "2024-01-15T10:00:00.000Z",
+//         stats: {
+//           totalParticipants: 45,
+//           completedParticipants: 12,
+//           inProgressParticipants: 33,
+//           averageScore: 67.5,
+//           totalProblems: 3,
+//           maxPossibleScore: 1000,
+//           isActive: true,
+//           timeRemaining: 3600000,
+//         },
+//         problems: [
+//           {
+//             id: "problem_001",
+//             problemNumber: 1,
+//             title: "Two Sum",
+//             description:
+//               "Find two numbers in an array that add up to a target value",
+//             difficulty: "easy",
+//             tags: ["array", "hash-table"],
+//             totalSubmissions: 45,
+//             acceptedSubmissions: 38,
+//             acceptanceRate: 84,
+//             isActive: true,
+//           },
+//           {
+//             id: "problem_002",
+//             problemNumber: 2,
+//             title: "Binary Tree Traversal",
+//             description:
+//               "Implement inorder, preorder, and postorder traversal",
+//             difficulty: "medium",
+//             tags: ["tree", "recursion"],
+//             totalSubmissions: 32,
+//             acceptedSubmissions: 18,
+//             acceptanceRate: 56,
+//             isActive: true,
+//           },
+//         ],
+//         topPerformers: [
+//           {
+//             rank: 1,
+//             username: "alice_coder",
+//             profileImage: "https://s3.amazonaws.com/profile-pics/alice.jpg",
+//             totalScore: 950,
+//             timeTaken: "1h 23m 45s",
+//             attempts: 5,
+//             status: "In Progress",
+//             coinsEarned: 100,
+//           },
+//           {
+//             rank: 2,
+//             username: "bob_programmer",
+//             profileImage: "https://s3.amazonaws.com/profile-pics/bob.jpg",
+//             totalScore: 875,
+//             timeTaken: "1h 45m 12s",
+//             attempts: 7,
+//             status: "In Progress",
+//             coinsEarned: 75,
+//           },
+//         ],
+//         status: {
+//           currentState: "ACTIVE",
+//           timeUntilStart: null,
+//           timeUntilEnd: 3600000,
+//           timeUntilRegistrationDeadline: null,
+//           isRegistrationOpen: false,
+//           isActive: true,
+//           isEnded: false,
+//           canRegister: false,
+//           hasStarted: true,
+//           hasEnded: false,
+//         },
+//       },
+//       {
+//         id: "contest_123456789",
+//         contestNumber: 15,
+//         title: "Weekly Coding Challenge #15",
+//         description:
+//           "A challenging contest featuring algorithms and data structures problems",
+//         createdBy: "admin_user_123",
+//         startTime: "2024-01-15T10:00:00.000Z",
+//         endTime: "2024-01-15T12:00:00.000Z",
+//         thumbnail:
+//           "https://s3.amazonaws.com/contest-thumbnails/weekly-challenge-15.jpg",
+//         registrationDeadline: "2024-01-15T09:30:00.000Z",
+//         problemTimeLimit: 30,
+//         maxAttempts: 3,
+//         wrongSubmissionPenalty: 10,
+//         coinRewards: [
+//           { rank: 1, coins: 100 },
+//           { rank: 2, coins: 75 },
+//           { rank: 3, coins: 50 },
+//         ],
+//         state: "ACTIVE",
+//         createdAt: "2024-01-10T08:00:00.000Z",
+//         updatedAt: "2024-01-15T10:00:00.000Z",
+//         stats: {
+//           totalParticipants: 45,
+//           completedParticipants: 12,
+//           inProgressParticipants: 33,
+//           averageScore: 67.5,
+//           totalProblems: 3,
+//           maxPossibleScore: 1000,
+//           isActive: true,
+//           timeRemaining: 3600000,
+//         },
+//         problems: [
+//           {
+//             id: "problem_001",
+//             problemNumber: 1,
+//             title: "Two Sum",
+//             description:
+//               "Find two numbers in an array that add up to a target value",
+//             difficulty: "easy",
+//             tags: ["array", "hash-table"],
+//             totalSubmissions: 45,
+//             acceptedSubmissions: 38,
+//             acceptanceRate: 84,
+//             isActive: true,
+//           },
+//           {
+//             id: "problem_002",
+//             problemNumber: 2,
+//             title: "Binary Tree Traversal",
+//             description:
+//               "Implement inorder, preorder, and postorder traversal",
+//             difficulty: "medium",
+//             tags: ["tree", "recursion"],
+//             totalSubmissions: 32,
+//             acceptedSubmissions: 18,
+//             acceptanceRate: 56,
+//             isActive: true,
+//           },
+//         ],
+//         topPerformers: [
+//           {
+//             rank: 1,
+//             username: "alice_coder",
+//             profileImage: "https://s3.amazonaws.com/profile-pics/alice.jpg",
+//             totalScore: 950,
+//             timeTaken: "1h 23m 45s",
+//             attempts: 5,
+//             status: "In Progress",
+//             coinsEarned: 100,
+//           },
+//           {
+//             rank: 2,
+//             username: "bob_programmer",
+//             profileImage: "https://s3.amazonaws.com/profile-pics/bob.jpg",
+//             totalScore: 875,
+//             timeTaken: "1h 45m 12s",
+//             attempts: 7,
+//             status: "In Progress",
+//             coinsEarned: 75,
+//           },
+//         ],
+//         status: {
+//           currentState: "ACTIVE",
+//           timeUntilStart: null,
+//           timeUntilEnd: 3600000,
+//           timeUntilRegistrationDeadline: null,
+//           isRegistrationOpen: false,
+//           isActive: true,
+//           isEnded: false,
+//           canRegister: false,
+//           hasStarted: true,
+//           hasEnded: false,
+//         },
+//       },
+//     ],
+//   },
+// };
 
 
     return new HttpResponse(HTTP_STATUS.OK, {
-      ...buildResponse(true, 'Active contests retrieved successfully', result),
+      ...buildResponse(true, MESSAGES.ACTIVE_CONTESTS_RETRIEVED, result),
     });
   };
 
@@ -268,7 +269,7 @@ export class AdminContestController {
 
     const upcomingContestsResponse = {
   success: true,
-  message: "Upcoming contests retrieved successfully",
+  message: MESSAGES.UPCOMING_CONTESTS_RETRIEVED,
   data: {
     contests: [
       {
@@ -350,12 +351,12 @@ export class AdminContestController {
 
 
     return new HttpResponse(HTTP_STATUS.OK, {
-      ...buildResponse(true, 'Upcoming contests retrieved successfully', result),
+      ...buildResponse(true, MESSAGES.UPCOMING_CONTESTS_RETRIEVED, result),
     });
   };
  pastContestsResponse = {
   success: true,
-  message: "Past contests retrieved successfully",
+  message: MESSAGES.PAST_CONTESTS_RETRIEVED,
   data: {
     contests: [
       {
@@ -488,7 +489,7 @@ export class AdminContestController {
     const result = await this.getPastContestsUseCase.execute(request);
 
     return new HttpResponse(HTTP_STATUS.OK, {
-      ...buildResponse(true, 'Past contests retrieved successfully', result),
+      ...buildResponse(true, MESSAGES.PAST_CONTESTS_RETRIEVED, result),
     });
   };
 
@@ -501,14 +502,14 @@ export class AdminContestController {
     }
 
     if (!contestId) {
-      throw new Error('Contest ID is required');
+      throw new Error(MESSAGES.CONTEST_ID_REQUIRED);
     }
 
     const contest = await this.getContestByIdUseCase.execute(contestId);
 
     return new HttpResponse(HTTP_STATUS.OK, {
       success: true,
-      message: "Contest details retrieved successfully",
+      message: MESSAGES.CONTEST_DETAILS_RETRIEVED,
       data: {
         contest
       }
@@ -525,18 +526,18 @@ export class AdminContestController {
     }
 
     if (!contestId) {
-      throw new Error('Contest ID is required');
+      throw new Error(MESSAGES.CONTEST_ID_REQUIRED);
     }
 
     if (!updateData || Object.keys(updateData).length === 0) {
-      throw new Error('Update data is required');
+      throw new Error(MESSAGES.UPDATE_DATA_REQUIRED);
     }
 
     const updatedContest = await this.updateContestUseCase.execute(contestId, updateData);
 
     return new HttpResponse(HTTP_STATUS.OK, {
       success: true,
-      message: "Contest updated successfully",
+      message: MESSAGES.CONTEST_UPDATED_SUCCESSFULLY,
       data: {
         contest: updatedContest
       }
@@ -552,7 +553,7 @@ export class AdminContestController {
     }
 
     if (!contestId) {
-      throw new Error('Contest ID is required');
+      throw new Error(MESSAGES.CONTEST_ID_REQUIRED);
     }
 
     const result = await this.deleteContestUseCase.execute(contestId);

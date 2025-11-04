@@ -2,6 +2,7 @@ import { injectable, inject } from "tsyringe";
 import { CoinTransactionSource } from "../../../../domain/entities/CoinTransaction";
 import { buildResponse } from "../../../../infrastructure/utils/responseBuilder";
 import { HTTP_STATUS } from "../../../../shared/constants/httpStatus";
+import { MESSAGES } from "../../../../shared/constants/messages";
 import { HttpResponse } from "../../helper/HttpResponse";
 import { IHttpRequest } from "../../interfaces/IHttpRequest";
 import { IGetAdminCoinPurchasesUseCase, IGetAdminCoinPurchaseDetailUseCase, IReconcileCoinPurchaseUseCase, IRefundCoinPurchaseUseCase, IAddNoteToPurchaseUseCase } from "../../../../application/interfaces/ICoinUseCase";
@@ -55,15 +56,14 @@ export class AdminCoinController {
         }
 
         return new HttpResponse(HTTP_STATUS.OK, {
-            ...buildResponse(true, 'order Created succesfully', transactionData),
+            ...buildResponse(true, MESSAGES.ORDER_CREATED_SUCCESSFULLY, transactionData),
         });
 
     }
 
     getCoinPurchases = async (httpRequest: IHttpRequest) => {
-        // Check admin authorization
         if (!httpRequest.user || httpRequest.user.role !== 'admin') {
-            throw new UnauthorizedError('Admin access required');
+            throw new UnauthorizedError(MESSAGES.ADMIN_ACCESS_REQUIRED);
         }
 
         // Extract query parameters
@@ -94,40 +94,38 @@ export class AdminCoinController {
         const result = await this._getAdminCoinPurchasesUseCase.execute(request);
 
         return new HttpResponse(HTTP_STATUS.OK, {
-            ...buildResponse(true, 'Coin purchases fetched successfully', result),
+            ...buildResponse(true, MESSAGES.COIN_PURCHASES_FETCHED, result),
         });
     }
 
     getCoinPurchaseDetail = async (httpRequest: IHttpRequest) => {
-        // Check admin authorization
         if (!httpRequest.user || httpRequest.user.role !== 'admin') {
-            throw new UnauthorizedError('Admin access required');
+            throw new UnauthorizedError(MESSAGES.ADMIN_ACCESS_REQUIRED);
         }
 
-        // Extract purchaseId from params
         const { purchaseId } = httpRequest.params;
 
         if (!purchaseId) {
-            throw new BadRequestError('Purchase ID is required');
+            throw new BadRequestError(MESSAGES.PURCHASE_ID_REQUIRED);
         }
 
         const result = await this._getAdminCoinPurchaseDetailUseCase.execute(purchaseId);
 
         return new HttpResponse(HTTP_STATUS.OK, {
-            ...buildResponse(true, 'Coin purchase details retrieved successfully', result),
+            ...buildResponse(true, MESSAGES.COIN_PURCHASE_DETAILS_RETRIEVED, result),
         });
     }
 
     reconcilePurchase = async (httpRequest: IHttpRequest) => {
         if (!httpRequest.user || httpRequest.user.role !== 'admin') {
-            throw new UnauthorizedError('Admin access required');
+            throw new UnauthorizedError(MESSAGES.ADMIN_ACCESS_REQUIRED);
         }
 
         const { purchaseId } = httpRequest.params;
         const { notes } = httpRequest.body || {};
 
         if (!purchaseId) {
-            throw new BadRequestError('Purchase ID is required');
+            throw new BadRequestError(MESSAGES.PURCHASE_ID_REQUIRED);
         }
 
         const result = await this._reconcileCoinPurchaseUseCase.execute(purchaseId, notes);
@@ -139,22 +137,22 @@ export class AdminCoinController {
 
     refundPurchase = async (httpRequest: IHttpRequest) => {
         if (!httpRequest.user || httpRequest.user.role !== 'admin') {
-            throw new UnauthorizedError('Admin access required');
+            throw new UnauthorizedError(MESSAGES.ADMIN_ACCESS_REQUIRED);
         }
 
         const { purchaseId } = httpRequest.params;
         const { notes } = httpRequest.body || {};
 
         if (!purchaseId) {
-            throw new BadRequestError('Purchase ID is required');
+            throw new BadRequestError(MESSAGES.PURCHASE_ID_REQUIRED);
         }
 
         if (!notes || notes.trim().length === 0) {
-            throw new BadRequestError('Refund notes are required');
+            throw new BadRequestError(MESSAGES.REFUND_NOTES_REQUIRED);
         }
 
         if (!httpRequest.user.userId) {
-            throw new UnauthorizedError('Admin user ID not found');
+            throw new UnauthorizedError(MESSAGES.ADMIN_USER_ID_NOT_FOUND);
         }
 
         const result = await this._refundCoinPurchaseUseCase.execute(purchaseId, httpRequest.user.userId, notes);
@@ -166,22 +164,22 @@ export class AdminCoinController {
 
     addNoteToPurchase = async (httpRequest: IHttpRequest) => {
         if (!httpRequest.user || httpRequest.user.role !== 'admin') {
-            throw new UnauthorizedError('Admin access required');
+            throw new UnauthorizedError(MESSAGES.ADMIN_ACCESS_REQUIRED);
         }
 
         const { purchaseId } = httpRequest.params;
         const { notes } = httpRequest.body || {};
 
         if (!purchaseId) {
-            throw new BadRequestError('Purchase ID is required');
+            throw new BadRequestError(MESSAGES.PURCHASE_ID_REQUIRED);
         }
 
         if (!notes || notes.trim().length === 0) {
-            throw new BadRequestError('Note text is required');
+            throw new BadRequestError(MESSAGES.NOTE_TEXT_REQUIRED);
         }
 
         if (!httpRequest.user.userId) {
-            throw new UnauthorizedError('Admin user ID not found');
+            throw new UnauthorizedError(MESSAGES.ADMIN_USER_ID_NOT_FOUND);
         }
 
         const result = await this._addNoteToPurchaseUseCase.execute(purchaseId, httpRequest.user.userId, notes);
