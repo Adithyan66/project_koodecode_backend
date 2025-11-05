@@ -36,7 +36,6 @@ app.use(cookieParser());
 app.use(cors({
   origin: [
     "http://localhost:5173",
-    "https://7eb979cc030d.ngrok-free.app",
     "http://localhost:5174"
   ],
   credentials: true
