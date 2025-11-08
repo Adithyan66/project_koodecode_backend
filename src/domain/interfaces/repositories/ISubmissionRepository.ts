@@ -46,4 +46,6 @@ export interface ISubmissionRepository {
     pagination: AdminSubmissionPagination,
     sort: AdminSubmissionSort
   ): Promise<AdminSubmissionsResult>;
+  findByUserAndProblemPaginated(userId: string, problemId: string, page: number, limit: number): Promise<Submission[]>;
+  countByUserAndProblem(userId: string, problemId: string): Promise<number>;
 }

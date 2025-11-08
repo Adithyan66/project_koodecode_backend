@@ -110,3 +110,9 @@ export class UserBlockedError extends DomainError {
         super("Your account has been blocked. Please contact support for assistance.");
     }
 }
+
+export class InvalidAccessError extends DomainError {
+    constructor() {
+        super("Invalid access. You do not have permission to access this resource.");
+    }
+}

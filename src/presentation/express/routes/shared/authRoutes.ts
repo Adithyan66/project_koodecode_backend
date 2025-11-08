@@ -19,6 +19,7 @@ const authControllers = container.resolve(AuthController);
 router.post('/signup/request-otp', expressAdapter(authControllers.requestOtp));
 router.post('/signup/verify-otp', expressAdapter(authControllers.verifyOtpAndSignup));
 router.post('/login', expressAdapter(authControllers.login));
+router.post('/admin-login', expressAdapter(authControllers.adminLogin));
 router.get('/validate', expressAdapter(authControllers.validateUser));
 router.get('/refresh-token', expressAdapter(authControllers.verifyToken));
 router.post('/logout', expressAdapter(authControllers.logoutUser));

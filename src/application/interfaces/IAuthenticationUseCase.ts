@@ -13,7 +13,7 @@ export interface ISignupUseCase {
 }
 
 export interface ILoginUseCase {
-    execute(email: string, password: string): Promise<LoginUserResponse>;
+    execute(email: string, password: string, isAdminLogin?: boolean): Promise<LoginUserResponse>;
 }
 
 export interface IValidateUserUseCase {

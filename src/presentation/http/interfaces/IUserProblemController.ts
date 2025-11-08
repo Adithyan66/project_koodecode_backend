@@ -12,4 +12,5 @@ export interface IUserProblemController {
   getLanguages(httpRequest: IHttpRequest): Promise<IHttpResponse>;
   getProblemNames(httpRequest: IHttpRequest): Promise<IHttpResponse>;
   getListPageData(httpRequest: IHttpRequest): Promise<IHttpResponse>;
+  getUserSubmissionHistory(httpRequest: IHttpRequest): Promise<IHttpResponse>;
 }

@@ -15,6 +15,7 @@ import { RunCodeDto, RunCodeResponseDto } from "../dto/submissions/RunCodeDto";
 import { SubmissionResponseDto } from "../dto/submissions/SubmissionResponseDto";
 import { ListPageDataResponseDto } from "../dto/problems/users/ListPageDataDto";
 import { ProblemListApiResponseDto, ProblemListQueryDto } from "../dto/problems/users/ProblemListQueryDto";
+import { SubmissionHistoryResponseDto } from "../dto/submissions/SubmissionHistoryResponseDto";
 
 export interface IGetProblemsListUseCase {
   execute(userId: string, filters?: {
@@ -77,4 +78,8 @@ export interface IGetProblemDetailForAdminUseCase {
 
 export interface IGetListPageDataUseCase {
   execute(userId: string): Promise<ListPageDataResponseDto>;
+}
+
+export interface IGetUserSubmissionHistoryUseCase {
+  execute(userId: string, problemId: string, page: number, limit: number): Promise<SubmissionHistoryResponseDto>;
 }

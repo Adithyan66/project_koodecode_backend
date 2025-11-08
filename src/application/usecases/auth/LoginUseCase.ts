@@ -10,7 +10,7 @@ import { SafeUser } from '../../dto/users/safeUser';
 import { JwtService } from '../../../infrastructure/services/JwtService';
 import { IPasswordService } from '../../../domain/interfaces/services/IPasswordService';
 import { ILoginUseCase } from '../../interfaces/IAuthenticationUseCase';
-import { InvalidCredentials, WrongPasswordError, UserBlockedError } from '../../../domain/errors/AuthErrors';
+import { InvalidCredentials, WrongPasswordError, UserBlockedError, InvalidAccessError } from '../../../domain/errors/AuthErrors';
 import { ITokenService } from '../../../domain/interfaces/services/ITokenService';
 
 
@@ -24,7 +24,7 @@ export class LoginUseCase implements ILoginUseCase {
         @inject("IPasswordService") private passwordService: IPasswordService
     ) { }
 
-    async execute(email: string, password: string): Promise<LoginUserResponse> {
+    async execute(email: string, password: string, isAdminLogin: boolean = false): Promise<LoginUserResponse> {
 
         const user = await this.userRepository.findByEmail(email);
 
@@ -32,9 +32,16 @@ export class LoginUseCase implements ILoginUseCase {
             throw new InvalidCredentials();
         }
 
-        // Check if user is blocked
         if (user.isBlocked) {
             throw new UserBlockedError();
+        }
+
+        if (isAdminLogin && user.role !== "admin") {
+            throw new InvalidAccessError();
+        }
+
+        if (!isAdminLogin && user.role === "admin") {
+            throw new InvalidAccessError();
         }
 
         let passwordValid

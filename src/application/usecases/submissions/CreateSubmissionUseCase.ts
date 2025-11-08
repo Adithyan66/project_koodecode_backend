@@ -27,7 +27,7 @@ import {
   SubmissionTimeoutError
 } from '../../../domain/errors/SubmissionErrors';
 
-// Application Errors
+
 import {
   NotFoundError,
   BadRequestError,

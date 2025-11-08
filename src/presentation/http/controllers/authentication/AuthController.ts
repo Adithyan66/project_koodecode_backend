@@ -64,10 +64,23 @@ export class AuthController implements IAuthController {
 
         const { email, password } = httpRequest.body;
 
-        const { user } = await this._loginUseCase.execute(email, password);
+        const { user } = await this._loginUseCase.execute(email, password );
         
         return new HttpResponse(HTTP_STATUS.OK, {
             ...buildResponse(true, 'User login successful', { user }),
+            accessToken: user.accessToken,
+            refreshToken: user.refreshToken,
+        });
+    }
+
+     adminLogin = async (httpRequest: IHttpRequest) => {
+
+        const { email, password } = httpRequest.body;
+
+        const { user } = await this._loginUseCase.execute(email, password , true);
+        
+        return new HttpResponse(HTTP_STATUS.OK, {
+            ...buildResponse(true, 'Admin login successful', { user }),
             accessToken: user.accessToken,
             refreshToken: user.refreshToken,
         });

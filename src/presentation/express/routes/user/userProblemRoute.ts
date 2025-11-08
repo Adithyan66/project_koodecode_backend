@@ -19,6 +19,7 @@ router.get("/get-problems", authenticate, expressAdapter(userProblemController.g
 router.get('/problem-names', authenticate, expressAdapter(userProblemController.getProblemNames));
 router.get('/list-page-data', authenticate, expressAdapter(userProblemController.getListPageData))
 router.get('/:slug/detail', authenticate, expressAdapter(userProblemController.getProblemDetail));
+router.get('/:problemId/submissions', authenticate, expressAdapter(userProblemController.getUserSubmissionHistory));
 router.post('/test-case', authenticate, expressAdapter(userProblemController.runTestCase))
 router.post('/submit', authenticate, expressAdapter(userProblemController.submitSolution));
 router.get('/submissions/:submissionId', expressAdapter(userProblemController.getSubmissionResult));

@@ -9,7 +9,7 @@ import { BadRequestError, UnauthorizedError } from '../../../../application/erro
 import { MESSAGES } from '../../../../shared/constants/messages';
 import { ProblemNamesRequestDto } from '../../../../application/dto/problems/ProblemNamesDto';
 import { IUserProblemController } from '../../interfaces/IUserProblemController';
-import { ICreateSubmissionUseCase, IGetLanguagesUseCase, IGetProblemByIdUseCase, IGetProblemNamesUseCase, IGetProblemsListUseCase, IGetSubmissionResultUseCase, IRunCodeUseCase, IGetListPageDataUseCase } from '../../../../application/interfaces/IProblemUseCase';
+import { ICreateSubmissionUseCase, IGetLanguagesUseCase, IGetProblemByIdUseCase, IGetProblemNamesUseCase, IGetProblemsListUseCase, IGetSubmissionResultUseCase, IRunCodeUseCase, IGetListPageDataUseCase, IGetUserSubmissionHistoryUseCase } from '../../../../application/interfaces/IProblemUseCase';
 import { inject, injectable } from 'tsyringe';
 
 
@@ -26,7 +26,8 @@ export class UserProblemController implements IUserProblemController {
         @inject("IRunCodeUseCase") private _runCodeUseCase: IRunCodeUseCase,
         @inject("IGetLanguagesUseCase") private _getLanguagesUseCase: IGetLanguagesUseCase,
         @inject("IGetProblemNamesUseCase") private _getProblemNamesUseCase: IGetProblemNamesUseCase,
-        @inject("IGetListPageDataUseCase") private _getListPageDataUseCase: IGetListPageDataUseCase
+        @inject("IGetListPageDataUseCase") private _getListPageDataUseCase: IGetListPageDataUseCase,
+        @inject("IGetUserSubmissionHistoryUseCase") private _getUserSubmissionHistoryUseCase: IGetUserSubmissionHistoryUseCase
     ) { }
 
     getProblemsWithFilters = async (httpRequest: IHttpRequest) => {
@@ -205,6 +206,36 @@ export class UserProblemController implements IUserProblemController {
 
         return new HttpResponse(HTTP_STATUS.OK, {
             ...buildResponse(true, 'List page data retrieved successfully', result),
+        });
+    }
+
+    getUserSubmissionHistory = async (httpRequest: IHttpRequest) => {
+        const userId = httpRequest.user?.userId;
+
+        if (!userId) {
+            throw new UnauthorizedError(MESSAGES.UNAUTHORIZED_ACCESS);
+        }
+
+        const { problemId } = httpRequest.params;
+        const page = parseInt(httpRequest.query?.page as string) || 1;
+        const limit = parseInt(httpRequest.query?.limit as string) || 10;
+
+        if (!problemId) {
+            throw new BadRequestError('Problem ID is required');
+        }
+
+        if (page < 1) {
+            throw new BadRequestError('Page must be greater than 0');
+        }
+
+        if (limit < 1 || limit > 50) {
+            throw new BadRequestError('Limit must be between 1 and 50');
+        }
+
+        const result = await this._getUserSubmissionHistoryUseCase.execute(userId, problemId, page, limit);
+
+        return new HttpResponse(HTTP_STATUS.OK, {
+            ...buildResponse(true, 'Submission history retrieved successfully', result),
         });
     }
 

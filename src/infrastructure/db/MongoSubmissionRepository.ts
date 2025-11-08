@@ -181,6 +181,32 @@ export class MongoSubmissionRepository implements ISubmissionRepository {
     };
   }
 
+  async findByUserAndProblemPaginated(userId: string, problemId: string, page: number, limit: number): Promise<Submission[]> {
+    const skip = (page - 1) * limit;
+    const query = {
+      userId,
+      problemId,
+      submissionType: 'problem'
+    };
+
+    const submissions = await SubmissionModel.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    return submissions.map(this.mapToEntity);
+  }
+
+  async countByUserAndProblem(userId: string, problemId: string): Promise<number> {
+    const query = {
+      userId,
+      problemId,
+      submissionType: 'problem'
+    };
+
+    return await SubmissionModel.countDocuments(query);
+  }
+
   private mapToEntity(doc: any): any {
     const problemId = typeof doc.problemId === 'object' && doc.problemId._id 
       ? doc.problemId._id.toString() 
@@ -193,6 +219,8 @@ export class MongoSubmissionRepository implements ISubmissionRepository {
       sourceCode: doc.sourceCode,
       languageId: doc.languageId,
       status: doc.status,
+      overallVerdict: doc.overallVerdict,
+      testCaseResults: doc.testCaseResults || [],
       totalExecutionTime: doc.totalExecutionTime,
       maxMemoryUsage: doc.maxMemoryUsage,
       score:doc.score,

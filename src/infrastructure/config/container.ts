@@ -62,6 +62,7 @@ import { GetProblemByIdUseCase } from "../../application/usecases/problems/user/
 import { GetSubmissionResultUseCase } from "../../application/usecases/submissions/GetSubmissionResultUseCase";
 import { RunCodeUseCase } from "../../application/usecases/submissions/RunCodeUseCase";
 import { GetLanguagesUseCase } from "../../application/usecases/submissions/GetLanguagesUseCase";
+import { GetUserSubmissionHistoryUseCase } from "../../application/usecases/submissions/GetUserSubmissionHistoryUseCase";
 import { GetProblemNamesUseCase } from "../../application/usecases/problems/user/GetProblemNamesUseCase";
 import { GetListPageDataUseCase } from "../../application/usecases/problems/user/GetListPageDataUseCase";
 import { AdminProblemController } from "../../presentation/http/controllers/admin/AdminProblemController";
@@ -244,6 +245,7 @@ container.registerSingleton("ICreateSubmissionUseCase", CreateSubmissionUseCase)
 container.registerSingleton("IGetSubmissionResultUseCase", GetSubmissionResultUseCase)
 container.registerSingleton("IRunCodeUseCase", RunCodeUseCase)
 container.registerSingleton("IGetLanguagesUseCase", GetLanguagesUseCase)
+container.registerSingleton("IGetUserSubmissionHistoryUseCase", GetUserSubmissionHistoryUseCase)
 container.registerSingleton("IGetProblemNamesUseCase", GetProblemNamesUseCase)
 container.registerSingleton("IGetListPageDataUseCase", GetListPageDataUseCase)
 container.registerSingleton("ICreateProblemUseCase", CreateProblemUseCase)
