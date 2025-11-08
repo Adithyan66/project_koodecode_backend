@@ -50,6 +50,13 @@ export interface RoomDocument extends Document {
         canDrawWhiteboard: Types.ObjectId[];
         canChangeProblem: Types.ObjectId[];
     };
+    submissions?: {
+        submissionId: Types.ObjectId;
+        userId: Types.ObjectId;
+        submittedAt: Date;
+        problemId?: Types.ObjectId;
+        score?: number;
+    }[];
     lastActivity: Date;
     createdAt: Date;
     updatedAt: Date;
@@ -71,6 +78,14 @@ const RoomPermissionsSchema = new Schema({
     canEditCode: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     canDrawWhiteboard: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     canChangeProblem: [{ type: Schema.Types.ObjectId, ref: 'User' }]
+});
+
+const SubmissionDetailSchema = new Schema({
+    submissionId: { type: Schema.Types.ObjectId, ref: 'Submission', required: true },
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    submittedAt: { type: Date, default: Date.now },
+    problemId: { type: Schema.Types.ObjectId, ref: 'Problem' },
+    score: { type: Number }
 });
 
 const RoomSchema = new Schema({
@@ -105,6 +120,7 @@ const RoomSchema = new Schema({
     },
     participants: [ParticipantSchema],
     permissions: RoomPermissionsSchema,
+    submissions: [SubmissionDetailSchema],
     lastActivity: { type: Date, default: Date.now }
 }, {
     timestamps: true

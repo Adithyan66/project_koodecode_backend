@@ -81,6 +81,7 @@ import { GetPublicRoomsUseCase } from "../../application/usecases/rooms/users/Ge
 import { UpdateRoomPermissionsUseCase } from "../../application/usecases/rooms/users/UpdateRoomPermissionsUseCase";
 import { KickUserUseCase } from "../../application/usecases/rooms/users/KickUserUseCase";
 import { VerifyPrivateRoomUseCase } from "../../application/usecases/rooms/users/VerifyPrivateRoomUseCase";
+import { RoomSubmitCodeUseCase } from "../../application/usecases/rooms/RoomSubmitCodeUseCase";
 import { MongoRoomRepository } from "../db/MongoRoomRepository";
 import { MongoRoomActivityRepository } from "../db/MongoRoomActivityRepository";
 import { GetAllRoomsForAdminUseCase } from "../../application/usecases/rooms/admin/GetAllRoomsForAdminUseCase";
@@ -277,6 +278,7 @@ container.registerSingleton('IGetPublicRoomsUseCase', GetPublicRoomsUseCase)
 container.registerSingleton('IUpdateRoomPermissionsUseCase', UpdateRoomPermissionsUseCase)
 container.registerSingleton('IKickUserUseCase', KickUserUseCase)
 container.registerSingleton('IVerifyPrivateRoomUseCase', VerifyPrivateRoomUseCase)
+container.registerSingleton('IRoomSubmitCodeUseCase', RoomSubmitCodeUseCase)
 container.registerSingleton('IGetAllRoomsForAdminUseCase', GetAllRoomsForAdminUseCase)
 
 container.registerSingleton('IGetStoreItemsUseCase', GetStoreItemsUseCase)

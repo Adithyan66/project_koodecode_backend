@@ -11,6 +11,14 @@ export interface RoomConfig {
   [key: string]: any;
 }
 
+export interface SubmissionDetail {
+  submissionId: string;
+  userId: string;
+  submittedAt: Date;
+  problemId?: string;
+  score?: number;
+}
+
 export interface Room {
   _id: string | undefined;
   id: string;
@@ -35,6 +43,7 @@ export interface Room {
   status: 'waiting' | 'active' | 'inactive';
   participants: Participant[];
   permissions: RoomPermissions;
+  submissions?: SubmissionDetail[];
   lastActivity: Date;
   createdAt: Date;
   updatedAt: Date;

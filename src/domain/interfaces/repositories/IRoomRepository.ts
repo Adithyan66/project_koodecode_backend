@@ -1,4 +1,4 @@
-import { Room, RoomCode } from '../../entities/Room';
+import { Room, RoomCode, SubmissionDetail } from '../../entities/Room';
 
 export interface IRoomRepository {
   create(room: Omit<Room, 'id' | 'createdAt' | 'updatedAt'>): Promise<Room>;
@@ -36,6 +36,9 @@ export interface IRoomRepository {
   // Room code management
   saveRoomCode(roomCode: RoomCode): Promise<void>;
   getRoomCode(roomId: string): Promise<RoomCode | null>;
+
+  // Submission management
+  addSubmission(roomId: string, submission: SubmissionDetail): Promise<void>;
 
   // Admin
   findAllRoomsForAdmin(params: {

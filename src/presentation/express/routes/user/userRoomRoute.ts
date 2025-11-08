@@ -23,6 +23,7 @@ router.put('/:roomId/permissions', authenticate, expressAdapter(userRoomControll
 router.delete('/:roomId/participants/:userId', authenticate, expressAdapter(userRoomController.kickUser));
 router.get('/problem-names', authenticate, expressAdapter(userRoomController.kickUser));
 router.post('/verify-private', authenticate, expressAdapter(userRoomController.validateRoom));
+router.post('/submit-code', authenticate, expressAdapter(userRoomController.submitCode));
 
 
 export default router;

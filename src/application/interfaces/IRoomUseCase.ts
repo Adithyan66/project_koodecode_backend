@@ -9,6 +9,8 @@ import { PublicRoomsResponseDto } from "../dto/rooms/users/PublicRoomsDto";
 import { KickUserDto, UpdateRoomPermissionsDto } from "../dto/rooms/users/UpdateRoomPermissionsDto";
 import { AdminRoomListRequestDto } from "../dto/rooms/admin/AdminRoomListRequestDto";
 import { AdminRoomListResponseDto } from "../dto/rooms/admin/AdminRoomListResponseDto";
+import { RoomSubmitCodeDto } from "../dto/rooms/users/RoomSubmitCodeDto";
+import { SubmissionResponseDto } from "../dto/submissions/SubmissionResponseDto";
 
 export interface ICreateRoomUseCase {
     execute(createRoomDto: CreateRoomDto, userId: string): Promise<CreateRoomResponseDto>;
@@ -50,4 +52,8 @@ export interface IVerifyPrivateRoomUseCase {
 
 export interface IGetAllRoomsForAdminUseCase {
   execute(request: AdminRoomListRequestDto): Promise<AdminRoomListResponseDto>;
+}
+
+export interface IRoomSubmitCodeUseCase {
+  execute(dto: RoomSubmitCodeDto, userId: string): Promise<SubmissionResponseDto>;
 }

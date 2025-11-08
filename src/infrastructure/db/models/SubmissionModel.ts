@@ -38,7 +38,7 @@ const SubmissionSchema = new Schema({
   score: { type: Number, default: 0 },
   totalExecutionTime: { type: Number, default: 0 },
   maxMemoryUsage: { type: Number, default: 0 },
-  submissionType: { type: String, enum: ['problem', 'contest'] }
+  submissionType: { type: String, enum: ['problem', 'contest', 'room'] }
 }, {
   timestamps: true
 });

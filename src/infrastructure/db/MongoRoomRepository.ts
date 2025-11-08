@@ -1,5 +1,5 @@
 import { IRoomRepository } from '../../domain/interfaces/repositories/IRoomRepository';
-import { Room, RoomCode, Participant } from '../../domain/entities/Room';
+import { Room, RoomCode, Participant, SubmissionDetail } from '../../domain/entities/Room';
 import { RoomModel, RoomDocument } from './models/RoomModel';
 import { RoomCodeModel } from './models/RoomCodeModel';
 
@@ -213,6 +213,16 @@ export class MongoRoomRepository implements IRoomRepository {
   async getRoomCode(roomId: string): Promise<RoomCode | null> {
     const roomCode = await RoomCodeModel.findOne({ roomId }).sort({ lastModified: -1 });
     return roomCode ? roomCode.toObject() : null;
+  }
+
+  async addSubmission(roomId: string, submission: SubmissionDetail): Promise<void> {
+    await RoomModel.findOneAndUpdate(
+      { roomId },
+      {
+        $push: { submissions: submission },
+        $set: { lastActivity: new Date() }
+      }
+    );
   }
 
   async findRoomsByUser(userId: string, page: number, limit: number): Promise<Room[]> {
@@ -431,6 +441,13 @@ export class MongoRoomRepository implements IRoomRepository {
         canDrawWhiteboard: (roomDoc.permissions?.canDrawWhiteboard || []).map(id => id.toString()),
         canChangeProblem: (roomDoc.permissions?.canChangeProblem || []).map(id => id.toString())
       },
+      submissions: roomDoc.submissions?.map(s => ({
+        submissionId: s.submissionId.toString(),
+        userId: s.userId.toString(),
+        submittedAt: s.submittedAt,
+        problemId: s.problemId?.toString(),
+        score: s.score
+      })),
       lastActivity: roomDoc.lastActivity,
       createdAt: roomDoc.createdAt,
       updatedAt: roomDoc.updatedAt

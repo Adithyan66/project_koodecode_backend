@@ -5,7 +5,7 @@ export interface ExecuteCodeDto {
   problemId: string;
   sourceCode: string;
   languageId: number;
-  submissionType:'problem'|'contest'
+  submissionType:'problem'|'contest'|'room'
 }
 
 export interface ExecuteCodeResponseDto {

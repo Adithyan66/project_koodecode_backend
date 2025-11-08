@@ -29,7 +29,7 @@ export interface Submission {
   executionTime: any;
   totalExecutionTime: number;
   maxMemoryUsage: number;
-  submissionType: 'problem' | 'contest';
+  submissionType: 'problem' | 'contest' | 'room';
   createdAt: Date;
   updatedAt: Date;
   memoryUsage: any,

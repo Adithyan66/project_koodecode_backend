@@ -4,13 +4,14 @@
 import { CreateRoomDto } from '../../../../application/dto/rooms/users/CreateRoomDto';
 import { JoinRoomDto } from '../../../../application/dto/rooms/users/JoinRoomDto';
 import { UpdateRoomPermissionsDto, KickUserDto } from '../../../../application/dto/rooms/users/UpdateRoomPermissionsDto';
+import { RoomSubmitCodeDto } from '../../../../application/dto/rooms/users/RoomSubmitCodeDto';
 import { HTTP_STATUS } from '../../../../shared/constants/httpStatus';
 import { IHttpRequest } from '../../interfaces/IHttpRequest';
 import { BadRequestError } from '../../../../application/errors/AppErrors';
 import { HttpResponse } from '../../helper/HttpResponse';
 import { buildResponse } from '../../../../infrastructure/utils/responseBuilder';
 import { inject, injectable } from 'tsyringe';
-import { ICreateRoomUseCase, IGetPublicRoomsUseCase, IJoinRoomUseCase, IKickUserUseCase, IUpdateRoomPermissionsUseCase, IVerifyPrivateRoomUseCase } from '../../../../application/interfaces/IRoomUseCase';
+import { ICreateRoomUseCase, IGetPublicRoomsUseCase, IJoinRoomUseCase, IKickUserUseCase, IRoomSubmitCodeUseCase, IUpdateRoomPermissionsUseCase, IVerifyPrivateRoomUseCase } from '../../../../application/interfaces/IRoomUseCase';
 
 
 
@@ -23,7 +24,8 @@ export class UserRoomController {
         @inject('IGetPublicRoomsUseCase') private getPublicRoomsUseCase: IGetPublicRoomsUseCase,
         @inject('IUpdateRoomPermissionsUseCase') private updateRoomPermissionsUseCase: IUpdateRoomPermissionsUseCase,
         @inject('IKickUserUseCase') private kickUserUseCase: IKickUserUseCase,
-        @inject('IVerifyPrivateRoomUseCase') private verifyPrivateRoomUseCase: IVerifyPrivateRoomUseCase
+        @inject('IVerifyPrivateRoomUseCase') private verifyPrivateRoomUseCase: IVerifyPrivateRoomUseCase,
+        @inject('IRoomSubmitCodeUseCase') private roomSubmitCodeUseCase: IRoomSubmitCodeUseCase
     ) { }
 
 
@@ -222,5 +224,31 @@ export class UserRoomController {
             });
         }
 
+    }
+
+    submitCode = async (httpRequest: IHttpRequest) => {
+        const { roomId, problemId, sourceCode, languageId } = httpRequest.body;
+        const userId = httpRequest.user?.userId;
+
+        if (!roomId || !problemId || !sourceCode || !languageId) {
+            throw new BadRequestError('Room ID, problem ID, source code, and language ID are required')
+        }
+
+        if (!userId) {
+            throw new BadRequestError('User ID is required')
+        }
+
+        const submitCodeDto: RoomSubmitCodeDto = {
+            roomId,
+            problemId,
+            sourceCode,
+            languageId
+        };
+
+        const result = await this.roomSubmitCodeUseCase.execute(submitCodeDto, userId);
+
+        return new HttpResponse(HTTP_STATUS.OK, {
+            ...buildResponse(true, 'Code submitted successfully', result),
+        });
     }
 }
