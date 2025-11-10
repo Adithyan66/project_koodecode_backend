@@ -12,6 +12,7 @@ export class GetUserDetailForAdminUseCase implements IGetUserDetailForAdminUseCa
     ) { }
 
     async execute(userId: string): Promise<UserDetailDto> {
+        
         const userData = await this.userRepository.findUserWithProfileAndBadges(userId);
 
         if (!userData) {

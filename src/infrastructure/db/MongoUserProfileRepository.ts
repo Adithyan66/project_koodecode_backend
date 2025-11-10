@@ -7,7 +7,7 @@
 
 import { UserProfile, UserStreak } from '../../domain/entities/UserProfile';
 
-import { IUserProfileRepository } from '../../domain/interfaces/repositories/IUserProfileRepository'; 
+import { BadgeHolderQueryParams, BadgeHolderQueryResult, BadgeHolderRecord, IUserProfileRepository } from '../../domain/interfaces/repositories/IUserProfileRepository'; 
 
 import { UserProfileModel } from './models/UserProfileModel';
 import { Types } from 'mongoose';
@@ -190,6 +190,69 @@ export class MongoUserProfileRepository implements IUserProfileRepository {
             { userId: new Types.ObjectId(userId) },
             { $push: { badges: badge } }
         );
+    }
+
+    async findBadgeHolders(params: BadgeHolderQueryParams): Promise<BadgeHolderQueryResult> {
+        const { badgeId, page, limit } = params;
+        const skip = (page - 1) * limit;
+
+        if (!Types.ObjectId.isValid(badgeId)) {
+            return {
+                holders: [],
+                total: 0,
+                page,
+                limit
+            };
+        }
+
+        const badgeObjectId = new Types.ObjectId(badgeId);
+        const matchStage = { 'badges.badgeId': badgeObjectId };
+
+        const [documents, total] = await Promise.all([
+            UserProfileModel.aggregate([
+                { $match: matchStage },
+                {
+                    $project: {
+                        userId: 1,
+                        badgeEntry: {
+                            $first: {
+                                $filter: {
+                                    input: '$badges',
+                                    as: 'badge',
+                                    cond: { $eq: ['$$badge.badgeId', badgeObjectId] }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        userId: 1,
+                        badgeId: '$badgeEntry.badgeId',
+                        awardedAt: '$badgeEntry.awardedAt'
+                    }
+                },
+                { $sort: { awardedAt: -1, _id: 1 } },
+                { $skip: skip },
+                { $limit: limit }
+            ]),
+            UserProfileModel.countDocuments(matchStage)
+        ]);
+
+        const holders: BadgeHolderRecord[] = documents
+            .filter(doc => doc.badgeId)
+            .map(doc => ({
+                userId: doc.userId.toString(),
+                badgeId: doc.badgeId.toString(),
+                awardedAt: doc.awardedAt
+            }));
+
+        return {
+            holders,
+            total,
+            page,
+            limit
+        };
     }
 
     async getLeaderboard(limit: number = 100): Promise<UserProfile[]> {

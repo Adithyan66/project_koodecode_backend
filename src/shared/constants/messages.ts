@@ -40,5 +40,12 @@ export const MESSAGES = {
     TEST_CASE_UPDATED_SUCCESSFULLY: 'Test case updated successfully',
     TEST_CASE_ADDED_SUCCESSFULLY: 'Test case added successfully',
     TEST_CASE_DELETED_SUCCESSFULLY: 'Test case deleted successfully',
-    PROBLEM_DELETED_SUCCESSFULLY: 'Problem deleted successfully'
+    PROBLEM_DELETED_SUCCESSFULLY: 'Problem deleted successfully',
+    BADGES_RETRIEVED_SUCCESSFULLY: 'Badges retrieved successfully',
+    BADGE_DETAILS_RETRIEVED: 'Badge details retrieved successfully',
+    BADGE_UPDATED_SUCCESSFULLY: 'Badge updated successfully',
+    BADGE_STATUS_UPDATED: 'Badge status updated successfully',
+    BADGE_HOLDERS_RETRIEVED: 'Badge holders retrieved successfully',
+    BADGE_ID_REQUIRED: 'Badge ID is required',
+    BADGE_STATUS_REQUIRED: 'Badge status is required'
 } as const;

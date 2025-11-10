@@ -24,7 +24,8 @@ export class GenerateImageUploadUrlUseCase {
             throw new Error('Invalid file extension. Allowed: jpg, jpeg, png, webp');
         }
 
-        const allowedTypes = ['profile-images', 'contest-thumbnail', 'room-thumbnail'];
+        const allowedTypes = ['profile-images', 'contest-thumbnail', 'room-thumbnail','badge-icons'];
+
         if (!allowedTypes.includes(type)) {
             throw new Error(`Invalid image type. Allowed: ${allowedTypes.join(', ')}`);
         }

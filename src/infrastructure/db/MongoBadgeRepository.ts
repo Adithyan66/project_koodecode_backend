@@ -2,7 +2,7 @@
 
 import { Badge, BadgeCategory } from '../../domain/entities/Badge';
 import { BadgeCriteria, BadgeType } from '../../domain/entities/UserProfile';
-import { IBadgeRepository } from '../../domain/interfaces/repositories/IBadgeRepository';
+import { BadgeFilterOptions, BadgeQueryOptions, BadgeQueryResult, IBadgeRepository } from '../../domain/interfaces/repositories/IBadgeRepository';
 import { BadgeModel } from './models/BadgeModel';
 
 export class MongoBadgeRepository implements IBadgeRepository {
@@ -60,6 +60,84 @@ export class MongoBadgeRepository implements IBadgeRepository {
         return badges.map(badge => this.mapDocumentToEntity(badge));
     }
 
+    async findPaginated(options: BadgeQueryOptions): Promise<BadgeQueryResult> {
+        const {
+            filters,
+            page = 1,
+            limit = 20,
+            sortField = 'createdAt',
+            sortOrder = 'desc'
+        } = options;
+
+        const query = this.buildFilter(filters);
+
+        const sort: Record<string, 1 | -1> = {};
+        sort[sortField] = sortOrder === 'asc' ? 1 : -1;
+
+        const [items, total] = await Promise.all([
+            BadgeModel.find(query)
+                .sort(sort)
+                .skip((page - 1) * limit)
+                .limit(limit),
+            BadgeModel.countDocuments(query)
+        ]);
+
+        return {
+            items: items.map(doc => this.mapDocumentToEntity(doc)),
+            total,
+            page,
+            limit
+        };
+    }
+
+    async setActiveStatus(id: string, isActive: boolean): Promise<Badge> {
+        const updated = await BadgeModel.findByIdAndUpdate(
+            id,
+            { isActive },
+            { new: true }
+        );
+
+        if (!updated) {
+            throw new Error('Badge not found');
+        }
+
+        return this.mapDocumentToEntity(updated);
+    }
+
+    private buildFilter(filters?: BadgeFilterOptions) {
+        const query: Record<string, any> = {};
+
+        if (!filters) {
+            return query;
+        }
+
+        if (filters.search) {
+            const regex = new RegExp(filters.search, 'i');
+            query.$or = [
+                { name: regex },
+                { description: regex }
+            ];
+        }
+
+        if (filters.types && filters.types.length > 0) {
+            query.type = { $in: filters.types };
+        }
+
+        if (filters.categories && filters.categories.length > 0) {
+            query.category = { $in: filters.categories };
+        }
+
+        if (filters.rarities && filters.rarities.length > 0) {
+            query.rarity = { $in: filters.rarities };
+        }
+
+        if (typeof filters.isActive === 'boolean') {
+            query.isActive = filters.isActive;
+        }
+
+        return query;
+    }
+
     private mapDocumentToEntity(badge: any): Badge {
         const criteria = badge.criteria
             ? new BadgeCriteria(
@@ -79,7 +157,7 @@ export class MongoBadgeRepository implements IBadgeRepository {
             badge.category as BadgeCategory,
             badge.rarity as any,
             badge.isActive,
-            badge.id?.toString(),
+            (badge.id ?? badge._id)?.toString(),
             badge.createdAt,
             badge.updatedAt
         );

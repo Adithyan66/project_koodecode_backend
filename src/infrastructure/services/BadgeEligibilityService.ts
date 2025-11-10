@@ -1,12 +1,11 @@
 import { injectable } from 'tsyringe';
 import { Badge } from '../../domain/entities/Badge';
 import { BadgeCriteria, UserProfile } from '../../domain/entities/UserProfile';
-import { BadgeEligibilityResult, IBadgeEligibilityService } from '../../domain/interfaces/services/IBadgeEligibilityService';
 
 @injectable()
-export class BadgeEligibilityService implements IBadgeEligibilityService {
+export class BadgeEligibilityService  {
     
-    evaluate(profile: UserProfile, badge: Badge): BadgeEligibilityResult {
+    evaluate(profile: UserProfile, badge: Badge) {
         const currentValue = this.resolveCurrentValue(profile, badge.criteria);
         const eligible = currentValue >= badge.criteria.threshold;
 

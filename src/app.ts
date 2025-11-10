@@ -24,6 +24,7 @@ import adminRoomRoute from './presentation/express/routes/admin/adminRoomRoute'
 import adminStoreRoute from './presentation/express/routes/admin/adminStoreRoute'
 import userNotificationRoute from './presentation/express/routes/user/userNotificationRoute'
 import adminNotificationRoute from './presentation/express/routes/admin/adminNotificationRoute'
+import adminBadgeRoute from './presentation/express/routes/admin/adminBadgeRoute'
 import adminSubmissionRoute from './presentation/express/routes/admin/adminSubmissionRoute'
 
 import { errorMiddleware } from './presentation/express/middlewares/errorHandler';
@@ -70,6 +71,7 @@ app.use('/api/admin/coins', adminCoinsRoute);
 app.use('/api/admin/store', adminStoreRoute);
 app.use('/api/admin/notifications', adminNotificationRoute);
 app.use('/api/admin/submissions', adminSubmissionRoute);
+app.use('/api/admin/badges', adminBadgeRoute);
 
 app.use('/api/image-service', imageServiceRoute)
 app.use('/api/health', healthRoute);

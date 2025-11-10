@@ -25,7 +25,7 @@ export class MongoUserRepository implements IUserRepository {
       githubId: userDoc.githubId,
       provider: userDoc.provider,
       emailVerified: userDoc.emailVerified,
-      isBlocked: userDoc.isBlocked || false
+      isBlocked: userDoc.isBlocked 
     });
   }
 
@@ -132,6 +132,12 @@ export class MongoUserRepository implements IUserRepository {
       users: users.map(user => this.mapToEntity(user)),
       total
     };
+  }
+
+  async findByIds(ids: string[]): Promise<User[]> {
+    const objectIds = ids.map(id => new Types.ObjectId(id));
+    const users = await UserModel.find({ _id: { $in: objectIds } }).exec();
+    return users.map(user => this.mapToEntity(user));
   }
 
   async findUserWithProfileAndBadges(userId: string): Promise<{

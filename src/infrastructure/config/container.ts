@@ -138,6 +138,11 @@ import { ProfileImageMigrationService } from '../../application/services/Profile
 import { UserStatsService } from '../services/UserStatsService';
 import { PostSubmissionHandler } from '../../application/services/PostSubmissionHandler';
 import { MongoBadgeRepository } from '../db/MongoBadgeRepository';
+import { ListAdminBadgesUseCase } from '../../application/usecases/badges/admin/ListAdminBadgesUseCase';
+import { GetAdminBadgeDetailUseCase } from '../../application/usecases/badges/admin/GetAdminBadgeDetailUseCase';
+import { UpdateAdminBadgeUseCase } from '../../application/usecases/badges/admin/UpdateAdminBadgeUseCase';
+import { ToggleAdminBadgeStatusUseCase } from '../../application/usecases/badges/admin/ToggleAdminBadgeStatusUseCase';
+import { ListBadgeHoldersUseCase } from '../../application/usecases/badges/admin/ListBadgeHoldersUseCase';
 
 import { BlockUserUseCase, IBlockUserUseCase } from '../../application/usecases/users/admin/BlockUserUseCase';
 import { GetUserContestDataUseCase } from '../../application/usecases/users/admin/GetUserContestDataUseCase';
@@ -168,6 +173,7 @@ import { NotificationController } from '../../presentation/http/controllers/noti
 import { GetAllSubmissionsForAdminUseCase } from '../../application/usecases/submissions/admin/GetAllSubmissionsForAdminUseCase';
 import { GetSubmissionDetailForAdminUseCase } from '../../application/usecases/submissions/admin/GetSubmissionDetailForAdminUseCase';
 import { AdminSubmissionController } from '../../presentation/http/controllers/admin/AdminSubmissionController';
+import { AdminBadgeController } from '../../presentation/http/controllers/admin/AdminBadgeController';
 
 
 
@@ -336,6 +342,11 @@ container.registerSingleton('ISendUserNotificationUseCase', SendUserNotification
 
 container.registerSingleton('IGetAllSubmissionsForAdminUseCase', GetAllSubmissionsForAdminUseCase);
 container.registerSingleton('IGetSubmissionDetailForAdminUseCase', GetSubmissionDetailForAdminUseCase);
+container.registerSingleton('IAdminListBadgesUseCase', ListAdminBadgesUseCase);
+container.registerSingleton('IAdminGetBadgeDetailUseCase', GetAdminBadgeDetailUseCase);
+container.registerSingleton('IAdminUpdateBadgeUseCase', UpdateAdminBadgeUseCase);
+container.registerSingleton('IAdminToggleBadgeStatusUseCase', ToggleAdminBadgeStatusUseCase);
+container.registerSingleton('IAdminListBadgeHoldersUseCase', ListBadgeHoldersUseCase);
 
 
 //   Register Controllers  //
@@ -356,6 +367,7 @@ container.registerSingleton(RazorpayWebhookController)
 container.registerSingleton(AdminCoinController)
 container.registerSingleton(NotificationController)
 container.registerSingleton(AdminSubmissionController)
+container.registerSingleton(AdminBadgeController)
 
 
 export { container };
