@@ -1,21 +1,9 @@
 
 
-import { connectDB } from '../db/mongoConnection';
-import { MongoBadgeRepository } from '../db/MongoBadgeRepository';
-
 async function seedBadges() {
-    try {
-        await connectDB();
-        
-        const badgeRepository = new MongoBadgeRepository();
-        await badgeRepository.seedBadges();
-        
-        console.log('✅ Badges seeded successfully');
-        process.exit(0);
-    } catch (error) {
-        console.error('❌ Error seeding badges:', error);
-        process.exit(1);
-    }
+    console.log('Badge seeding is now handled manually via MongoDB Compass.');
+    console.log('Insert the badge documents directly into the badges collection.');
+    process.exit(0);
 }
 
 if (require.main === module) {

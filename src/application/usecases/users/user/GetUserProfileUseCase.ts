@@ -46,7 +46,7 @@ export class GetUserProfileUseCase implements IGetUserProfileForUserUseCase {
             Promise.all(sortedBadges.map(badge => this.badgeRepository.findById(badge.badgeId)))
         ]);
 
-        const profileImageKey = user.profilePicKey || 'default_profile_BnM0aD0IW.jpg';
+        const profileImageKey = user.profilePicKey || null;
 
         const languages = Object.entries(profile.languagesUsed).map(([id, count]) => {
             const langInfo = ProgrammingLanguage.getLanguageInfo(parseInt(id));
@@ -55,7 +55,6 @@ export class GetUserProfileUseCase implements IGetUserProfileForUserUseCase {
                 count 
             };
         }).sort((a, b) => b.count - a.count);
-        console.log("jiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",languages);            
 
         const heatmapData = profile.activities
             .filter(activity => activity.date.startsWith(year.toString()))
@@ -68,6 +67,7 @@ export class GetUserProfileUseCase implements IGetUserProfileForUserUseCase {
             const badgeInfo = badgeInfoList[idx];
             return {
                 id: userBadge.badgeId,
+                name:userBadge.name,
                 imageUrl: badgeInfo?.iconUrl || userBadge.iconUrl
             };
         });

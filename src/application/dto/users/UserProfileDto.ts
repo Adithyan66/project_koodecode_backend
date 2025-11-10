@@ -12,7 +12,7 @@ export interface UserProfileDto {
 
 export interface UserProfileResponseDto {
     user: {
-        profileImage: string;
+        profileImage: string | null;
         name: string;
         username: string;
         bio?: string;

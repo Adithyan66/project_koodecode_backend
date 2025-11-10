@@ -10,5 +10,4 @@ export interface IBadgeRepository {
     update(id: string, updates: Partial<Badge>): Promise<Badge>;
     delete(id: string): Promise<boolean>;
     findActiveByCategory(category: BadgeCategory): Promise<Badge[]>;
-    seedBadges(): Promise<void>;
 }

@@ -1,62 +1,26 @@
 
 
-import { Badge, BadgeCategory, BADGE_DEFINITIONS } from '../../domain/entities/Badge';
-import { BadgeType } from '../../domain/entities/UserProfile';
+import { Badge, BadgeCategory } from '../../domain/entities/Badge';
+import { BadgeCriteria, BadgeType } from '../../domain/entities/UserProfile';
 import { IBadgeRepository } from '../../domain/interfaces/repositories/IBadgeRepository';
 import { BadgeModel } from './models/BadgeModel';
 
 export class MongoBadgeRepository implements IBadgeRepository {
     async findAll(): Promise<Badge[]> {
         const badges = await BadgeModel.find({ isActive: true });
-        return badges.map(badge => new Badge(
-            badge.name,
-            badge.description,
-            badge.type as BadgeType,
-            badge.iconUrl,
-            badge.criteria,
-            badge.category as BadgeCategory,
-            badge.rarity as any,
-            badge.isActive,
-            badge.id.toString(),
-            badge.createdAt,
-            badge.updatedAt
-        ));
+        return badges.map(badge => this.mapDocumentToEntity(badge));
     }
 
     async findByType(type: BadgeType): Promise<Badge[]> {
         const badges = await BadgeModel.find({ type, isActive: true });
-        return badges.map(badge => new Badge(
-            badge.name,
-            badge.description,
-            badge.type as BadgeType,
-            badge.iconUrl,
-            badge.criteria,
-            badge.category as BadgeCategory,
-            badge.rarity as any,
-            badge.isActive,
-            badge.id.toString(),
-            badge.createdAt,
-            badge.updatedAt
-        ));
+        return badges.map(badge => this.mapDocumentToEntity(badge));
     }
 
     async findById(id: string): Promise<Badge | null> {
         const badge = await BadgeModel.findById(id);
         if (!badge) return null;
         
-        return new Badge(
-            badge.name,
-            badge.description,
-            badge.type as BadgeType,
-            badge.iconUrl,
-            badge.criteria,
-            badge.category as BadgeCategory,
-            badge.rarity as any,
-            badge.isActive,
-            badge.id.toString(),
-            badge.createdAt,
-            badge.updatedAt
-        );
+        return this.mapDocumentToEntity(badge);
     }
 
     async create(badge: Badge): Promise<Badge> {
@@ -83,19 +47,7 @@ export class MongoBadgeRepository implements IBadgeRepository {
         const updated = await BadgeModel.findByIdAndUpdate(id, updates, { new: true });
         if (!updated) throw new Error('Badge not found');
         
-        return new Badge(
-            updated.name,
-            updated.description,
-            updated.type as BadgeType,
-            updated.iconUrl,
-            updated.criteria,
-            updated.category as BadgeCategory,
-            updated.rarity as any,
-            updated.isActive,
-            updated.id.toString(),
-            updated.createdAt,
-            updated.updatedAt
-        );
+        return this.mapDocumentToEntity(updated);
     }
 
     async delete(id: string): Promise<boolean> {
@@ -105,27 +57,31 @@ export class MongoBadgeRepository implements IBadgeRepository {
 
     async findActiveByCategory(category: BadgeCategory): Promise<Badge[]> {
         const badges = await BadgeModel.find({ category, isActive: true });
-        return badges.map(badge => new Badge(
+        return badges.map(badge => this.mapDocumentToEntity(badge));
+    }
+
+    private mapDocumentToEntity(badge: any): Badge {
+        const criteria = badge.criteria
+            ? new BadgeCriteria(
+                badge.criteria.type,
+                badge.criteria.threshold,
+                badge.criteria.description,
+                badge.criteria.metadata
+            )
+            : new BadgeCriteria('', 0, '');
+
+        return new Badge(
             badge.name,
             badge.description,
             badge.type as BadgeType,
             badge.iconUrl,
-            badge.criteria,
+            criteria,
             badge.category as BadgeCategory,
             badge.rarity as any,
             badge.isActive,
-            badge.id.toString(),
+            badge.id?.toString(),
             badge.createdAt,
             badge.updatedAt
-        ));
-    }
-
-    async seedBadges(): Promise<void> {
-        for (const badgeData of BADGE_DEFINITIONS) {
-            const existing = await BadgeModel.findOne({ name: badgeData.name });
-            if (!existing) {
-                await BadgeModel.create(badgeData);
-            }
-        }
+        );
     }
 }
