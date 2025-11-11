@@ -63,19 +63,29 @@ export class GetUserProfileUseCase implements IGetUserProfileForUserUseCase {
                 count: activity.count
             }));
 
-        const badgesList = sortedBadges.map((userBadge, idx) => {
+        type ActiveBadgeEntry = {
+            badge: typeof sortedBadges[number];
+            info: NonNullable<typeof badgeInfoList[number]>;
+        };
+        const activeBadgeEntries: ActiveBadgeEntry[] = [];
+        sortedBadges.forEach((userBadge, idx) => {
             const badgeInfo = badgeInfoList[idx];
-            return {
-                id: userBadge.badgeId,
-                name:userBadge.name,
-                imageUrl: badgeInfo?.iconUrl || userBadge.iconUrl
-            };
+            if (badgeInfo && badgeInfo.isActive) {
+                activeBadgeEntries.push({ badge: userBadge, info: badgeInfo });
+            }
         });
 
-        const recentBadge = sortedBadges[0] ? {
-            imageUrl: badgeInfoList[0]?.iconUrl || sortedBadges[0].iconUrl,
-            title: sortedBadges[0].name,
-            year: new Date(sortedBadges[0].awardedAt).getFullYear()
+        const badgesList = activeBadgeEntries.map(({ badge, info }) => ({
+            id: badge.badgeId,
+            name: badge.name,
+            imageUrl: info.iconUrl || badge.iconUrl
+        }));
+
+        const recentActiveEntry = activeBadgeEntries[0];
+        const recentBadge = recentActiveEntry ? {
+            imageUrl: recentActiveEntry.info.iconUrl || recentActiveEntry.badge.iconUrl,
+            title: recentActiveEntry.badge.name,
+            year: new Date(recentActiveEntry.badge.awardedAt).getFullYear()
         } : undefined;
 
         const recentSubmissionsWithInfo = recentSubmissions.map((submission: any) => ({
@@ -106,7 +116,7 @@ export class GetUserProfileUseCase implements IGetUserProfileForUserUseCase {
                 attempting
             },
             badges: {
-                total: profile.badges.length,
+                total: badgesList.length,
                 list: badgesList,
                 recent: recentBadge
             },
