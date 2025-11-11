@@ -14,10 +14,9 @@ export interface IGetAllUsersUseCase {
   execute(request: GetAllUsersRequestDto): Promise<GetAllUsersResponseDto>;
 }
 
-export interface IGetUserDetailForAdminUseCase {
+export interface IGetUserProfileForAdminUseCase {
   execute(userId: string): Promise<GetUserProfileResponseDto>;
 }
-
 
 export interface IGetUserDetailForAdminUseCase {
   execute(userId: string): Promise<UserDetailDto>;

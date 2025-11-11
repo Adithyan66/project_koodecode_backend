@@ -36,6 +36,7 @@ export class GetProblemDetailForAdminUseCase implements IGetProblemDetailForAdmi
             problem.title,
             problem.slug,
             problem.difficulty,
+            problem.type,
             problem.tags,
             problem.description,
             problem.constraints,  // No mapping needed!

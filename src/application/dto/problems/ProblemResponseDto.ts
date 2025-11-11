@@ -7,6 +7,7 @@ export interface ProblemResponseDto {
         title: string;
         slug: string;
         difficulty: 'easy' | 'medium' | 'hard';
+        type: 'array' | 'pattern' | 'dsa';
         tags: string[];
         description: string;
         constraints: Constraint[];

@@ -5,6 +5,7 @@ export interface ProblemNameDto {
   problemNumber: number;
   title: string;
   difficulty: 'easy' | 'medium' | 'hard';
+  type: 'array' | 'pattern' | 'dsa';
 }
 
 export interface ProblemNamesRequestDto {

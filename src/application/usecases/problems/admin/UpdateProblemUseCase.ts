@@ -74,6 +74,7 @@ export class UpdateProblemUseCase {
         ...(updateData.title && { title: updateData.title }),
         ...(updateData.description && { description: updateData.description }),
         ...(updateData.difficulty && { difficulty: updateData.difficulty.toLowerCase() as 'easy' | 'medium' | 'hard' }),
+        ...(updateData.type && { type: updateData.type }),
         ...(updateData.isActive !== undefined && { isActive: updateData.isActive }),
         ...(updateData.functionName && { functionName: updateData.functionName }),
         ...(updateData.returnType && { returnType: updateData.returnType }),
@@ -125,6 +126,7 @@ export class UpdateProblemUseCase {
         updatedProblem.title,
         updatedProblem.slug,
         updatedProblem.difficulty,
+        updatedProblem.type,
         updatedProblem.tags,
         updatedProblem.description,
         updatedProblem.constraints,
@@ -177,6 +179,10 @@ export class UpdateProblemUseCase {
 
     if (data.difficulty !== undefined && !['easy', 'medium', 'hard'].includes(data.difficulty.toLowerCase())) {
       throw new InvalidProblemDataError("difficulty", "Difficulty must be easy, medium, or hard");
+    }
+
+    if (data.type !== undefined && !['array', 'pattern', 'dsa'].includes(data.type)) {
+      throw new InvalidProblemDataError("type", "Type must be array, pattern, or dsa");
     }
 
     if (data.functionName !== undefined && (!data.functionName || data.functionName.trim().length === 0)) {

@@ -3,6 +3,7 @@ import { CreateTestCaseDto } from "./CreateTestCaseDto";
 export interface CreateProblemDto {
     title: string;
     difficulty: 'easy' | 'medium' | 'hard';
+    type: 'array' | 'pattern' | 'dsa';
     tags: string[];
     description: string;
     examples: {

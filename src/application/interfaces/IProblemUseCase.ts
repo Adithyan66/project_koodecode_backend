@@ -20,6 +20,7 @@ import { SubmissionHistoryResponseDto } from "../dto/submissions/SubmissionHisto
 export interface IGetProblemsListUseCase {
   execute(userId: string, filters?: {
     difficulty?: 'Easy' | 'Med.' | 'Hard' | 'all';
+    type?: 'array' | 'pattern' | 'dsa' | 'all';
     search?: string;
     page?: number;
     limit?: number;

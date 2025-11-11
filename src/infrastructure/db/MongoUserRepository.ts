@@ -9,7 +9,7 @@ import { Types } from 'mongoose';
 export class MongoUserRepository implements IUserRepository {
 
   private mapToEntity(userDoc: any): User {
-    
+
     return new User({
       id: userDoc._id.toString(),
       fullName: userDoc.fullName,
@@ -18,6 +18,7 @@ export class MongoUserRepository implements IUserRepository {
       role: userDoc.role,
       profilePicUrl: userDoc.profilePicUrl,
       profilePicKey: userDoc.profilePicKey,
+      fps: userDoc.fps,
       passwordHash: userDoc.passwordHash,
       createdAt: userDoc.createdAt,
       updatedAt: userDoc.updatedAt,
@@ -25,7 +26,7 @@ export class MongoUserRepository implements IUserRepository {
       githubId: userDoc.githubId,
       provider: userDoc.provider,
       emailVerified: userDoc.emailVerified,
-      isBlocked: userDoc.isBlocked 
+      isBlocked: userDoc.isBlocked
     });
   }
 
@@ -49,6 +50,7 @@ export class MongoUserRepository implements IUserRepository {
       fullName: user.fullName,
       userName: user.userName,
       email: user.email,
+      fps: user.fps,
       passwordHash: user.passwordHash,
       role: user.role,
       profilePicUrl: user.profilePicUrl,
@@ -109,25 +111,25 @@ export class MongoUserRepository implements IUserRepository {
   }> {
     const { page, limit, search } = params;
     const skip = (page - 1) * limit;
-    
-    let searchQuery: any = { role: 'user' }; 
-    
+
+    let searchQuery: any = { role: 'user' };
+
     if (search) {
       searchQuery.$or = [
         { email: { $regex: search, $options: 'i' } },
         { userName: { $regex: search, $options: 'i' } }
       ];
     }
-    
+
     const [users, total] = await Promise.all([
       UserModel.find(searchQuery)
-        .sort({ createdAt: -1 }) 
+        .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
         .exec(),
       UserModel.countDocuments(searchQuery)
     ]);
-    
+
     return {
       users: users.map(user => this.mapToEntity(user)),
       total
@@ -151,8 +153,8 @@ export class MongoUserRepository implements IUserRepository {
         return null;
       }
 
-      const profileDoc = await UserProfileModel.findOne({ 
-        userId: new Types.ObjectId(userId) 
+      const profileDoc = await UserProfileModel.findOne({
+        userId: new Types.ObjectId(userId)
       }).exec();
 
       if (!profileDoc) {
@@ -160,7 +162,7 @@ export class MongoUserRepository implements IUserRepository {
       }
 
       const user = this.mapToEntity(userDoc);
-      
+
       return {
         user,
         profile: profileDoc,

@@ -6,6 +6,7 @@ import { Problem } from '../../entities/Problem';
 
 export interface ProblemFilters {
     difficulty?: 'easy' | 'medium' | 'hard';
+    type?: 'array' | 'pattern' | 'dsa';
     search?: string;
     tags?: string[];
     languageId?: number;
@@ -25,6 +26,7 @@ export interface ProblemSearchFilters {
     search?: string;
     difficulty?: 'easy' | 'medium' | 'hard';
     status?: 'active' | 'inactive';
+    type?: 'array' | 'pattern' | 'dsa';
     page: number;
     limit: number;
     sortBy: 'problemNumber' | 'title' | 'difficulty' | 'createdAt' | 'acceptanceRate' | 'totalSubmissions';
@@ -47,6 +49,7 @@ export interface IProblemRepository {
     findByProblemNumber(problemNumber: number): Promise<Problem | null>;
     findAll(filters?: {
         difficulty?: 'easy' | 'medium' | 'hard';
+        type?: 'array' | 'pattern' | 'dsa';
         isActive?: boolean;
         name?: string;
         page?: number;
@@ -80,6 +83,7 @@ export interface IProblemRepository {
             problemNumber: number;
             title: string;
             difficulty: 'easy' | 'medium' | 'hard';
+            type: 'array' | 'pattern' | 'dsa';
         }>;
         totalCount: number;
     }>;

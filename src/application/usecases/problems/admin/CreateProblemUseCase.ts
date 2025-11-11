@@ -89,6 +89,7 @@ export class CreateProblemUseCase implements ICreateProblemUseCase {
         title: data.title,
         slug,
         difficulty: data.difficulty.toLowerCase() as 'easy' | 'medium' | 'hard',
+        type: data.type,
         tags: data.tags,
         description: data.description,
         constraints: transformedConstraints,
@@ -157,6 +158,11 @@ export class CreateProblemUseCase implements ICreateProblemUseCase {
 
     if (!data.description || data.description.trim().length === 0) {
       throw new InvalidProblemDataError("description", "Description is required and cannot be empty");
+    }
+
+    const validTypes = ['array', 'pattern', 'dsa'];
+    if (!data.type || !validTypes.includes(data.type)) {
+      throw new InvalidProblemDataError("type", "Type must be array, pattern, or dsa");
     }
 
     // Validate difficulty

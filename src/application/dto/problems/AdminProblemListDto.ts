@@ -6,6 +6,7 @@ export interface AdminProblemListDto {
   title: string;
   slug: string;
   difficulty: 'easy' | 'medium' | 'hard';
+  type: 'array' | 'pattern' | 'dsa';
   totalSubmissions: number;
   acceptedSubmissions: number;
   acceptanceRate: number;
@@ -27,6 +28,7 @@ export interface AdminProblemsListRequestDto {
   search?: string;
   difficulty?: 'easy' | 'medium' | 'hard';
   status?: 'active' | 'inactive';
+  type?: 'array' | 'pattern' | 'dsa';
   sortBy?: 'problemNumber' | 'title' | 'difficulty' | 'createdAt' | 'acceptanceRate' | 'totalSubmissions';
   sortOrder?: 'asc' | 'desc';
 }
@@ -55,5 +57,6 @@ export interface AdminProblemsListResponseDto {
     search?: string;
     difficulty?: string;
     status?: string;
+    type?: string;
   };
 }

@@ -5,7 +5,7 @@
 
 
 
-import { UserProfile, UserStreak } from '../../domain/entities/UserProfile';
+import { UserBadge, UserProfile, UserStreak } from '../../domain/entities/UserProfile';
 
 import { BadgeHolderQueryParams, BadgeHolderQueryResult, BadgeHolderRecord, IUserProfileRepository } from '../../domain/interfaces/repositories/IUserProfileRepository'; 
 
@@ -13,6 +13,108 @@ import { UserProfileModel } from './models/UserProfileModel';
 import { Types } from 'mongoose';
 
 export class MongoUserProfileRepository implements IUserProfileRepository {
+
+    private mapBadgeDocumentToEntity(badge: any): UserBadge {
+        return new UserBadge(
+            badge?.badgeId?.toString() ?? '',
+            badge?.badgeType,
+            badge?.name,
+            badge?.description,
+            badge?.iconUrl,
+            badge?.awardedAt,
+            badge?.criteria
+        );
+    }
+
+    private mapBadgesDocumentToEntity(badges: any[] | undefined): UserBadge[] {
+        if (!Array.isArray(badges)) {
+            return [];
+        }
+
+        return badges
+            .filter(Boolean)
+            .map(badge => this.mapBadgeDocumentToEntity(badge));
+    }
+
+    private mapBadgeEntityToDocument(badge: UserBadge | any): Record<string, any> {
+        const badgeId = badge?.badgeId;
+        const normalizedBadgeId = badgeId && Types.ObjectId.isValid(badgeId)
+            ? new Types.ObjectId(badgeId)
+            : badgeId;
+
+        return {
+            badgeId: normalizedBadgeId,
+            badgeType: badge?.badgeType,
+            name: badge?.name,
+            description: badge?.description,
+            iconUrl: badge?.iconUrl,
+            awardedAt: badge?.awardedAt,
+            criteria: badge?.criteria
+        };
+    }
+
+    private mapBadgesEntityToDocument(badges: UserBadge[] | any[] | undefined): Record<string, any>[] {
+        if (!Array.isArray(badges)) {
+            return [];
+        }
+
+        return badges
+            .filter(Boolean)
+            .map(badge => this.mapBadgeEntityToDocument(badge));
+    }
+
+    private mapDocumentToEntity(profile: any): UserProfile {
+        const streakDoc = profile.streak || {};
+        const userId = profile.userId?.toString ? profile.userId.toString() : profile.userId;
+        const profileId = profile._id?.toString ? profile._id.toString() : profile._id;
+
+        const streak = new UserStreak(
+            streakDoc.currentCount ?? 0,
+            streakDoc.maxCount ?? 0,
+            streakDoc.lastActiveDate ? new Date(streakDoc.lastActiveDate) : undefined,
+            streakDoc.createdAt ? new Date(streakDoc.createdAt) : new Date(),
+            streakDoc.updatedAt ? new Date(streakDoc.updatedAt) : new Date()
+        );
+
+        return new UserProfile({
+            userId,
+            bio: profile.bio,
+            location: profile.location,
+            birthdate: profile.birthdate,
+            gender: profile.gender,
+            githubUrl: profile.githubUrl,
+            linkedinUrl: profile.linkedinUrl,
+            ranking: profile.ranking,
+            acceptanceRate: profile.acceptanceRate,
+            contestRating: profile.contestRating,
+            coinBalance: profile.coinBalance,
+            totalProblems: profile.totalProblems,
+            easyProblems: profile.easyProblems,
+            mediumProblems: profile.mediumProblems,
+            hardProblems: profile.hardProblems,
+            totalSubmissions: profile.totalSubmissions,
+            acceptedSubmissions: profile.acceptedSubmissions,
+            rejectedSubmissions: profile.rejectedSubmissions,
+            problemsAttempted: profile.problemsAttempted,
+            problemsSolved: profile.problemsSolved,
+            firstSolveDate: profile.firstSolveDate,
+            lastSolveDate: profile.lastSolveDate,
+            averageSolveTime: profile.averageSolveTime,
+            languagesUsed: profile.languagesUsed || {},
+            streak,
+            activeDays: profile.activeDays,
+            isPremium: profile.isPremium,
+            isBlocked: profile.isBlocked,
+            badges: this.mapBadgesDocumentToEntity(profile.badges),
+            leaderboard: profile.leaderboard,
+            hints: profile.hints,
+            activities: profile.activities,
+            lastLogin: profile.lastLogin,
+            id: profileId,
+            createdAt: profile.createdAt,
+            updatedAt: profile.updatedAt,
+        });
+    }
 
 
     async create(profile: UserProfile): Promise<UserProfile> {
@@ -45,130 +147,39 @@ export class MongoUserProfileRepository implements IUserProfileRepository {
             activeDays: profile.activeDays,
             isPremium: profile.isPremium,
             isBlocked: profile.isBlocked,
-            badges: profile.badges,
             leaderboard: profile.leaderboard,
             hints: profile.hints,
             activities: profile.activities,
             lastLogin: profile.lastLogin,
+            badges: this.mapBadgesEntityToDocument(profile.badges),
         });
 
         const saved = await newProfile.save();
 
-        return new UserProfile({
-            ...profile,
-            id: saved._id.toString(),
-            createdAt: saved.createdAt,
-            updatedAt: saved.updatedAt,
-        });
+        return this.mapDocumentToEntity(saved);
     }
 
     async findByUserId(userId: string): Promise<UserProfile | null> {
         const profile = await UserProfileModel.findOne({ userId: new Types.ObjectId(userId) });
         if (!profile) return null;
 
-        return new UserProfile({
-            userId: profile.userId.toString(),
-            bio: profile.bio,
-            location: profile.location,
-            birthdate: profile.birthdate,
-            gender: profile.gender,
-            githubUrl: profile.githubUrl,
-            linkedinUrl: profile.linkedinUrl,
-            ranking: profile.ranking,
-            acceptanceRate: profile.acceptanceRate,
-            contestRating: profile.contestRating,
-            coinBalance: profile.coinBalance,
-            totalProblems: profile.totalProblems,
-            easyProblems: profile.easyProblems,
-            mediumProblems: profile.mediumProblems,
-            hardProblems: profile.hardProblems,
-            totalSubmissions: profile.totalSubmissions,
-            acceptedSubmissions: profile.acceptedSubmissions,
-            rejectedSubmissions: profile.rejectedSubmissions,
-            problemsAttempted: profile.problemsAttempted,
-            problemsSolved: profile.problemsSolved,
-            firstSolveDate: profile.firstSolveDate,
-            lastSolveDate: profile.lastSolveDate,
-            averageSolveTime: profile.averageSolveTime,
-            languagesUsed: profile.languagesUsed || {},
-            streak: new UserStreak(
-                profile.streak.currentCount,
-                profile.streak.maxCount,
-                profile.streak.lastActiveDate,
-                profile.streak.createdAt,
-                profile.streak.updatedAt
-            ),
-            activeDays: profile.activeDays,
-            isPremium: profile.isPremium,
-            isBlocked: profile.isBlocked,
-            badges: profile.badges,
-            leaderboard: profile.leaderboard,
-            hints: profile.hints,
-            activities: profile.activities,
-            lastLogin: profile.lastLogin,
-            id: profile._id.toString(),
-            createdAt: profile.createdAt,
-            updatedAt: profile.updatedAt,
-        });
+        return this.mapDocumentToEntity(profile);
     }
 
     async update(userId: string, updates: Partial<UserProfile>): Promise<UserProfile> {
+        const updatesWithNormalizedBadges = updates.badges
+            ? { ...updates, badges: this.mapBadgesEntityToDocument(updates.badges as any[]) }
+            : updates;
+
         const updated = await UserProfileModel.findOneAndUpdate(
             { userId: new Types.ObjectId(userId) },
-            updates,
+            updatesWithNormalizedBadges,
             { new: true, upsert: true }
         );
 
         if (!updated) throw new Error('Profile not found');
 
-        return new UserProfile({
-            userId: updated.userId.toString(),
-            bio: updated.bio,
-            location: updated.location,
-            birthdate: updated.birthdate,
-            gender: updated.gender,
-            githubUrl: updated.githubUrl,
-            linkedinUrl: updated.linkedinUrl,
-            ranking: updated.ranking,
-            acceptanceRate: updated.acceptanceRate,
-            contestRating: updated.contestRating,
-            coinBalance: updated.coinBalance,
-            totalProblems: updated.totalProblems,
-            easyProblems: updated.easyProblems,
-            mediumProblems: updated.mediumProblems,
-            hardProblems: updated.hardProblems,
-            totalSubmissions: updated.totalSubmissions,
-            acceptedSubmissions: updated.acceptedSubmissions,
-            rejectedSubmissions: updated.rejectedSubmissions,
-            problemsAttempted: updated.problemsAttempted,
-            problemsSolved: updated.problemsSolved,
-            firstSolveDate: updated.firstSolveDate,
-            lastSolveDate: updated.lastSolveDate,
-            averageSolveTime: updated.averageSolveTime,
-            languagesUsed: updated.languagesUsed,
-
-            streak: new UserStreak(
-                updated.streak.currentCount,
-                updated.streak.maxCount,
-                updated.streak.lastActiveDate,
-                updated.streak.createdAt,
-                updated.streak.updatedAt
-            ),
-            activeDays: updated.activeDays,
-            isPremium: updated.isPremium,
-            isBlocked: updated.isBlocked,
-            badges: updated.badges,
-            leaderboard: updated.leaderboard,
-            hints: {
-                problemId:updated.hints.problemId,
-                
-            },
-            activities: updated.activities,
-            lastLogin: updated.lastLogin,
-            id: updated._id.toString(),
-            createdAt: updated.createdAt,
-            updatedAt: updated.updatedAt,
-        });
+        return this.mapDocumentToEntity(updated);
     }
 
     async updateStats(userId: string, stats: Partial<UserProfile>): Promise<void> {
@@ -186,9 +197,11 @@ export class MongoUserProfileRepository implements IUserProfileRepository {
     }
 
     async addBadge(userId: string, badge: any): Promise<void> {
+        const normalizedBadge = this.mapBadgeEntityToDocument(badge);
+
         await UserProfileModel.updateOne(
             { userId: new Types.ObjectId(userId) },
-            { $push: { badges: badge } }
+            { $push: { badges: normalizedBadge } }
         );
     }
 
@@ -261,41 +274,7 @@ export class MongoUserProfileRepository implements IUserProfileRepository {
             .limit(limit)
             .populate('userId', 'userName fullName profilePicUrl');
 
-        return profiles.map(profile => new UserProfile({
-            userId: profile.userId.toString(),
-            bio: profile.bio,
-            location: profile.location,
-            birthdate: profile.birthdate,
-            gender: profile.gender,
-            githubUrl: profile.githubUrl,
-            linkedinUrl: profile.linkedinUrl,
-            ranking: profile.ranking,
-            acceptanceRate: profile.acceptanceRate,
-            contestRating: profile.contestRating,
-            coinBalance: profile.coinBalance,
-            totalProblems: profile.totalProblems,
-            easyProblems: profile.easyProblems,
-            mediumProblems: profile.mediumProblems,
-            hardProblems: profile.hardProblems,
-            streak: new UserStreak(
-                profile.streak.currentCount,
-                profile.streak.maxCount,
-                profile.streak.lastActiveDate,
-                profile.streak.createdAt,
-                profile.streak.updatedAt
-            ),
-            activeDays: profile.activeDays,
-            isPremium: profile.isPremium,
-            isBlocked: profile.isBlocked,
-            badges: profile.badges,
-            leaderboard: profile.leaderboard,
-            hints: profile.hints,
-            activities: profile.activities,
-            lastLogin: profile.lastLogin,
-            id: profile._id.toString(),
-            createdAt: profile.createdAt,
-            updatedAt: profile.updatedAt,
-        }));
+        return profiles.map(profile => this.mapDocumentToEntity(profile));
     }
 
     async findByRanking(start: number, end: number): Promise<UserProfile[]> {
@@ -306,40 +285,6 @@ export class MongoUserProfileRepository implements IUserProfileRepository {
             .sort({ ranking: 1 })
             .populate('userId', 'userName fullName profilePicUrl');
 
-        return profiles.map(profile => new UserProfile({
-            userId: profile.userId.toString(),
-            bio: profile.bio,
-            location: profile.location,
-            birthdate: profile.birthdate,
-            gender: profile.gender,
-            githubUrl: profile.githubUrl,
-            linkedinUrl: profile.linkedinUrl,
-            ranking: profile.ranking,
-            acceptanceRate: profile.acceptanceRate,
-            contestRating: profile.contestRating,
-            coinBalance: profile.coinBalance,
-            totalProblems: profile.totalProblems,
-            easyProblems: profile.easyProblems,
-            mediumProblems: profile.mediumProblems,
-            hardProblems: profile.hardProblems,
-            streak: new UserStreak(
-                profile.streak.currentCount,
-                profile.streak.maxCount,
-                profile.streak.lastActiveDate,
-                profile.streak.createdAt,
-                profile.streak.updatedAt
-            ),
-            activeDays: profile.activeDays,
-            isPremium: profile.isPremium,
-            isBlocked: profile.isBlocked,
-            badges: profile.badges,
-            leaderboard: profile.leaderboard,
-            hints: profile.hints,
-            activities: profile.activities,
-            lastLogin: profile.lastLogin,
-            id: profile._id.toString(),
-            createdAt: profile.createdAt,
-            updatedAt: profile.updatedAt,
-        }));
+        return profiles.map(profile => this.mapDocumentToEntity(profile));
     }
 }

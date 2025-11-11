@@ -317,12 +317,17 @@ export class UserStreak {
         const lastActive = this.lastActiveDate ? new Date(this.lastActiveDate.toISOString().split('T')[0]) : null;
 
         if (isActive) {
-            if (!lastActive || this.isConsecutiveDay(lastActive, today)) {
+            if (!lastActive) {
+                this.currentCount = 1;
+            } else if (this.isSameDay(lastActive, today)) {
+                // Already counted for today
+            } else if (this.isConsecutiveDay(lastActive, today)) {
                 this.currentCount += 1;
-                this.maxCount = Math.max(this.maxCount, this.currentCount);
-            } else if (!this.isSameDay(lastActive, today)) {
-                this.currentCount = 1; // Reset streak
+            } else {
+                this.currentCount = 1; // Reset streak and start from 1
             }
+
+            this.maxCount = Math.max(this.maxCount, this.currentCount);
             this.lastActiveDate = currentDate;
         } else {
             if (lastActive && !this.isConsecutiveDay(lastActive, today)) {
@@ -339,7 +344,7 @@ export class UserStreak {
     private isConsecutiveDay(lastDate: Date, currentDate: Date): boolean {
         const oneDayMs = 24 * 60 * 60 * 1000;
         const diffMs = currentDate.getTime() - lastDate.getTime();
-        return diffMs === oneDayMs || diffMs === 0;
+        return diffMs === oneDayMs;
     }
 }
 

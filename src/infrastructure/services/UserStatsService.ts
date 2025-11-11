@@ -78,16 +78,16 @@ export class UserStatsService implements IUserStatsService {
         });
 
         // Add activity
-        await this.addActivity(userId, ActivityType.PROBLEM_SOLVED);
+        const isFirstActivityToday = await this.addActivity(userId, ActivityType.PROBLEM_SOLVED, 1, profile);
 
         // Update streak
-        await this.updateStreak(userId, true);
+        await this.updateStreak(userId, true, isFirstActivityToday);
 
         // Check for badges
         await this.checkAndAwardBadges(userId);
     }
 
-    async updateStreak(userId: string, isActive: boolean): Promise<void> {
+    async updateStreak(userId: string, isActive: boolean, isFirstActivityToday: boolean = false): Promise<void> {
         let profile = await this.profileRepository.findByUserId(userId);
         if (!profile) {
             profile = await this.initializeUserProfile(userId);
@@ -96,13 +96,8 @@ export class UserStatsService implements IUserStatsService {
         const currentDate = new Date();
         profile.streak.updateStreak(isActive, currentDate);
 
-        if (isActive) {
-            const today = currentDate.toISOString().split('T')[0];
-            const existingActivity = profile.activities.find((a: any) => a.date === today);
-
-            if (!existingActivity) {
-                profile.activeDays += 1;
-            }
+        if (isActive && isFirstActivityToday) {
+            profile.activeDays += 1;
         }
 
         await this.profileRepository.update(userId, {
@@ -111,20 +106,27 @@ export class UserStatsService implements IUserStatsService {
         });
 
         if (isActive) {
-            await this.addActivity(userId, ActivityType.STREAK_MAINTAINED);
+            await this.addActivity(userId, ActivityType.STREAK_MAINTAINED, 1, profile);
         }
     }
 
-    async addActivity(userId: string, activityType: ActivityType, count: number = 1): Promise<void> {
-        let profile = await this.profileRepository.findByUserId(userId);
-        if (!profile) {
-            profile = await this.initializeUserProfile(userId);
+    async addActivity(userId: string, activityType: ActivityType, count: number = 1, profile?: UserProfile): Promise<boolean> {
+        let workingProfile = profile;
+        if (!workingProfile) {
+            workingProfile = await this.profileRepository.findByUserId(userId);
+            if (!workingProfile) {
+                workingProfile = await this.initializeUserProfile(userId);
+            }
         }
 
         const today = new Date();
-        profile.addActivity(today, activityType, count);
+        const todayStr = today.toISOString().split('T')[0];
+        const hadActivityToday = workingProfile.activities.some((a: any) => a.date === todayStr);
 
-        await this.profileRepository.updateActivities(userId, profile.activities);
+        workingProfile.addActivity(today, activityType, count);
+
+        await this.profileRepository.updateActivities(userId, workingProfile.activities);
+        return !hadActivityToday;
     }
 
     async calculateAcceptanceRate(userId: string, totalSubmissions: number, acceptedSubmissions: number): Promise<void> {
@@ -147,16 +149,20 @@ export class UserStatsService implements IUserStatsService {
         }
 
         const availableBadges = await this.badgeRepository.findAll();
-        const earnedBadgeIds = profile.badges.map((b: any) => b.badgeId);
+        const earnedBadgeIds = new Set(
+            (profile.badges || []).map((b: any) => b.badgeId?.toString())
+        );
 
         for (const badge of availableBadges) {
-            if (earnedBadgeIds.includes(badge.id!)) continue;
+            const badgeId = badge.id?.toString();
+            if (!badgeId) continue;
+            if (earnedBadgeIds.has(badgeId)) continue;
 
             const shouldAward = this.checkBadgeCriteria(profile, badge);
 
             if (shouldAward) {
                 const userBadge = {
-                    badgeId: badge.id!,
+                    badgeId,
                     badgeType: badge.type,
                     name: badge.name,
                     description: badge.description,
@@ -166,7 +172,8 @@ export class UserStatsService implements IUserStatsService {
                 };
 
                 await this.profileRepository.addBadge(userId, userBadge);
-                await this.addActivity(userId, ActivityType.BADGE_EARNED);
+                await this.addActivity(userId, ActivityType.BADGE_EARNED, 1, profile);
+                earnedBadgeIds.add(badgeId);
             }
         }
     }
@@ -248,10 +255,10 @@ export class UserStatsService implements IUserStatsService {
         });
 
         // Add activity
-        await this.addActivity(userId, ActivityType.PROBLEM_SOLVED);
+        const isFirstActivityToday = await this.addActivity(userId, ActivityType.PROBLEM_SOLVED, 1, profile);
 
         // Update streak
-        await this.updateStreak(userId, true);
+        await this.updateStreak(userId, true, isFirstActivityToday);
 
         // Check for badges
         await this.checkAndAwardBadges(userId);
@@ -289,10 +296,10 @@ export class UserStatsService implements IUserStatsService {
         });
 
         // Add activity
-        await this.addActivity(userId, ActivityType.PROBLEM_SOLVED);
+        const isFirstActivityToday = await this.addActivity(userId, ActivityType.PROBLEM_SOLVED, 1, profile);
 
         // Update streak
-        await this.updateStreak(userId, true);
+        await this.updateStreak(userId, true, isFirstActivityToday);
 
         // Check for badges
         await this.checkAndAwardBadges(userId);

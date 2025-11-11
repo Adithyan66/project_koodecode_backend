@@ -180,6 +180,7 @@ export class GetProblemByIdUseCase implements IGetProblemByIdUseCase {
                     title: problem.title,
                     slug: problem.slug,
                     difficulty: problem.difficulty,
+                    type: problem.type,
                     tags: problem.tags || [],
                     description: problem.description,
                     constraints: problem.constraints || [],

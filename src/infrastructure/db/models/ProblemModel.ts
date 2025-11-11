@@ -12,6 +12,7 @@ export interface IProblemModel extends Document {
     title: string;
     slug: string;
     difficulty: 'easy' | 'medium' | 'hard';
+    type: 'array' | 'pattern' | 'dsa';
     tags: string[];
     description: string;
     constraints: {
@@ -73,6 +74,7 @@ const ProblemSchema: Schema = new Schema({
     title: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
     difficulty: { type: String, enum: ['easy', 'medium', 'hard'], required: true },
+    type: { type: String, enum: ['array', 'pattern', 'dsa'], required: true },
     tags: [{ type: String }],
     description: { type: String, required: true },
     constraints: [
@@ -124,6 +126,7 @@ ProblemSchema.index({ difficulty: 1 });
 ProblemSchema.index({ tags: 1 });
 ProblemSchema.index({ isActive: 1 });
 ProblemSchema.index({ supportedLanguages: 1 });
+ProblemSchema.index({ type: 1 });
 
 ProblemSchema.index({
     title: "text",

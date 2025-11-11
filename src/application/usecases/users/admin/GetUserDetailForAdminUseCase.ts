@@ -1,11 +1,10 @@
 import { inject, injectable } from 'tsyringe';
 import { IUserRepository } from '../../../../domain/interfaces/repositories/IUserRepository';
 import { UserDetailDto, Badge } from '../../../dto/users/admin/UserDetailDto';
-import { IGetUserDetailForAdminUseCase } from '../../../interfaces/IUserUseCase';
 import { NotFoundError } from '../../../errors/AppErrors';
 
 @injectable()
-export class GetUserDetailForAdminUseCase implements IGetUserDetailForAdminUseCase {
+export class GetUserDetailForAdminUseCase {
 
     constructor(
         @inject('IUserRepository') private userRepository: IUserRepository
@@ -70,8 +69,8 @@ export class GetUserDetailForAdminUseCase implements IGetUserDetailForAdminUseCa
             hardProblems: profile.hardProblems || 0,
             activeDays: profile.activeDays || 0,
 
-            // Status
-            isBlocked: profile.isBlocked || false,
+        // Status
+        isBlocked: user.isBlocked,
             lastLogin: profile.lastLogin?.toISOString(),
 
             // Streak Data

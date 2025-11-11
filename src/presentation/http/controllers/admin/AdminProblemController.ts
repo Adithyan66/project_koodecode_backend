@@ -48,6 +48,7 @@ export class AdminProblemController implements IAdminProblemController {
         const {
             title,
             difficulty,
+            type,
             tags,
             description,
             constraints,
@@ -64,13 +65,14 @@ export class AdminProblemController implements IAdminProblemController {
         } = httpRequest.body;
 
 
-        if (!title || !difficulty || !description || !testCases || !templates || !supportedLanguages) {
+        if (!title || !difficulty || !type || !description || !testCases || !templates || !supportedLanguages) {
             throw new BadRequestError(MESSAGES.MISSING_REQUIRED_FIELDS)
         }
 
         const createProblemDto: CreateProblemDto = {
             title,
             difficulty,
+            type,
             tags: tags || [],
             description,
             constraints: constraints || [],
@@ -98,6 +100,7 @@ export class AdminProblemController implements IAdminProblemController {
                 title: problem.title,
                 slug: problem.slug,
                 difficulty: problem.difficulty,
+                type: problem.type,
                 isActive: problem.isActive,
                 createdAt: problem.createdAt
             }),
@@ -114,7 +117,8 @@ export class AdminProblemController implements IAdminProblemController {
             difficulty,
             status,
             sortBy,
-            sortOrder
+            sortOrder,
+            type
         } = httpRequest.query;
 
         const request: AdminProblemsListRequestDto = {
@@ -124,7 +128,8 @@ export class AdminProblemController implements IAdminProblemController {
             difficulty: difficulty as 'easy' | 'medium' | 'hard',
             status: status as 'active' | 'inactive',
             sortBy: sortBy as 'problemNumber' | 'title' | 'difficulty' | 'createdAt' | 'acceptanceRate' | 'totalSubmissions',
-            sortOrder: sortOrder as 'asc' | 'desc'
+            sortOrder: sortOrder as 'asc' | 'desc',
+            type: type as 'array' | 'pattern' | 'dsa'
         };
 
         if (request.page && request.page < 1) {
@@ -141,6 +146,10 @@ export class AdminProblemController implements IAdminProblemController {
 
         if (request.status && !['active', 'inactive'].includes(request.status)) {
             throw new BadRequestError(MESSAGES.INVALID_STATUS);
+        }
+
+        if (request.type && !['array', 'pattern', 'dsa'].includes(request.type)) {
+            throw new BadRequestError('Invalid problem type');
         }
 
         const validSortFields = ['problemNumber', 'title', 'difficulty', 'createdAt', 'acceptanceRate', 'totalSubmissions'];

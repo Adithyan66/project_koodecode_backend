@@ -42,6 +42,7 @@ export class UserProblemController implements IUserProblemController {
             limit,
             search,
             difficulty,
+            type,
             sortBy
         } = httpRequest.query;
 
@@ -53,6 +54,7 @@ export class UserProblemController implements IUserProblemController {
             limit: parsedLimit,
             search: search as string,
             difficulty: difficulty as 'Easy' | 'Med.' | 'Hard' | 'all',
+            type: type as 'array' | 'pattern' | 'dsa' | 'all',
             sortBy: sortBy as 'none' | 'acceptance-asc' | 'acceptance-desc'
         };
 

@@ -3,6 +3,7 @@ export interface ProblemListQueryDto {
   limit?: number;
   search?: string;
   difficulty?: 'Easy' | 'Med.' | 'Hard' | 'all';
+  type?: 'array' | 'pattern' | 'dsa' | 'all';
   sortBy?: 'none' | 'acceptance-asc' | 'acceptance-desc';
 }
 
@@ -13,6 +14,7 @@ export interface ProblemListItemDto {
   slug: string;
   acceptance: number;
   difficulty: 'Easy' | 'Med.' | 'Hard';
+  type: 'array' | 'pattern' | 'dsa';
   status: 'solved' | null;
 }
 

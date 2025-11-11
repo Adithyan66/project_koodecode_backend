@@ -1,12 +1,12 @@
 import { inject, injectable } from 'tsyringe';
 import { IUserRepository } from '../../../../domain/interfaces/repositories/IUserRepository';
 import { GetUserProfileResponseDto, UserBadgeDto, UserStreakDto } from '../../../dto/users/admin/GetUserProfileResponseDto';
-import { IGetUserDetailForAdminUseCase } from '../../../interfaces/IUserUseCase';
+import { IGetUserProfileForAdminUseCase } from '../../../interfaces/IUserUseCase';
 import { NotFoundError } from '../../../errors/AppErrors';
 
 
 @injectable()
-export class GetUserDetailsForAdminUseCase implements IGetUserDetailForAdminUseCase {
+export class GetUserDetailsForAdminUseCase implements IGetUserProfileForAdminUseCase {
 
   constructor(
     @inject('IUserRepository') private userRepository: IUserRepository

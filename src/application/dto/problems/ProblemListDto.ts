@@ -7,6 +7,7 @@ export interface ProblemDto {
   title: string;
   slug: string;
   difficulty: 'easy' | 'medium' | 'hard';
+  type: 'array' | 'pattern' | 'dsa';
   tags: string[];
   likes: number;
   acceptanceRate: number;
@@ -40,12 +41,12 @@ export interface ProblemListDto {
   filters?: {
     search?: string;
     difficulty?: string;
-    category?: string;
+    type?: string;
     tags?: string[];
   };
   availableFilters?: {
     difficulties: string[];
-    categories: string[];
+    types: string[];
     tags: string[];
   };
 }

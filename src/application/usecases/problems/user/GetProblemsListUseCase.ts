@@ -5,6 +5,7 @@ import { ProblemListApiResponseDto, ProblemListItemDto } from '../../../dto/prob
 
 interface ProblemListFilters {
   difficulty?: 'Easy' | 'Med.' | 'Hard' | 'all';
+  type?: 'array' | 'pattern' | 'dsa' | 'all';
   search?: string;
   page?: number;
   limit?: number;
@@ -28,10 +29,12 @@ export class GetProblemsListUseCase {
     const limit = Math.min(filters.limit || this.DEFAULT_LIMIT, this.MAX_LIMIT);
 
     const difficultyMap = this.mapDifficulty(filters.difficulty);
+    const typeFilter = this.mapType(filters.type);
 
     const dbFilters: any = {
       search: filters.search,
       difficulty: difficultyMap,
+      type: typeFilter,
       status: 'Published',
       page,
       limit
@@ -54,6 +57,7 @@ export class GetProblemsListUseCase {
         slug: problem.slug,
         acceptance: this.formatAcceptance(acceptance),
         difficulty: mappedDifficulty,
+        type: problem.type,
         status: isSolved ? 'solved' as const : null
       } as ProblemListItemDto;
     });
@@ -96,6 +100,14 @@ export class GetProblemsListUseCase {
     };
     
     return map[difficulty.toLowerCase()] || 'Easy';
+  }
+
+  private mapType(type?: 'array' | 'pattern' | 'dsa' | 'all'): 'array' | 'pattern' | 'dsa' | undefined {
+    if (!type || type === 'all') {
+      return undefined;
+    }
+    const validTypes: Array<'array' | 'pattern' | 'dsa'> = ['array', 'pattern', 'dsa'];
+    return validTypes.includes(type) ? type : undefined;
   }
 
   private calculateAcceptanceRate(problem: any): number {

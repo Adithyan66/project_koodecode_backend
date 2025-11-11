@@ -142,6 +142,7 @@ export class RunCodeUseCase {
     timeLimit: number,
     memoryLimit: number
   ): Promise<TestCaseResult[]> {
+    
     const submissions = await this.submitAllTestCases(
       sourceCode,
       languageId,
@@ -203,7 +204,8 @@ export class RunCodeUseCase {
         testCaseId: testCase.id,
         input: this.codeExecutionHelperService.formatTestCaseInput(testCase.inputs),
         expectedOutput: this.codeExecutionHelperService.formatExpectedOutput(testCase.expectedOutput),
-        actualOutput: result.stdout?.trim(),
+        actualOutput: result.stdout,
+        // actualOutput: result.stdout?.trim(),
         status,
         executionTime: result.time ? parseFloat(result.time) : 0,
         memoryUsage: result.memory || 0,

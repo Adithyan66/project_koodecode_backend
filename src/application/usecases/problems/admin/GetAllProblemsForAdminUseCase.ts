@@ -26,6 +26,7 @@ export class GetAllProblemsForAdminUseCase implements IGetAllProblemsForAdminUse
         search: request.search,
         difficulty: request.difficulty,
         status: request.status,
+        type: request.type,
         page,
         limit,
         sortBy,
@@ -56,6 +57,7 @@ export class GetAllProblemsForAdminUseCase implements IGetAllProblemsForAdminUse
             title: problem.title,
             slug: problem.slug,
             difficulty: problem.difficulty,
+          type: problem.type,
             totalSubmissions: submissionStats.totalSubmissions,
             acceptedSubmissions: submissionStats.acceptedSubmissions,
             acceptanceRate,
@@ -112,7 +114,8 @@ export class GetAllProblemsForAdminUseCase implements IGetAllProblemsForAdminUse
         filters: {
           search: request.search,
           difficulty: request.difficulty,
-          status: request.status
+          status: request.status,
+          type: request.type
         }
       };
     } catch (error) {

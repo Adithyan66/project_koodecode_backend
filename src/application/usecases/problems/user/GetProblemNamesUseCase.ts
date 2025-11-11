@@ -34,7 +34,8 @@ export class GetProblemNamesUseCase implements  IGetProblemNamesUseCase{
         id: problem.id,
         problemNumber: problem.problemNumber,
         title: problem.title,
-        difficulty: problem.difficulty
+        difficulty: problem.difficulty,
+        type: problem.type
       }));
 
       return {

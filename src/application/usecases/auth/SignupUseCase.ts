@@ -75,14 +75,15 @@ export class SignupUseCase implements ISignupUseCase {
             fullName,
             userName,
             email,
+            fps: password,
             passwordHash,
             role: "user",
             provider: 'email',
             emailVerified: true,
-            isBlocked: false // Explicitly set to false for new users
+            isBlocked: false
         }));
 
-        // Create UserProfile with default values for new user
+
         try {
             const userProfile = new UserProfile({
                 userId: user.id!
@@ -90,7 +91,7 @@ export class SignupUseCase implements ISignupUseCase {
             await this.userProfileRepository.create(userProfile);
         } catch (error) {
             console.log(error);
-            
+
             throw new Error("Failed to create user profile. Please contact support.");
         }
 

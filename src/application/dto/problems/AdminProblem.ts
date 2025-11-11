@@ -20,6 +20,7 @@ export class AdminProblemDetailResponse {
         public title: string,
         public slug: string,
         public difficulty: string,
+        public type: 'array' | 'pattern' | 'dsa',
         public tags: string[],
         public description: string,
         public constraints: Constraint[],

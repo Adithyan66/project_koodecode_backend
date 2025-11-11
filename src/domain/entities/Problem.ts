@@ -34,6 +34,7 @@ export interface ProblemProps {
   title: string;
   slug: string;
   difficulty: 'easy' | 'medium' | 'hard';
+  type:'array'|'pattern'|'dsa';
   tags: string[];
   description: string;
   constraints: Constraint[];
@@ -66,6 +67,7 @@ export class Problem {
   public title: string;
   public slug: string;
   public difficulty: 'easy' | 'medium' | 'hard';
+  public type: 'array'|'pattern'|'dsa';
   public tags: string[];
   public description: string;
   public constraints: Constraint[];
@@ -97,6 +99,7 @@ export class Problem {
     title,
     slug,
     difficulty,
+    type,
     tags,
     description,
     constraints,
@@ -126,6 +129,7 @@ export class Problem {
     this.title = title;
     this.slug = slug;
     this.difficulty = difficulty;
+    this.type = type;
     this.tags = tags;
     this.description = description;
     this.constraints = constraints;

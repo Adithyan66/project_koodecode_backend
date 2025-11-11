@@ -17,6 +17,7 @@ export class MongoProblemRepository implements IProblemRepository {
             title: problem.title,
             slug: problem.slug,
             difficulty: problem.difficulty,
+            type: problem.type,
             tags: problem.tags,
             description: problem.description,
             constraints: problem.constraints,
@@ -58,6 +59,7 @@ export class MongoProblemRepository implements IProblemRepository {
 
     async findAll(filters: {
         difficulty?: 'easy' | 'medium' | 'hard';
+        type?: 'array' | 'pattern' | 'dsa';
         tags?: string[];
         isActive?: boolean;
         name?: string;
@@ -77,6 +79,10 @@ export class MongoProblemRepository implements IProblemRepository {
 
         if (filters.difficulty) {
             query.difficulty = filters.difficulty;
+        }
+
+        if (filters.type) {
+            query.type = filters.type;
         }
 
         if (filters.tags && filters.tags.length > 0) {
@@ -129,6 +135,7 @@ export class MongoProblemRepository implements IProblemRepository {
             title: doc.title,
             slug: doc.slug,
             difficulty: doc.difficulty,
+            type: doc.type,
             tags: doc.tags,
             description: doc.description,
             constraints: doc.constraints,
@@ -178,6 +185,10 @@ export class MongoProblemRepository implements IProblemRepository {
                 query.difficulty = filters.difficulty.toLowerCase();
             }
 
+            if (filters.type) {
+                query.type = filters.type;
+            }
+
             // Handle tags filter
             if (filters.tags && filters.tags.length > 0) {
                 query.tags = { $in: filters.tags };
@@ -217,6 +228,7 @@ export class MongoProblemRepository implements IProblemRepository {
                     title: doc.title,
                     slug: doc.slug,
                     difficulty: doc.difficulty,
+                    type: doc.type,
                     tags: doc.tags || [],
                     description: doc.description,
                     constraints: doc.constraints || [],
@@ -289,7 +301,8 @@ export class MongoProblemRepository implements IProblemRepository {
                     id: { $toString: "$_id" },
                     problemNumber: 1,
                     title: 1,
-                    difficulty: 1
+                    difficulty: 1,
+                    type: 1
                 }
             },
             { $sort: { problemNumber: 1 } },
@@ -339,6 +352,10 @@ export class MongoProblemRepository implements IProblemRepository {
       if (difficulty) {
         query.difficulty = difficulty;
       }
+
+      if (filters.type) {
+        query.type = filters.type;
+      }
       
       // Filter by status (active/inactive)
       if (status) {
@@ -374,6 +391,7 @@ export class MongoProblemRepository implements IProblemRepository {
         title: p.title,
         slug: p.slug,
         difficulty: p.difficulty,
+        type: p.type,
         tags: p.tags,
         description: p.description,
         constraints: p.constraints,

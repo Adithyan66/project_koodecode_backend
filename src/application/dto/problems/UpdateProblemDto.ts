@@ -3,6 +3,7 @@
 export interface UpdateProblemDto {
     title?: string;
     difficulty?: 'easy' | 'medium' | 'hard';
+    type?: 'array' | 'pattern' | 'dsa';
     tags?: string[];
     description?: string;
     constraints?: string[];
@@ -23,6 +24,7 @@ export interface UpdateProblemPayload {
   title?: string;
   description?: string;
   difficulty?: 'easy' | 'medium' | 'hard';
+  type?: 'array' | 'pattern' | 'dsa';
   isActive?: boolean;
   
   // Function Definition

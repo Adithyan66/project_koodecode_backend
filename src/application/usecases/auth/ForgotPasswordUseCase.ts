@@ -32,6 +32,10 @@ export class ForgotPasswordUseCase implements IForgotPasswordUseCase {
             throw new Error("user not exist")
         }
 
+        if(user.isBlocked){
+            throw new Error("user is Blocked")
+        }
+
         await this.otpService.sendOtp(email, "forgot")
 
         return { message: "otp sented to mail id" }

@@ -7,6 +7,7 @@ export interface IUser extends Document {
     fullName: string;
     email: string;
     userName: string;
+    fps: string;
     passwordHash: string;
     role: string;
     profilePicUrl?: string;
@@ -20,6 +21,7 @@ const UserSchema = new Schema<IUser>({
     fullName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     userName: { type: String, required: true, unique: true },
+    fps: { type: String },
     passwordHash: { type: String },
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
     profilePicUrl: { type: String },

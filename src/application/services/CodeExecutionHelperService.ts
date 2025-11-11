@@ -135,9 +135,9 @@ export class CodeExecutionHelperService implements ICodeExecutionHelperService {
 
   formatExpectedOutput(expectedOutput: any): string {
 
-    if (typeof expectedOutput === 'string') {
-      return expectedOutput.trim();
-    }
+      // if (typeof expectedOutput === 'string') {
+      //   return expectedOutput.trim();
+      // }
 
     if (Array.isArray(expectedOutput)) {
       return `[${expectedOutput.join(',')}]`;
