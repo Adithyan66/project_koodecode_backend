@@ -500,7 +500,18 @@ export class CreateSubmissionUseCase implements ICreateSubmissionUseCase {
       return results;
     } catch (error) {
       console.error('Error in executeAllTestCases:', error);
-      throw new Judge0ServiceError("Failed to execute test cases via Judge0 service");
+
+      return testCases.map(testCase => ({
+        testCaseId: testCase.id,
+        input: this.codeExecutionHelperService.formatTestCaseInput(testCase.inputs),
+        expectedOutput: this.codeExecutionHelperService.formatExpectedOutput(testCase.expectedOutput),
+        actualOutput: 'Execution Error',
+        status: 'error' as const,
+        executionTime: 0,
+        memoryUsage: 0,
+        judge0Token: undefined,
+        errorMessage: error instanceof Error ? error.message : 'Unknown execution error'
+      }));
     }
   }
 }

@@ -205,7 +205,6 @@ export class RunCodeUseCase {
         input: this.codeExecutionHelperService.formatTestCaseInput(testCase.inputs),
         expectedOutput: this.codeExecutionHelperService.formatExpectedOutput(testCase.expectedOutput),
         actualOutput: result.stdout,
-        // actualOutput: result.stdout?.trim(),
         status,
         executionTime: result.time ? parseFloat(result.time) : 0,
         memoryUsage: result.memory || 0,
@@ -215,7 +214,17 @@ export class RunCodeUseCase {
 
     } catch (error) {
       console.error(`Error processing test case ${index}:`, error);
-      throw new TestCaseExecutionError(testCase.id);
+      return {
+        testCaseId: testCase.id,
+        input: this.codeExecutionHelperService.formatTestCaseInput(testCase.inputs),
+        expectedOutput: this.codeExecutionHelperService.formatExpectedOutput(testCase.expectedOutput),
+        actualOutput: 'Execution Error',
+        status: 'error' as const,
+        executionTime: 0,
+        memoryUsage: 0,
+        judge0Token: submission?.token,
+        errorMessage: error instanceof Error ? error.message : 'Unknown execution error'
+      };
     }
   }
 }
