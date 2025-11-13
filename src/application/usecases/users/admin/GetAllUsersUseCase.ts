@@ -24,6 +24,7 @@ export class GetAllUsersUseCase implements IGetAllUsersUseCase {
       fullName: user.fullName,
       userName: user.userName,
       email: user.email,
+      profilePicUrl: user.profilePicUrl,
       profilePicKey: user.profilePicKey,
       createdAt: user.createdAt!.toISOString(),
       updatedAt: user.updatedAt!.toISOString(),

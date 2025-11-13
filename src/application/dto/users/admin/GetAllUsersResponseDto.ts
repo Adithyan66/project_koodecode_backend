@@ -3,6 +3,7 @@ export interface AdminUserDto {
   fullName: string;
   userName: string;
   email: string;
+  profilePicUrl?: string;
   profilePicKey?: string;
   createdAt: string;
   updatedAt: string;

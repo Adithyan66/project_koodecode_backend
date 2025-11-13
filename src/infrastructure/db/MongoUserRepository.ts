@@ -24,8 +24,8 @@ export class MongoUserRepository implements IUserRepository {
       updatedAt: userDoc.updatedAt,
       googleId: userDoc.googleId,
       githubId: userDoc.githubId,
-      provider: userDoc.provider,
-      emailVerified: userDoc.emailVerified,
+      provider: userDoc.provider ?? 'email',
+      emailVerified: userDoc.emailVerified ?? false,
       isBlocked: userDoc.isBlocked
     });
   }
@@ -55,6 +55,10 @@ export class MongoUserRepository implements IUserRepository {
       role: user.role,
       profilePicUrl: user.profilePicUrl,
       profilePicKey: user.profilePicKey,
+      provider: user.provider ?? 'email',
+      googleId: user.googleId,
+      githubId: user.githubId,
+      emailVerified: user.emailVerified ?? false,
       isBlocked: user.isBlocked || false
     });
 

@@ -136,6 +136,7 @@ import { GetUserProfileUseCase } from '../../application/usecases/users/user/Get
 import { AdminUserController } from '../../presentation/http/controllers/admin/AdminUserController';
 import { ProfileImageMigrationService } from '../../application/services/ProfileImageMigrationService';
 import { UserStatsService } from '../services/UserStatsService';
+import { AdminDashboardStatsService } from '../../application/services/AdminDashboardStatsService';
 import { PostSubmissionHandler } from '../../application/services/PostSubmissionHandler';
 import { MongoBadgeRepository } from '../db/MongoBadgeRepository';
 import { ListAdminBadgesUseCase } from '../../application/usecases/badges/admin/ListAdminBadgesUseCase';
@@ -175,6 +176,7 @@ import { GetAllSubmissionsForAdminUseCase } from '../../application/usecases/sub
 import { GetSubmissionDetailForAdminUseCase } from '../../application/usecases/submissions/admin/GetSubmissionDetailForAdminUseCase';
 import { AdminSubmissionController } from '../../presentation/http/controllers/admin/AdminSubmissionController';
 import { AdminBadgeController } from '../../presentation/http/controllers/admin/AdminBadgeController';
+import { AdminDashboardController } from '../../presentation/http/controllers/admin/AdminDashboardController';
 
 
 
@@ -202,6 +204,7 @@ container.registerSingleton("IImageUploadService", ImageUploadService);
 container.registerSingleton("IJudge0HealthService", Judge0HealthService);
 container.registerSingleton("IProfileImageMigrationService", ProfileImageMigrationService);
 container.registerSingleton("IUserStatsService", UserStatsService);
+container.registerSingleton("IAdminDashboardStatsService", AdminDashboardStatsService);
 container.registerSingleton("IPostSubmissionHandler", PostSubmissionHandler);
 container.registerSingleton("ISubmissionDistributionService", SubmissionDistributionService);
 container.registerSingleton("IDistributionCacheService", DistributionCacheService);
@@ -370,6 +373,7 @@ container.registerSingleton(AdminCoinController)
 container.registerSingleton(NotificationController)
 container.registerSingleton(AdminSubmissionController)
 container.registerSingleton(AdminBadgeController)
+container.registerSingleton(AdminDashboardController)
 
 
 export { container };
