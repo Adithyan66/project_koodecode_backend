@@ -168,6 +168,7 @@ import { SubscribeToPushUseCase } from '../../application/usecases/notifications
 import { UnsubscribeFromPushUseCase } from '../../application/usecases/notifications/UnsubscribeFromPushUseCase';
 import { SendAdminNotificationUseCase } from '../../application/usecases/notifications/SendAdminNotificationUseCase';
 import { SendUserNotificationUseCase } from '../../application/usecases/notifications/SendUserNotificationUseCase';
+import { GetPushSubscribersForAdminUseCase } from '../../application/usecases/notifications/GetPushSubscribersForAdminUseCase';
 import { NotificationController } from '../../presentation/http/controllers/notifications/NotificationController';
 
 import { GetAllSubmissionsForAdminUseCase } from '../../application/usecases/submissions/admin/GetAllSubmissionsForAdminUseCase';
@@ -339,6 +340,7 @@ container.registerSingleton('ISubscribeToPushUseCase', SubscribeToPushUseCase);
 container.registerSingleton('IUnsubscribeFromPushUseCase', UnsubscribeFromPushUseCase);
 container.registerSingleton('ISendAdminNotificationUseCase', SendAdminNotificationUseCase);
 container.registerSingleton('ISendUserNotificationUseCase', SendUserNotificationUseCase);
+container.registerSingleton('IGetPushSubscribersForAdminUseCase', GetPushSubscribersForAdminUseCase);
 
 container.registerSingleton('IGetAllSubmissionsForAdminUseCase', GetAllSubmissionsForAdminUseCase);
 container.registerSingleton('IGetSubmissionDetailForAdminUseCase', GetSubmissionDetailForAdminUseCase);

@@ -8,6 +8,8 @@ const router = Router();
 const notificationController = container.resolve(NotificationController);
 
 router.post('/send', adminOnly, expressAdapter(notificationController.sendAdminNotification));
+router.post('/send-user', adminOnly, expressAdapter(notificationController.sendUserNotification));
+router.get('/subscribers', adminOnly, expressAdapter(notificationController.getPushSubscribers));
 
 export default router;
 
