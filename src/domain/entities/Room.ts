@@ -42,6 +42,7 @@ export interface Room {
   problemNumber?: number;
   status: 'waiting' | 'active' | 'inactive';
   participants: Participant[];
+  kickedUsers: string[];
   permissions: RoomPermissions;
   submissions?: SubmissionDetail[];
   lastActivity: Date;

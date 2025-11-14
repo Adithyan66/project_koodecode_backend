@@ -26,7 +26,6 @@ export class CreateRoomUseCase implements ICreateRoomUseCase{
     async execute(createRoomDto: CreateRoomDto, userId: string): Promise<CreateRoomResponseDto> {
 
         try {
-            console.log("hoiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
             
             if (createRoomDto.maxParticipants !== undefined) {
                 if (createRoomDto.maxParticipants < 1 || createRoomDto.maxParticipants > 1000) {
@@ -112,6 +111,7 @@ export class CreateRoomUseCase implements ICreateRoomUseCase{
                     canDrawWhiteboard: [userId],
                     canChangeProblem: [userId]
                 },
+                kickedUsers: [],
                 lastActivity: new Date(),
                 _id: undefined
             };

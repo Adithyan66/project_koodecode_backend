@@ -178,6 +178,26 @@ export class MongoRoomRepository implements IRoomRepository {
     );
   }
 
+  async addKickedUser(roomId: string, userId: string): Promise<void> {
+    await RoomModel.findOneAndUpdate(
+      { roomId },
+      {
+        $addToSet: { kickedUsers: userId },
+        $set: { lastActivity: new Date() }
+      }
+    );
+  }
+
+  async removeKickedUser(roomId: string, userId: string): Promise<void> {
+    await RoomModel.findOneAndUpdate(
+      { roomId },
+      {
+        $pull: { kickedUsers: userId },
+        $set: { lastActivity: new Date() }
+      }
+    );
+  }
+
   async updateParticipantStatus(roomId: string, userId: string, isOnline: boolean): Promise<void> {
     await RoomModel.findOneAndUpdate(
       { roomId, 'participants.userId': userId },
@@ -394,6 +414,7 @@ export class MongoRoomRepository implements IRoomRepository {
 
   private mapToRoom(roomDoc: RoomDocument): Room {
     return {
+      _id: roomDoc._id.toString(),
       id: roomDoc._id.toString(),
       roomNumber: roomDoc.roomNumber,
       roomId: roomDoc.roomId,
@@ -429,6 +450,7 @@ export class MongoRoomRepository implements IRoomRepository {
         }
         
         return {
+          profilePicUrl: null,
           userId,
           username: p.username || '',
           joinedAt: p.joinedAt,
@@ -441,6 +463,7 @@ export class MongoRoomRepository implements IRoomRepository {
         canDrawWhiteboard: (roomDoc.permissions?.canDrawWhiteboard || []).map(id => id.toString()),
         canChangeProblem: (roomDoc.permissions?.canChangeProblem || []).map(id => id.toString())
       },
+      kickedUsers: (roomDoc.kickedUsers || []).map(id => id.toString()),
       submissions: roomDoc.submissions?.map(s => ({
         submissionId: s.submissionId.toString(),
         userId: s.userId.toString(),

@@ -375,7 +375,7 @@ export class SocketService implements IRealtimeService {
                 const user = await this.userRepository.findById(userId)
                 socket.to(`room_${roomId}`).emit('user-typing', {
                     userId,
-                    username: user.userName,
+                    username: user?.userName || 'Unknown',
                     isTyping: true
                 });
             });
@@ -384,7 +384,7 @@ export class SocketService implements IRealtimeService {
                 const user = await this.userRepository.findById(userId)
                 socket.to(`room_${roomId}`).emit('user-typing', {
                     userId,
-                    username: user.userName,
+                    username: user?.userName || 'Unknown',
                     isTyping: false
                 });
             });
@@ -456,6 +456,7 @@ export class SocketService implements IRealtimeService {
                 try {
                     // Remove user from room
                     await this.roomRepository.removeParticipant(roomId, data.targetUserId);
+                    await this.roomRepository.addKickedUser(roomId, data.targetUserId);
 
                     // Disconnect the kicked user's socket
                     const socketsInRoom = await this.io.in(`room_${roomId}`).fetchSockets();
@@ -484,6 +485,35 @@ export class SocketService implements IRealtimeService {
 
                 } catch (error) {
                     socket.emit('error', { message: 'Failed to kick user' });
+                }
+            });
+
+            socket.on('unkick-user', async (data: { targetUserId: string }) => {
+                const room = await this.roomRepository.findByRoomId(roomId);
+
+                if (!room || room.createdBy !== userId) {
+                    socket.emit('error', { message: 'Only room creator can unkick users' });
+                    return;
+                }
+
+                try {
+                    await this.roomRepository.removeKickedUser(roomId, data.targetUserId);
+
+                    this.io.to(`room_${roomId}`).emit('user-unkicked', {
+                        targetUserId: data.targetUserId,
+                        updatedBy: userId,
+                        timestamp: new Date()
+                    });
+
+                    await this.roomActivityRepository.create({
+                        roomId,
+                        userId,
+                        action: 'user_unkicked',
+                        details: { targetUserId: data.targetUserId },
+                        timestamp: new Date()
+                    });
+                } catch (error) {
+                    socket.emit('error', { message: 'Failed to unkick user' });
                 }
             });
 

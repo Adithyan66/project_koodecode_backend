@@ -36,6 +36,13 @@ export class JoinRoomUseCase implements IJoinRoomUseCase {
         return { success: false, error: 'Room not found' };
       }
 
+      if (room.createdBy !== userId) {
+        const isKicked = (room.kickedUsers || []).some(kickedId => kickedId.toString() === userId);
+        if (isKicked) {
+          return { success: false, error: 'You have been removed from this room' };
+        }
+      }
+
       if (room.status === 'inactive') {
         return { success: false, error: 'Room is not active' };
       }

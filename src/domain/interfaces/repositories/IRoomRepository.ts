@@ -29,6 +29,8 @@ export interface IRoomRepository {
   addParticipant(roomId: string, participant: any): Promise<void>;
   removeParticipant(roomId: string, userId: string): Promise<void>;
   updateParticipantStatus(roomId: string, userId: string, isOnline: boolean): Promise<void>;
+  addKickedUser(roomId: string, userId: string): Promise<void>;
+  removeKickedUser(roomId: string, userId: string): Promise<void>;
 
   // Permissions
   updatePermissions(roomId: string, permissions: any): Promise<void>;

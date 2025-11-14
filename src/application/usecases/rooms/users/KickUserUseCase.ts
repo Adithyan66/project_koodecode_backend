@@ -37,6 +37,7 @@ export class KickUserUseCase implements IKickUserUseCase{
 
       // Remove user from participants
       await this.roomRepository.removeParticipant(roomId, kickDto.userId);
+      await this.roomRepository.addKickedUser(roomId, kickDto.userId);
 
       // Log activity
       await this.roomActivityRepository.create({

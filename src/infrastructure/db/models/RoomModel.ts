@@ -50,6 +50,7 @@ export interface RoomDocument extends Document {
         canDrawWhiteboard: Types.ObjectId[];
         canChangeProblem: Types.ObjectId[];
     };
+    kickedUsers: Types.ObjectId[];
     submissions?: {
         submissionId: Types.ObjectId;
         userId: Types.ObjectId;
@@ -120,6 +121,10 @@ const RoomSchema = new Schema({
     },
     participants: [ParticipantSchema],
     permissions: RoomPermissionsSchema,
+    kickedUsers: {
+        type: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+        default: []
+    },
     submissions: [SubmissionDetailSchema],
     lastActivity: { type: Date, default: Date.now }
 }, {
