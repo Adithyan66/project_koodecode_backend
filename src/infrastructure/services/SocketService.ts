@@ -70,8 +70,6 @@ export class SocketService implements IRealtimeService {
 
                 socket.data.userId = decoded.userId;
                 socket.data.roomId = decoded.roomId;
-                // console.log("permissionsss============================================\n", participant.permissions);
-                // socket.data.permissions = participant.permissions;
                 const isCreator = room.createdBy.toString() === decoded.userId;
                 const globalPermissions = {
                     canEditCode: isCreator || room.permissions.canEditCode.some(id => id.toString() === decoded.userId),
@@ -96,25 +94,10 @@ export class SocketService implements IRealtimeService {
 
             const { userId, roomId } = socket.data;
 
-            // console.log("=== USER CONNECTED ===");
-            // console.log("User ID:", userId);
-            // console.log("Room ID:", roomId);
-            // console.log("Socket ID:", socket.id);
-
-
-            // // Join room
             socket.join(`room_${roomId}`);
             socket.join(`room_${roomId}_code`);
             socket.join(`room_${roomId}_board`);
 
-            // console.log("✅ User joined rooms:");
-            // console.log("- room_" + roomId);
-            // console.log("- room_" + roomId + "_code");
-            // console.log("- room_" + roomId + "_board");
-
-            // console.log("Socket rooms:", Array.from(socket.rooms));
-
-            // Update user online status
             this.updateUserOnlineStatus(roomId, userId, true);
 
             const userDetails = await this.userRepository.findById(userId)
@@ -129,12 +112,9 @@ export class SocketService implements IRealtimeService {
                 timestamp: new Date()
             });
 
-            // Handle problem change
             socket.on('change-problem', async (data: { problemNumber: number }) => {
-                // if (!socket.data.permissions.canChangeProblem) {
-                //     socket.emit('error', { message: 'No permission to change problem' });
-                //     return;
-                // }
+              
+                
                 const roomData = await this.roomRepository.findByRoomId(roomId)
                 if (!roomData?.permissions?.canChangeProblem.some(id => id.toString() === userId)) {
                     socket.emit('error', { message: 'No permission to change problem' });
@@ -161,7 +141,6 @@ export class SocketService implements IRealtimeService {
 
                     let codeToSend = problem.templates[Object.keys(problem.templates)[0]].userFunctionSignature || 'onnulll';
 
-                    // console.log("code to senddddddddddddddddddddddddddddddddddddddd\n", problem.templates[Object.keys(problem.templates)[0]].userFunctionSignature);
 
                     if (existingCode && existingCode.problemNumber === data.problemNumber) {
                         codeToSend = existingCode.code;
@@ -196,26 +175,6 @@ export class SocketService implements IRealtimeService {
             // Handle code updates
             socket.on('code-update', async (data: { code: string; language: string; problemNumber: number }) => {
 
-
-                // console.log("=== BACKEND received code-update ===");
-                // console.log("From user:", userId, "in room:", roomId);
-                // console.log("Socket data:", {
-                //     userId: socket.data.userId,
-                //     roomId: socket.data.roomId,
-                //     permissions: socket.data.permissions
-                // });
-                // console.log("Data received:", {
-                //     codeLength: data.code?.length || 0,
-                //     language: data.language,
-                //     problemNumber: data.problemNumber
-                // });
-
-                // if (!socket.data.permissions.canEditCode) {
-                //     console.log("❌ No permission to edit code");
-                //     socket.emit('error', { message: 'No permission to edit code' });
-                //     return;
-                // }
-
                 const roomData = await this.roomRepository.findByRoomId(roomId)
                 if (!roomData?.permissions?.canEditCode.some(id => id.toString() === userId)) {
                     socket.emit('error', { message: 'No permission to edit code' });
@@ -235,10 +194,7 @@ export class SocketService implements IRealtimeService {
                         lastModified: new Date(),
                         lastModifiedBy: userId
                     });
-
-                    // console.log("✅ Code saved to database");
-                    // console.log("✅ Broadcasting to room:", `room_${roomId}_code`);
-
+                   
                     // Broadcast to other users
                     socket.to(`room_${roomId}_code`).emit('code-changed', {
                         code: data.code,
@@ -258,43 +214,19 @@ export class SocketService implements IRealtimeService {
 
             // Add this in your setupEventHandlers method
             socket.on('test-event', (data) => {
-                // console.log("=== RECEIVED TEST EVENT ===");
-                // console.log("Data:", data);
-                // console.log("From user:", userId, "in room:", roomId);
+          
                 socket.emit('test-response', { message: 'Hello from backend!' });
             });
 
 
             // Handle whiteboard updates
             socket.on('whiteboard-update', async (data: any) => {
-                // console.log("=== BACKEND received white-board update ===");
-                // console.log("From user:", userId, "in room:", roomId);
-                // console.log("Socket data:", {
-                //     userId: socket.data.userId,
-                //     roomId: socket.data.roomId,
-                //     permissions: socket.data.permissions
-                // });
-                // console.log("Data received:",
-                //     data.elements
-                // );
-
-
-
-
-
-                // if (!socket.data.permissions.canDrawWhiteboard) {
-                //     socket.emit('error', { message: 'No permission to draw on whiteboard' });
-                //     return;
-                // }
 
                 const roomData = await this.roomRepository.findByRoomId(roomId)
                 if (!roomData?.permissions?.canDrawWhiteboard.some(id => id.toString() === userId)) {
                     socket.emit('error', { message: 'No permission to draw on whiteboard' });
                     return;
                 }
-
-
-
 
                 // Broadcast to other users in the room
                 socket.to(`room_${roomId}_board`).emit('whiteboard-changed', {
@@ -312,11 +244,7 @@ export class SocketService implements IRealtimeService {
                 type: 'text' | 'code';
                 language?: string
             }) => {
-                // console.log("=== BACKEND received chat message ===");
-                // console.log("From user:", userId, "in room:", roomId);
-                // console.log("Message type:", data.type);
-                // console.log("Content length:", data.content?.length || 0);
-
+               
                 try {
                     // Get user details for the message
                     const room = await this.roomRepository.findByRoomId(roomId);

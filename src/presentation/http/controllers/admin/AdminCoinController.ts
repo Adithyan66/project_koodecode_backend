@@ -45,7 +45,7 @@ export class AdminCoinController {
             metadata
         );
 
-        let transactionData = {
+        const transactionData = {
             id: transaction.id,
             userId: transaction.userId,
             amount: transaction.amount,

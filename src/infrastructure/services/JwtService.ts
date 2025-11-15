@@ -2,7 +2,7 @@
 
 
 
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { config } from '../config/config';
 import Redis from 'ioredis';
 import { ITokenService } from '../../domain/interfaces/services/ITokenService';
@@ -14,12 +14,20 @@ export class JwtService implements ITokenService {
 
     generateAccessToken(payload: object): string {
 
-        return jwt.sign(payload, config.jwtAccessSecret, { expiresIn: '1d' });
+        return jwt.sign(
+            payload,
+            config.jwtAccessSecret,
+            { expiresIn: config.jwt.expiresIn as SignOptions['expiresIn'] }
+        );
     }
 
     generateRefreshToken(payload: object): string {
 
-        return jwt.sign(payload, config.jwtRefreshSecret, { expiresIn: '7d' });
+        return jwt.sign(
+            payload,
+            config.jwtRefreshSecret,
+            { expiresIn: config.jwt.refreshExpiresIn as SignOptions['expiresIn'] }
+        );
     }
 
     verifyAccessToken(token: string): object | null {

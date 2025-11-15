@@ -116,7 +116,7 @@ export class MongoUserRepository implements IUserRepository {
     const { page, limit, search } = params;
     const skip = (page - 1) * limit;
 
-    let searchQuery: any = { role: 'user' };
+    const searchQuery: any = { role: 'user' };
 
     if (search) {
       searchQuery.$or = [

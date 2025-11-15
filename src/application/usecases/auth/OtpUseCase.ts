@@ -4,6 +4,7 @@ import { injectable, inject } from "tsyringe";
 import { IOtpRepository } from '../../../domain/interfaces/repositories/IOtpRepository';
 import { IEmailService } from '../../../domain/interfaces/services/IEmailService';
 import { IOtpUseCase } from '../../interfaces/IAuthenticationUseCase';
+import { config } from "../../../infrastructure/config/config";
 
 
 
@@ -28,7 +29,7 @@ export class OtpUseCase implements IOtpUseCase {
 
         const otp = 11111
 
-        const ttlSeconds = 60; //1 mins
+        const ttlSeconds = Number(config.redis.otp_ttl); 
 
         const payload: Record<string, any> = { otp };
 

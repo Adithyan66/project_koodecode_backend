@@ -125,7 +125,7 @@ export class MongoCoinPurchaseRepository implements ICoinPurchaseRepository {
         }
 
         // Build sort conditions
-        let sortDirection = sortOrder === 'asc' ? 1 : -1;
+        const sortDirection = sortOrder === 'asc' ? 1 : -1;
         let sortField = 'createdAt'; // default
         if (sortBy) {
             sortField = sortBy;

@@ -9,7 +9,7 @@ export interface UserProps {
   role?: "user" | "admin";
   profilePicUrl?: string;
   id?: string;
-  fps: string;
+  fps?: string;
   passwordHash?: string;
   profilePicKey?: string;
   createdAt?: Date;
@@ -28,7 +28,7 @@ export class User {
   public role: "user" | "admin";
   public profilePicUrl?: string;
   public id?: string;
-  public fps: string;
+  public fps?: string;
   public passwordHash?: string;
   public profilePicKey?: string;
   public createdAt?: Date;

@@ -58,6 +58,7 @@ export class GitHubOAuthUseCase implements IGitHubOAuthUseCase{
           role: "user",
           isBlocked: false
         });
+        
         user = await this.userRepository.saveUser(newUser);
 
         // Migrate profile image to S3 after user creation (so we have the user ID)

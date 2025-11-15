@@ -75,13 +75,13 @@ export class UserProfileController implements IUserProfileController {
 
     getEditProfile = async (httpRequest: IHttpRequest) => {
 
-        let userId = httpRequest.user?.userId
+        const userId = httpRequest.user?.userId
 
         if (!userId) {
             throw new BadRequestError("User ID is required")
         }
 
-        let result = await this.getUserEditableProfile.execute(userId)
+        const result = await this.getUserEditableProfile.execute(userId)
 
         return new HttpResponse(HTTP_STATUS.OK, {
             ...buildResponse(true, 'Profile fetched successfully', result),

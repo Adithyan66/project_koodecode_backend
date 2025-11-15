@@ -4,16 +4,9 @@ export interface PaymentVerificationData {
     signature: string;
 }
 
-/**
- * Adapter to normalize payment verification data from different payment gateways
- * Supports Razorpay field names and generic field names
- */
+
 export class PaymentDataAdapter {
-    /**
-     * Normalizes payment data from various payment gateway formats
-     * @param data - Raw payment data from request body
-     * @returns Normalized payment verification data
-     */
+  
     static normalizePaymentData(data: any): PaymentVerificationData {
         const orderId = data.orderId || data.razorpay_order_id;
         const paymentId = data.paymentId || data.razorpay_payment_id;
@@ -34,11 +27,6 @@ export class PaymentDataAdapter {
         };
     }
 
-    /**
-     * Validates payment data before processing
-     * @param data - Payment data to validate
-     * @returns true if valid
-     */
     static isValidPaymentData(data: any): boolean {
         const hasGenericFields = !!(data.orderId && data.paymentId && data.signature);
         const hasRazorpayFields = !!(data.razorpay_order_id && data.razorpay_payment_id && data.razorpay_signature);

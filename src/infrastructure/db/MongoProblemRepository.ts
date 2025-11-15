@@ -278,7 +278,7 @@ export class MongoProblemRepository implements IProblemRepository {
         const skip = (page - 1) * limit;
 
         // Build search query
-        let query: any = { isActive: true };
+        const query: any = { isActive: true };
 
         if (search && search.trim()) {
             // Search by problem number (exact match) or title (regex)

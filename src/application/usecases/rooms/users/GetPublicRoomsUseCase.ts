@@ -29,21 +29,10 @@ export class GetPublicRoomsUseCase implements IGetPublicRoomsUseCase {
 
             if (page < 1) {
                 throw new BadRequestError("Page number must be greater than 0")
-                // return {
-                //     error: 'Page number must be greater than 0',
-                //     rooms: [],
-                //     pagination: { currentPage: 1, totalPages: 0, totalItems: 0, hasMore: false }
-                // };
             }
 
             if (limit < 1 || limit > 50) {
                 throw new BadRequestError("Limit must be between 1 and 50")
-                // return {
-
-                //     error: 'Limit must be between 1 and 50',
-                //     rooms: [],
-                //     pagination: { currentPage: 1, totalPages: 0, totalItems: 0, hasMore: false }
-                // };
             }
 
             const result = await this.roomRepository.findPublicRooms({
@@ -79,11 +68,6 @@ export class GetPublicRoomsUseCase implements IGetPublicRoomsUseCase {
             };
         } catch (error: any) {
             throw new BadRequestError(error.message)
-            // return {
-            //     error: error.message,
-            //     rooms: [],
-            //     pagination: { currentPage: 1, totalPages: 0, totalItems: 0, hasMore: false }
-            // };
         }
     }
 }

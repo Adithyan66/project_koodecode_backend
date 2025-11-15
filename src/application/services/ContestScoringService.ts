@@ -13,22 +13,18 @@ export class ContestScoringService {
       return participant.totalScore - contest.wrongSubmissionPenalty;
     }
 
-    // Base score for correct submission
     const baseScore = 1000;
     
-    // Time bonus (faster submission = more points)
     const timeBonus = this.calculateTimeBonus(newSubmission.timeTaken, contest.problemTimeLimit);
     
-    // Attempt penalty (fewer attempts = more points)
     const attemptPenalty = this.calculateAttemptPenalty(newSubmission.attemptNumber);
     
-    // Previous wrong submission penalties
     const previousPenalties = participant.submissions
       .filter(sub => !sub.isCorrect)
       .reduce((total, sub) => total + sub.penaltyApplied, 0);
 
     const finalScore = baseScore + timeBonus - attemptPenalty - previousPenalties;
-    return Math.max(0, finalScore); // Ensure score never goes below 0
+    return Math.max(0, finalScore); 
   }
 
   private calculateTimeBonus(timeTaken: number, timeLimit: number): number {

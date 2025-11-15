@@ -14,12 +14,10 @@ export class Judge0Service implements ICodeExecutionService {
       'Content-Type': 'application/json'
     };
 
-    // Add RapidAPI headers if using RapidAPI
     if (!config.judge0.useSelfHosted) {
       headers['X-RapidAPI-Host'] = config.judge0.rapidApiHost;
       headers['X-RapidAPI-Key'] = config.judge0.rapidApiKey;
     } else if (config.judge0.authToken) {
-      // Add auth token for self-hosted with authentication
       headers['X-Auth-Token'] = config.judge0.authToken;
     }    
 

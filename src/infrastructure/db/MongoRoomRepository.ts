@@ -20,7 +20,7 @@ export class MongoRoomRepository implements IRoomRepository {
 
     const room = await RoomModel.findOne({ roomId }).populate('participants.userId', 'username');
 
-    let res = room ? this.mapToRoom(room) : null;
+    const res = room ? this.mapToRoom(room) : null;
     return res
   }
 

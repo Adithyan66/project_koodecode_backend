@@ -16,11 +16,8 @@ export const config = {
   mongodb: {
     uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/koodecode'
   },
-  redis: {
-    url: process.env.REDIS_URL || 'redis://localhost:6379'
-  },
   jwt: {
-    secret: process.env.JWT_SECRET || 'your-jwt-secret',
+    secret: process.env.JWT_SECRET || 'my-jwt-secret',
     expiresIn: process.env.JWT_EXPIRES_IN || '24h',
     refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d'
   },
@@ -50,7 +47,7 @@ export const config = {
 
   jitsi: {
     domain: process.env.JITSI_DOMAIN,
-    apiSecret: process.env.JITSI_API_SECRET || 'your-secret'
+    apiSecret: process.env.JITSI_API_SECRET || 'my-secret'
   },
 
   socket: {
@@ -59,12 +56,20 @@ export const config = {
       methods: ['GET', 'POST']
     }
   },
-  
+
   webPush: {
     publicKey: process.env.VAPID_PUBLIC_KEY || 'BC1M9PhYAVleQGo2LYUjhNVwQ9xbKh0EUEcc21qVySO_e4ebQqmZx8TsGh4jl9BE9TT9bYQ8dKukHrHfVJnRKro',
     privateKey: process.env.VAPID_PRIVATE_KEY || '2-ZOCjuUdxYIpw1PYBh1Gu9qjvghZA1ABkgNg1rvCcE',
     subject: process.env.VAPID_SUBJECT || 'mailto:admin@koodecode.com'
   },
+
+  redis: {
+    redisHost: process.env.REDIS_HOST || '127.0.0.1',
+    redisPort: Number(process.env.REDIS_PORT) || 6379,
+    redisPassword: process.env.REDIS_PASSWORD || undefined,
+    otp_ttl:process.env.REDIS_OTP_TTL || 60
+  },
+
 
   RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID || 'rzp_test_RRHkLeStNJBD5F',
   RAZORPAY_KEY_SECRET: process.env.RAZORPAY_KEY_SECRET || "22iHcFu7sZHrYLEHP9a6Uh8m",

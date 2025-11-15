@@ -160,7 +160,7 @@ export class AuthController implements IAuthController {
             throw new BadRequestError("email and otp required");
         }
 
-        let response = await this._forgotPasswordUseCase.verifyOtp(email, otp)
+        const response = await this._forgotPasswordUseCase.verifyOtp(email, otp)
 
         return new HttpResponse(HTTP_STATUS.OK, buildResponse(true, response.message));
     }
@@ -173,7 +173,7 @@ export class AuthController implements IAuthController {
             throw new BadRequestError("email , otp , password required");
         }
 
-        let { user } = await this._forgotPasswordUseCase.changePAsswordExecute(email, otp, password)
+        const { user } = await this._forgotPasswordUseCase.changePAsswordExecute(email, otp, password)
   
 
         return new HttpResponse(HTTP_STATUS.OK, {

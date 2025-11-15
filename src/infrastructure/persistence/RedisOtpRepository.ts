@@ -34,7 +34,7 @@ export class RedisOtpRepository implements IOtpRepository {
             return null;
         }
         
-        let otp =  new Otp({
+        const otp =  new Otp({
             code: parseInt(data.otp, 10),
             email: data.email,
             expiresAt: new Date(data.expiresAt),

@@ -64,7 +64,6 @@ export class GoogleOAuthUseCase implements IGoogleOAuthUseCase {
         });
         user = await this.userRepository.saveUser(newUser);
 
-        // Migrate profile image to S3 after user creation (so we have the user ID)
         if (profile.picture && user.id) {
           try {
             const profileImageKey = await this.profileImageMigrationService.migrateOAuthProfileImage(
@@ -72,7 +71,6 @@ export class GoogleOAuthUseCase implements IGoogleOAuthUseCase {
               user.id
             );
             
-            // Update user with S3 key
             if (profileImageKey) {
               const updatedUser = new User({
                 ...user,
@@ -82,18 +80,15 @@ export class GoogleOAuthUseCase implements IGoogleOAuthUseCase {
             }
           } catch (error) {
             console.error('Failed to migrate Google profile image:', error);
-            // Continue without failing the entire process
           }
         }
 
-        // Create UserProfile with default values for new user (Google doesn't provide additional profile URLs)
         try {
           const userProfile = new UserProfile({
             userId: user.id!
           });
           await this.userProfileRepository.create(userProfile);
         } catch (error) {
-          // Note: User creation rollback not implemented as deleteUser method doesn't exist
           throw new Error("Failed to create user profile. Please contact support.");
         }
       }
@@ -103,7 +98,6 @@ export class GoogleOAuthUseCase implements IGoogleOAuthUseCase {
       throw new Error("user creration failed")
     }
 
-    // Add blocked user check after user is found/created
     if (user.isBlocked) {
         throw new UserBlockedError();
     }

@@ -60,13 +60,7 @@ export class StartContestProblemUseCase implements IStartContestProblemUseCase{
     const sampleTestCases = await this.testCaseRepository.findSampleByProblemId(problem.id!);
 
     return {
-      // id: problem.id!,
-      // title: problem.title,
-      // difficulty: problem.difficulty,
-      // description: problem.description,
-      // constraints: problem.constraints,
-      // examples: problem.examples,
-      // timeRemaining
+    
 
       problem: {
         id: problem.id!,

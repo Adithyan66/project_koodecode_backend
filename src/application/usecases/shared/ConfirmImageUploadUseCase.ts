@@ -1,6 +1,6 @@
 import { inject, injectable } from 'tsyringe';
-import { IUserRepository } from '../../../../domain/interfaces/repositories/IUserRepository';
-import { IImageUploadService } from '../../../interfaces/IImageUploadService';
+import { IUserRepository } from '../../../domain/interfaces/repositories/IUserRepository';
+import { IImageUploadService } from '../../interfaces/IImageUploadService';
 
 @injectable()
 export class ConfirmImageUploadUseCase {
