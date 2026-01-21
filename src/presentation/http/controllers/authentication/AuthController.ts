@@ -9,7 +9,6 @@ import { HTTP_STATUS } from "../../../../shared/constants/httpStatus";
 import { buildResponse } from "../../../../infrastructure/utils/responseBuilder";
 import { BadRequestError } from "../../../../application/errors/AppErrors";
 import { IChangePasswordUseCase, IForgotPasswordUseCase, IGitHubOAuthUseCase, IGoogleOAuthUseCase, ILoginUseCase, ISignupUseCase, IValidateUserUseCase } from "../../../../application/interfaces/IAuthenticationUseCase";
-import { AppError } from "../../../../application/errors/AppError";
 import { TokenPayload } from "../../../../shared/types/TokenPayload";
 import { ITokenService } from "../../../../domain/interfaces/services/ITokenService";
 

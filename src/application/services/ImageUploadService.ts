@@ -34,7 +34,6 @@ export class ImageUploadService implements IImageUploadService {
     await this.s3Service.deleteObject(imageKey);
   }
 
-
   async generateUploadUrl(type: imageType, fileExtension: string, userId: string): Promise<{
     uploadUrl: string;
     imageKey: string;

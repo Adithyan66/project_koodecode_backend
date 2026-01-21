@@ -1,9 +1,5 @@
 node_modules/
 dist/
-<<<<<<< HEAD
-=======
 .env
->>>>>>> feature/s3-bucket
 .log
 coverage/
-.env
