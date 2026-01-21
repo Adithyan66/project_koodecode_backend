@@ -24,7 +24,7 @@ export class Judge0Service implements ICodeExecutionService {
     this.httpClient = axios.create({
       baseURL: config.judge0.apiUrl,
       headers,
-      timeout: 30000
+      timeout: 60000
     });
   }
 
